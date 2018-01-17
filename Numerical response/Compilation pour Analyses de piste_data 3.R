@@ -270,7 +270,9 @@ for(n in m){
   fox_dens<-fox$natal_growth_dens[fox$year == d] #nb total de taniere en repro
   prop_fox_dens<-fox$prop_natal_dens[fox$year == d] #proportion de taniere en repro
   #fox_dens_timelag<-fox$natal_growth_dens[fox$year == d+ ou - 1]
-  lmg_abun<-lmg$LMG_C2[lmg$YEAR == d]
+  lmg_C2<-lmg$LMG_C2[lmg$YEAR == d]
+  lmg_C1<-lmg$LMG_C1[lmg$YEAR == d]
+  lmg_C1_C2<-lmg$LMG_C1_C2[lmg$YEAR == d]
   prim_prod<-prod$PROD_INDICE_C2[prod$YEAR == d]
   
   winAO<-AO$winAO[AO$YEAR==d]
@@ -286,7 +288,7 @@ for(n in m){
   brood_size<-breed$BROOD_SIZE_BAND[breed$YEAR==d]
   nest_succ<-breed$NEST_SUCC[breed$YEAR==d]
 
-    s<-data.frame(fox_dens, lmg_abun, prim_prod, winAO, sprAO, esumAO, lsumAO,AOnidif,nest_density,clutch_size,egg_abun,ratio_JUVad,brood_size,nest_succ)
+    s<-data.frame(fox_dens, prop_fox_dens, lmg_C2, lmg_C1, lmg_C1_C2, prim_prod, winAO, sprAO, esumAO, lsumAO,AOnidif,nest_density,clutch_size,egg_abun,ratio_JUVad,brood_size,nest_succ)
     suite<-rbind(suite,s)
   }
 
