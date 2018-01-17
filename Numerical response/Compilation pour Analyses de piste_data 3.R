@@ -226,13 +226,13 @@ for(i in j){
     init<-h$INI[h$NO==k]
     eclos<-h$ECLO[h$NO==k]
     fin<-h$INI[h$NO==k] + h$EXPO[h$NO==k]
-    moy_prec<-mean(prec$rain[prec$day>=init & prec$day<=fin & prec$year==i], na.rm=T)
-    sd_prec<-sd(prec$rain[prec$day>=init & prec$day<=fin & prec$year==i], na.rm=T)
-    max_prec<-max(prec$rain[prec$day>=init & prec$day<=fin & prec$year==i], na.rm=T)
-    cumul_prec<-sum(prec$rain[prec$day>=init & prec$day<=fin & prec$year==i], na.rm=T)
+    moy_prec<-mean(prec$RAIN[prec$JJ>=init & prec$JJ<=fin & prec$YEAR==i], na.rm=T)
+    sd_prec<-sd(prec$RAIN[prec$JJ>=init & prec$JJ<=fin & prec$YEAR==i], na.rm=T)
+    max_prec<-max(prec$RAIN[prec$JJ>=init & prec$JJ<=fin & prec$YEAR==i], na.rm=T)
+    cumul_prec<-sum(prec$RAIN[prec$JJ>=init & prec$JJ<=fin & prec$YEAR==i], na.rm=T)
     
-    eSUMmean<-mean(prec$rain[prec$day>=172 & prec$day<=196 & prec$year==i], na.rm=T)
-    SPRmean<-mean(prec$rain[prec$day>=140 & prec$day<=171 & prec$year==i], na.rm=T)
+    eSUMmean<-mean(prec$RAIN[prec$JJ>=172 & prec$JJ<=196 & prec$YEAR==i], na.rm=T)
+    SPRmean<-mean(prec$RAIN[prec$JJ>=140 & prec$JJ<=171 & prec$YEAR==i], na.rm=T)
     #YEAR<-i
     #NUMBER<-k
     #INI<-init
