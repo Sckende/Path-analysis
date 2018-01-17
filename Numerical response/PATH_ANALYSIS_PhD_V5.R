@@ -580,3 +580,5 @@ summary(glmer(SN~fox_dens+MEAN_temp+cumul_prec+lmg_abun+(1|AN), data = nest, fam
 glmer(SN~fox_dens+MEAN_temp+cumul_prec+lmg_abun+(1|AN), data = nest, family = binomial(link = "logit"))
 
 glmer(SN~fox_dens+cumul_prec+MEAN_temp+lmg_abun+ (1|AN), data=nest, family=binomial(link = "logit"))
+
+##### Graphics zone #####
