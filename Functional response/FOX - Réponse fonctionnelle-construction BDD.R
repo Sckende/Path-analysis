@@ -4,12 +4,12 @@
 # ICI CREATION DE BDD AVEC UN TAUX D'ATTAQUE PAR INDIVIDU
 
 getwd ()
-setwd(dir = "/Users/nicolas/Dropbox/PHD. Claire/Chapitres de thèse/Path analysis - Chapter 3/FOX functional response/R analysis/Data/FOX-Functional response-construction BDD")
+setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 
 rm( list = ls ())
 
 ######################## Fox - 2004 ###########################
-rf<-read.table("Fox-2004-fonct-essai.txt", sep = "\t", h = T)
+rf<-read.table("FOX-2004-fonct-essai.txt", sep = "\t", h = T)
 summary(rf)
 levels(rf$ID)
 
@@ -51,7 +51,7 @@ fox_fonc <- cbind(rep(2004, dim(TAB1)[1]),rep(min(TAB$date), dim(TAB1)[1]),rep(m
 names(fox_fonc) <- c("year","min_date","max_date",names(TAB1), "tot_atq")
 
 ######################## Fox - 2005 ###########################
-rf<-read.table("Fox-2005-fonct-essai.txt", sep = "\t", h = T)
+rf<-read.table("FOX-2005-fonct-essai.txt", sep = "\t", h = T)
 summary(rf)
 levels(rf$ID)
 
@@ -96,7 +96,7 @@ names(ff) <- c("year","min_date", "max_date",names(TAB1), "tot_atq")
 fox_fonc <- rbind(fox_fonc, ff)
 
 ######################## Fox - 1996-1999 ###########################
-rf<-read.table("Fox-1996-1999-fonct-essai.txt", sep = "\t", h = T)
+rf<-read.table("FOX-1996-1999-fonct-essai.txt", sep = "\t", h = T)
 summary(rf)
 rf$ID <- as.factor(rf$ID)
 levels(rf$ID)
@@ -206,7 +206,7 @@ for (l in unique(TAB1$year)) {
 }
 
 ######################## Fox - 2015 ###########################
-rf<-read.table("Fox-2015-fonct-essai.txt", sep = "\t", h = T)
+rf<-read.table("FOX-2015-fonct-essai.txt", sep = "\t", h = T)
 summary(rf)
 levels(rf$ID)
 
@@ -254,7 +254,7 @@ print(fox_fonc)
 
 
 ######################## Fox - 2016 ###########################
-rf<-read.table("Fox-2016-fonct-essai.txt", sep = "\t", h = T)
+rf<-read.table("FOX-2016-fonct-essai.txt", sep = "\t", h = T)
 summary(rf)
 levels(rf$ID)
 # conversion des dates en jours juliens
@@ -335,9 +335,9 @@ dim(ff2)
 
 ####Ajout des autres variables biologiques et météorologiques####
 #changement de répertoire
-setwd("/Users/nicolas/Documents/Claire/Doc doc doc !/R analysis/Data")
-fox<-read.csv("Fox_abundance_Chevallier.txt", sep = "\t", dec = ",")
-lmg<-read.csv("LEM96-2016.txt", sep = "\t", dec = ",")
+setwd("/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+fox<-read.csv("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",")
+lmg<-read.csv("LEM_96-2016.txt", sep = "\t", dec = ",")
 AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
 breed<-read.csv("GOOSE_breeding_informations.txt", sep = "\t", dec = ".")
 
@@ -346,12 +346,16 @@ for(n in 1:nrow(ff2)){
   d<-ff2$year[n]
   ff2$fox_dens[n]<-fox$natal_growth_dens[fox$year == d]
   #fox_dens_timelag<-fox$natal_growth_dens[fox$year == d+ ou - 1]
-  ff2$lmg_abun[n]<-lmg$LMG_C2[lmg$YEAR == d]
+  ff2$lmg_C2[n]<-lmg$LMG_C2[lmg$YEAR == d]
+  ff2$lmg_C12[i] <- lmg$LMG_C1_C2[lmg$YEAR == d]
+  ff2$lmg_C1[i] <- lmg$LMG_C1[lmg$YEAR == d]
 
   ff2$winAO[n]<-AO$winAO[AO$YEAR==d]
   ff2$sprAO[n]<-AO$sprAO[AO$YEAR==d]
   ff2$esumAO[n]<-AO$esumAO[AO$YEAR==d]
   ff2$lsumAO[n]<-AO$lsumAO[AO$YEAR==d]
+  ff2$sumAO[n]<-AO$sumAO[AO$YEAR==d]
+  ff2$AOnidif[n]<-AO$AOnidif[AO$YEAR==d]
   
   ff2$nest_density[n]<-breed$NEST_DENSITY[breed$YEAR==d]
   ff2$clutch_size[n]<-breed$CLUTCH_SIZE[breed$YEAR==d]
@@ -366,7 +370,7 @@ summary(ff2)
 ####ajout des données de températures moyennes et maximales et de précipitations cumulées
 #####Températures#####
 #chargement des données de températures
-temp<-read.table("Tair moy 1989-2016 BYLCAMP.txt", h=T, sep="\t", dec=",")
+temp<-read.table("TEMP_Tair moy 1989-2016 BYLCAMP.txt", h=T, sep="\t", dec=",")
 summary(temp)
 #temp<-na.omit(temp)
 #transformation date en jour julien#
@@ -408,7 +412,7 @@ boxplot(ff2$atq_rate~ff2$mean_temp, xlab = "Maximal temperature", ylab = "Attack
 #####Précipitations#####
 #calcul précipitation cumulée entre la première et la dernière date d'observation de renard pour chaque année 
 
-prec<-read.table("precipitation_Bylot_1996-2016.txt",h=T, dec = ",", sep = "\t")
+prec<-read.table("PREC_precipitation_Bylot_1996-2016.txt",h=T, dec = ",", sep = "\t")
 summary(prec)
 
 for(n in 1:nrow(ff2)){
@@ -421,19 +425,5 @@ summary(ff2)
 
 plot(ff2$cumul_prec,ff2$atq_rate)
 summary(ff2)
-
-####Complete data with C1 and C1/2 lmg abundance####
-setwd(dir = "/Users/nicolas/Documents/Claire/Doc doc doc !/R analysis/Data")
-LG <- read.table("LEM96-2016.txt", sep = "\t", dec = ".", h = T)
-summary(LG)
-
-for (i in 1:nrow(ff2)) {
-  d <- ff2$year[i]
-  ff2$lmg_C12[i] <- LG$LMG_C1_C2[LG$YEAR == d]
-  ff2$lmg_C1[i] <- LG$LMG_C1[LG$YEAR == d]
-  
-}
-summary(ff2)
-colnames(ff2)[9] <- "lmg_C2"
 
 #write.csv(ff2, "FOX-functional response V2.txt")
