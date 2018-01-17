@@ -4,6 +4,7 @@ rm(list = ls()) #clean R memory
 
 setwd(dir = "/Users/nicolas/Dropbox/Path analysis - UdeS/R analysis")
 fan<-read.table("FOX-functional response.txt", h=T, dec=".", sep = ",")
+f<-read.table("FOX-functional response V2.txt", h=T, dec=".", sep = ",")
 summary(fan)
 
 #Package nécessaires
