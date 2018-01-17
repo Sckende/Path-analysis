@@ -279,6 +279,7 @@ for(n in m){
   sprAO<-AO$sprAO[AO$YEAR==d]
   esumAO<-AO$esumAO[AO$YEAR==d]
   lsumAO<-AO$lsumAO[AO$YEAR==d]
+  sumAO<-AO$sumAO[AO$YEAR==d]
   AOnidif<-AO$AOnidif[AO$YEAR==d]
   
   nest_density<-breed$NEST_DENSITY[breed$YEAR==d]
@@ -288,7 +289,7 @@ for(n in m){
   brood_size<-breed$BROOD_SIZE_BAND[breed$YEAR==d]
   nest_succ<-breed$NEST_SUCC[breed$YEAR==d]
 
-    s<-data.frame(fox_dens, prop_fox_dens, lmg_C2, lmg_C1, lmg_C1_C2, prim_prod, winAO, sprAO, esumAO, lsumAO,AOnidif,nest_density,clutch_size,egg_abun,ratio_JUVad,brood_size,nest_succ)
+    s<-data.frame(fox_dens, prop_fox_dens, lmg_C2, lmg_C1, lmg_C1_C2, prim_prod, winAO, sprAO, esumAO, lsumAO, sumAO, AOnidif, nest_density, clutch_size, egg_abun, ratio_JUVad, brood_size, nest_succ)
     suite<-rbind(suite,s)
   }
 
