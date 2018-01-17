@@ -2,7 +2,10 @@
 
 rm(list = ls()) #clean R memory
 
-setwd(dir = "/Users/nicolas/Dropbox/Path analysis - UdeS/R analysis")
+setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+
+# COMPARER F ET FAN AVANT DE FAIRE N'IMPORTE QUOI D'AUTRE !!!!!!!!!!
+
 fan<-read.table("FOX-functional response.txt", h=T, dec=".", sep = ",")
 f<-read.table("FOX-functional response V2.txt", h=T, dec=".", sep = ",")
 summary(fan)
