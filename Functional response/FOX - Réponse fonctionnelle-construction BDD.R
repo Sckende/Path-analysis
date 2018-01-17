@@ -1,6 +1,8 @@
 ####### Calcul des moyennes d'attaque individuelles ######
 #### Tentative de partir des fichiers brutes de time budget ####
 
+# ICI CREATION DE BDD AVEC UN TAUX D'ATTAQUE PAR INDIVIDU
+
 getwd ()
 setwd(dir = "/Users/nicolas/Dropbox/PHD. Claire/Chapitres de thèse/Path analysis - Chapter 3/FOX functional response/R analysis/Data/FOX-Functional response-construction BDD")
 
