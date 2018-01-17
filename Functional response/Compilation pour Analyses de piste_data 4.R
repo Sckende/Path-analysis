@@ -1,4 +1,5 @@
 ################ Compilation pour Analyses de piste_data 4 ####################
+# ICI UN TAUX ATTAQUE PAR ANNEE 
 setwd("/Users/nicolas/Documents/Claire/Doc doc doc !/R analysis/Data")
 acqui<-read.table("acq_rate_1996-2016.txt", h=T, sep="\t", dec=",")
 attaq<-read.table("attaq_rate_1996-2016.txt",h=T,sep="\t",dec = ",")
