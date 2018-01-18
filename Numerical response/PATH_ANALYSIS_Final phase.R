@@ -3,6 +3,14 @@ rm(list = ls()) #clean R memory
 setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 
 
+# RAPPEL
+#winAO = November to April
+#sprAO = 20 May to 20 June
+#esumAO = 21 June to 15 July
+#lsumAO = 16 July to 15 August
+#sumAO = 21 June to 15 August
+#AOnidif = 4 June to 19 July
+
 #f <- read.table("Path analysis_data 3.txt", sep = ",", dec = ".", h = T)
 #f1 <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
 
@@ -94,7 +102,7 @@ sem.fit(ro, mC2, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
 #sem.plot(ro, mC2, show.nonsig = T)
 ##### A RETRAVAILLER ####
 
-#### Même modele que pcdt en remplacant lmg_C2 par lmg_C1_C2 #####
+#### Même modele que pcdt en remplacant lmg_C2 par lmg_C1_C2 - ro1*** #####
 
 #Exploration visuelle des donnees
 X11()
@@ -113,7 +121,7 @@ sem.coefs(ro1, mC2)
 sem.plot(ro1, mC2, show.nonsig = T)
 ##### Modele valide mais refaire les etapes ulterieures ####
 
-#### Même modele que pcdt en remplacant lmg_C1_C2 par lmg_C1 #####
+#### Même modele que pcdt en remplacant lmg_C1_C2 par lmg_C1 - ro2*** #####
 #Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
 
 #Exploration visuelle des donnees
@@ -133,10 +141,29 @@ sem.coefs(ro2, mC1)
 sem.plot(ro2, mC1, show.nonsig = T)
 ##### Modele valide mais refaire les etapes ulterieures ####
 
-# RAPPEL
-#winAO = November to April
-#sprAO = 20 May to 20 June
-#esumAO = 21 June to 15 July
-#lsumAO = 16 July to 15 August
-#sumAO = 21 June to 15 August
-#AOnidif = 4 June to 19 July
+#### Exploration du modele ro1 avec le jeu de donnees mC2 ####
+#Modele de piste
+ro1a <- list(
+  lm(prop_fox_dens ~ lmg_C1_C2 + winAO + cumul_prec + MEAN_temp, data = mC2),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC2, family = binomial(link = "logit")),
+  lm(lmg_C1_C2 ~ winAO + MEAN_temp + cumul_prec, data = mC2),
+  lme(MEAN_temp ~ esumAO, random = ~ 1|AN, data = mC2),
+  lme(cumul_prec ~ esumAO, random = ~ 1|AN, data = mC2))
+# Get goodness-of-fit and AIC
+sem.fit(ro1a, mC2, conditional = T)
+#significant missing paths ?
+sem.coefs(ro1a, mC2)
+sem.plot(ro1, mC2, show.nonsig = T)
+
+#### Exploration du modele ro2 avec le jeu de donnees mC1 ####
+#Modele de piste
+ro2 <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ winAO + MEAN_temp, data = mC1))
+# Get goodness-of-fit and AIC
+sem.fit(ro2, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro2, mC1)
+sem.plot(ro2, mC1, show.nonsig = T)
