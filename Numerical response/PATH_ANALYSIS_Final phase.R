@@ -1,4 +1,4 @@
-
+########## Path analysis - Numerical response ###############
 rm(list = ls()) #clean R memory
 setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 
