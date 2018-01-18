@@ -190,3 +190,92 @@ sem.coefs(ro2a, mC1)
 sem.plot(ro2a, mC1, show.nonsig = T)
 
 ####### Possibilite de couper les n pour utiliser le meme jeu de donnees pour les trois modeles possibles (ro1, ro2, ro2a) et ainsi pouvoir les comparer entre eux. Mais attention , la comparaison peut se faire a plusieurs niveuax : entre le nombre de pistes engagees dans les modeles ou entre les variables utilisees dans les modeles
+
+
+#### Cas de comparaison des trois modeles entre eux ####
+#ici les trois modeles sont bases sur le meme jeu de donnees (mC2 - le plus petit, n = 3807) afin de permettre leur comparaison
+
+#### Modele ro1 #### 
+ro1 <- list(
+  lm(prop_fox_dens ~ lmg_C1_C2 + winAO + cumul_prec + MEAN_temp, data = mC2),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC2, family = binomial(link = "logit")),
+  lm(lmg_C1_C2 ~ winAO + MEAN_temp + cumul_prec, data = mC2))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro1, mC2, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+#NO significant missing paths
+sem.coefs(ro1, mC2)
+sem.plot(ro1, mC2, show.nonsig = T)
+
+#Standardisation des données
+nene<-mC2[,c(16, 17, 18, 19, 20, 12, 4, 26)]
+nenescale<-scale(nene[,1:7])
+nenescale<-cbind(mC2[,c(1, 26)], as.data.frame(nenescale))
+names(nenescale)[c(1,2)] <- c("AN", "SN")
+head(nenescale)
+
+#### Modèle ro1 SCALED ####
+ro1sc <- list(
+  lm(prop_fox_dens ~ lmg_C1_C2 + winAO + cumul_prec + MEAN_temp, data = nenescale),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nenescale, family = binomial(link = "logit")),
+  lm(lmg_C1_C2 ~ winAO + MEAN_temp + cumul_prec, data = nenescale))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro1sc, nenescale, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+#NO significant missing paths
+sem.coefs(ro1sc, nenescale)
+#sem.plot(ro1sc, nenescale, show.nonsig = T)
+sem.model.fits(ro1sc) #calcul des R2
+
+#### Modele ro2 ####
+ro2 <- list(
+  lm(prop_fox_dens ~ lmg_C1 + winAO + cumul_prec + MEAN_temp, data = mC2),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC2, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ winAO + MEAN_temp + cumul_prec, data = mC2))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2, mC2, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+#NO significant missing paths
+sem.coefs(ro2, mC2)
+#sem.plot(ro2, mC2, show.nonsig = T)
+#certaines paths sont NS
+
+#### Modele ro2 SCALED ####
+ro2sc <- list(
+  lm(prop_fox_dens ~ lmg_C1 + winAO + cumul_prec + MEAN_temp, data = nenescale),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nenescale, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ winAO + MEAN_temp + cumul_prec, data = nenescale))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2sc, nenescale, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+#NO significant missing paths
+sem.coefs(ro2sc, nenescale)
+#sem.plot(ro2sc, nenescale, show.nonsig = T)
+#NO significant missing paths
+#sem.plot(ro2sc, nenescale, show.nonsig = T)
+sem.model.fits(ro2sc) #calcul des R2
+
+#### Modele ro2_a ####
+ro2_a <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp, data = mC2),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC2, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ winAO + MEAN_temp, data = mC2))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2_a, mC2, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+#NO significant missing paths
+sem.coefs(ro2_a, mC2)
+#sem.plot(ro2_a, mC2, show.nonsig = T)
+
+#### Modele ro2_a SCALED ####
+ro2_asc <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp, data = nenescale),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nenescale, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ winAO + MEAN_temp, data = nenescale))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2_asc, nenescale, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+#NO significant missing paths
+sem.coefs(ro2_asc, nenescale)
+#sem.plot(ro2_asc, nenescale, show.nonsig = T)
+sem.model.fits(ro2_asc) #calcul des R2
