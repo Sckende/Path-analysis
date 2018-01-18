@@ -302,7 +302,7 @@ nini$SN[nini$ISSUE == 2 |nini$ISSUE == 3 ]<-0
 
 
 #write.csv(nini,"Path analysis_data 3.txt")
-write.csv(nini,"Path analysis_data 3bis.txt") #idem que fichier Path analysis_data 3 mais avec variable proportion de taniere en reproduction en plus
+write.csv(nini,"Path analysis_data 3bis.txt") #idem que fichier Path analysis_data 3 mais avec variable proportion de taniere en reproduction en plus et les variable sumAO, AOnidif
 #write.csv(nini,"Path analysis_AOnidif.txt")
 
 ##### EXTRA #####
