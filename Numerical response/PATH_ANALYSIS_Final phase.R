@@ -119,7 +119,28 @@ sem.fit(ro1, mC2, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
 #NO significant missing paths
 sem.coefs(ro1, mC2)
 sem.plot(ro1, mC2, show.nonsig = T)
-##### Modele valide mais refaire les etapes ulterieures ####
+
+#Standardisation des données
+nene<-mC2[,c(16, 19, 20, 12, 4, 26)]
+nenescale<-scale(nene[,1:5])
+nenescale<-cbind(mC2[,c(1, 26)], as.data.frame(nenescale))
+names(nenescale)[c(1,2)] <- c("AN", "SN")
+head(nenescale)
+
+##### Modèle ro1 SCALE#####
+#Modele de piste
+ro1sc <- list(
+  lm(prop_fox_dens ~ lmg_C1_C2 + winAO + cumul_prec + MEAN_temp, data = nenescale),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nenescale, family = binomial(link = "logit")),
+  lm(lmg_C1_C2 ~ winAO + MEAN_temp + cumul_prec, data = nenescale))
+# Get goodness-of-fit and AIC
+sem.fit(ro1sc, nenescale, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro1sc, nenescale)
+#sem.plot(ro1sc, nenescale, show.nonsig = T)
+sem.model.fits(ro1sc) #calcul des R2
+
 
 #### Même modele que pcdt en remplacant lmg_C1_C2 par lmg_C1 - ro2*** #####
 #Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
@@ -157,13 +178,15 @@ sem.plot(ro1, mC2, show.nonsig = T)
 
 #### Exploration du modele ro2 avec le jeu de donnees mC1 ####
 #Modele de piste
-ro2 <- list(
+ro2a <- list(
   lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp, data = mC1),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
   lm(lmg_C1 ~ winAO + MEAN_temp, data = mC1))
 # Get goodness-of-fit and AIC
-sem.fit(ro2, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+sem.fit(ro2a, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
 
 #NO significant missing paths
-sem.coefs(ro2, mC1)
-sem.plot(ro2, mC1, show.nonsig = T)
+sem.coefs(ro2a, mC1)
+sem.plot(ro2a, mC1, show.nonsig = T)
+
+####### Possibilite de couper les n pour utiliser le meme jeu de donnees pour les trois modeles possibles (ro1, ro2, ro2a) et ainsi pouvoir les comparer entre eux. Mais attention , la comparaison peut se faire a plusieurs niveuax : entre le nombre de pistes engagees dans les modeles ou entre les variables utilisees dans les modeles
