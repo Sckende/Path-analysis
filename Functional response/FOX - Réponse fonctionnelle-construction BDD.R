@@ -18,7 +18,7 @@ TAB <- NULL
 TAB1 <- NULL
 
 for (j in unique(rf$ID)){
-  for (i in unique(rf$Date[rf$ID == j])) {#pour diminuer le risque de perdre une 2 durées d'observation identiques pour un même individu
+  for (i in unique(rf$Date[rf$ID == j])) {#pour diminuer le risque de perdre une durées d'observation identiques pour un même individu
   id <- j
   date <- i
  obs<-sum(unique(rf$Obs_lenght[rf$ID==j & rf$Date == i]))
@@ -325,7 +325,7 @@ plot(fox_fonc$year, fox_fonc$atq_rate)
 #outlier
 fox_fonc[fox_fonc$atq_rate>=0.04,]
 
-#garder observation supérieure et égale à 3 minutes
+#garder observation supérieure et égale à 3 minutes (voir papier Careau)
 ff2 <- fox_fonc[fox_fonc$tot_obs>=180,]
 boxplot(ff2$atq_rate)
 plot(ff2$year, ff2$atq_rate)
