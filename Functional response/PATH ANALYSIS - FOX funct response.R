@@ -3,12 +3,12 @@
 rm(list = ls()) #clean R memory
 
 setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
-
-# COMPARER F ET FAN AVANT DE FAIRE N'IMPORTE QUOI D'AUTRE !!!!!!!!!!
-
-fan<-read.table("FOX-functional response.txt", h=T, dec=".", sep = ",")
-f<-read.table("FOX-functional response V2.txt", h=T, dec=".", sep = ",")
+#fan<-read.table("FOX-functional response.txt", h=T, dec=".", sep = ",")
+fan<-read.table("FOX-functional response V2.txt", h=T, dec=".", sep = ",") #Utilisation du fichier version 2 car MAJ avec de nouvelles variables. Necessite de regler le probleme de creation de variable de prop_fox_dens time lag + 1 annee
 summary(fan)
+nane <- na.omit(fan)
+summary(nane)
+dim(nane)
 
 #Package nécessaires
 require(nlme)
@@ -16,9 +16,7 @@ require(lme4)
 require(piecewiseSEM)
 require(ggm)
 
-fan<-na.omit(fan)
-summary(fan)
-dim(fan)
+
 
 plot(fan$year,fan$atq_rate, ylab = "Attack rate (attack nb/second)", xlab = "year")
 plot(fan$winAO,fan$atq_rate, ylab = "Attack rate (attack nb/second)", xlab = "winter AO index")
@@ -33,11 +31,79 @@ plot(fan$nest_succ,fan$atq_rate, ylab = "Attack rate (attack nb/second)", xlab =
 #### Modèle 1 ####
 names(fan)
 M1<-list(
-  lme(atq_rate~lmg_abun, data = fan, random = ~1|year),
-  lm(nest_succ~atq_rate+mean_temp+cumul_prec, data=fan),
+  lme(atq_rate~lmg_C1, data = fan, random = ~1|year),
+  lm(nest_succ~atq_rate+mean_temp+cumul_prec, data = fan),
   lme(mean_temp~sprAO, data = fan, random = ~1|year),
   lme(cumul_prec~sprAO, data = fan, random = ~1|year))
 
 # Get goodness-of-fit and AIC
 sem.fit(M1, fan, conditional = T)
 # MISSING PATHS
+#important probleme de missing path between lmg and NS, ce quelque soit l'indice de lemming utilise (C1, C2 ou C1_2)
+
+#### Modèle 2 ####
+##   *** = modele plausible. Pas de piste manquante et probabilite de C Fisher > 0.05
+#Integration de la variable prim_prod en esperant que ce soit le maillon manquant entre lmg et oie
+M2<-list(
+  lme(atq_rate ~ lmg_C2 + cumul_prec, data = nane, random = ~1|year),
+  lm(nest_succ ~ atq_rate + prim_prod , data = nane),
+  lm(lmg_C2 ~ prim_prod, data = nane))
+
+# Get goodness-of-fit and AIC
+sem.fit(M2, nane, conditional = T)
+# Extract path coefficients
+sem.coefs(M2, nane)
+
+
+#### Modèle 2a ####
+M2a<-list(
+  lme(atq_rate ~ lmg_C2 + cumul_prec, data = nane, random = ~1|year),
+  lm(nest_succ ~ atq_rate + prim_prod + cumul_prec, data = nane),
+  lm(lmg_C2 ~ prim_prod, data = nane))
+
+# Get goodness-of-fit and AIC
+sem.fit(M2a, nane, conditional = T)
+# Extract path coefficients
+sem.coefs(M2a, nane)
+
+
+
+#### Modèle 2b *** ####
+M2b<-list(
+  lme(atq_rate ~ lmg_C2 + cumul_prec, data = nane, random = ~1|year),
+  lm(nest_succ ~ atq_rate + prim_prod + cumul_prec + lmg_C2, data = nane),
+  lm(lmg_C2 ~ prim_prod, data = nane))
+
+# Get goodness-of-fit and AIC
+sem.fit(M2b, nane, conditional = T)
+# Extract path coefficients
+sem.coefs(M2b, nane)
+
+
+#### Modèle 2c ####
+M2c<-list(
+  lme(atq_rate ~ lmg_C2 + cumul_prec + mean_temp, data = nane, random = ~1|year),
+  lm(nest_succ ~ atq_rate + cumul_prec + lmg_C2, data = nane))
+
+# Get goodness-of-fit and AIC
+sem.fit(M2c, nane, conditional = T)
+# Extract path coefficients
+sem.coefs(M2c, nane)
+
+
+#### Modèle 2d *** ####
+M2d<-list(
+  lme(atq_rate ~ lmg_C2 + cumul_prec, data = nane, random = ~1|year),
+  lm(nest_succ ~ atq_rate + cumul_prec + lmg_C2 + mean_temp, data = nane))
+
+# Get goodness-of-fit and AIC
+sem.fit(M2d, nane, conditional = T)
+# Extract path coefficients
+sem.coefs(M2d, nane)
+#####Essayer de comprendre pourquoi certains modele ne fonctionnent pas
+#Par exemple
+M<-list(
+lme(atq_rate ~ lmg_C2 + cumul_prec + mean_temp, data = nane, random = ~1|year),
+lm(nest_succ ~ atq_rate + cumul_prec + mean_temp, data = nane),
+lm(lmg_C2 ~ prim_prod, data = nane))
+sem.fit(M, nane, conditional = TRUE)
