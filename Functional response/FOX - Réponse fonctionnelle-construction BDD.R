@@ -340,15 +340,16 @@ fox<-read.csv("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",")
 lmg<-read.csv("LEM_96-2016.txt", sep = "\t", dec = ",")
 AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
 breed<-read.csv("GOOSE_breeding_informations.txt", sep = "\t", dec = ".")
+PP <- read.csv("VEG_Prod_prim_camp_2.txt", sep = "\t", dec = ",")
 
 #ajout des données de lmg, AO, démo oies, fox
 for(n in 1:nrow(ff2)){
   d<-ff2$year[n]
-  ff2$fox_dens[n]<-fox$natal_growth_dens[fox$year == d]
-  #fox_dens_timelag<-fox$natal_growth_dens[fox$year == d+ ou - 1]
+  ff2$prop_fox_dens[n]<-fox$prop_natal_dens[fox$year == d]
+  #ff2$prop_fox_dens_timelag[n]<-fox$prop_natal_dens[fox$year == d + 1]
   ff2$lmg_C2[n]<-lmg$LMG_C2[lmg$YEAR == d]
-  ff2$lmg_C12[i] <- lmg$LMG_C1_C2[lmg$YEAR == d]
-  ff2$lmg_C1[i] <- lmg$LMG_C1[lmg$YEAR == d]
+  ff2$lmg_C12[n] <- lmg$LMG_C1_C2[lmg$YEAR == d]
+  ff2$lmg_C1[n] <- lmg$LMG_C1[lmg$YEAR == d]
 
   ff2$winAO[n]<-AO$winAO[AO$YEAR==d]
   ff2$sprAO[n]<-AO$sprAO[AO$YEAR==d]
@@ -419,11 +420,29 @@ for(n in 1:nrow(ff2)){
   d<-ff2$year[n]
   #mini_jour <- ff2$min_date[n]
   #maxi_jour <- ff2$max_date[n]
-  ff2$cumul_prec[n] <- sum(prec$rain[prec$day >= ff2$min_date[n] & prec$day <= ff2$max_date[n] & prec$year == d], na.rm=T)
+  ff2$cumul_prec[n] <- sum(prec$RAIN[prec$JJ >= ff2$min_date[n] & prec$JJ <= ff2$max_date[n] & prec$YEAR == d], na.rm=T)
 }
 summary(ff2)
 
 plot(ff2$cumul_prec,ff2$atq_rate)
 summary(ff2)
 
+#Rajout des variables de productivite primaire et de time lag prop_fox
+#creation dataframe pour prop_fox_dens_lag (decalage d'une annee par rapport à l'abondance de lmg)
+foxylag <- data.frame("year" = rep(NA, time = length(fox$year)), "prop_repro" = rep(NA, time = length(fox$year)))
+for (k in 1:nrow(fox)){
+  foxylag$year[k] <- fox$year[k]
+  foxylag$prop_repro[k] <- fox$prop_natal_dens[k + 1]
+}
+View(foxylag)
+ff2$fox_lag <- foxylag$prop_repro[match(ff2$year, foxylag$year)]
+ff2$prim_prod <- PP$PROD_INDICE_C2[match(ff2$year, PP$YEAR)]
+
 #write.csv(ff2, "FOX-functional response V2.txt")
+
+
+#### BROUILLON 
+
+dep <- ff2[,c(1, 7, 8)]
+dep$PP <- PP$PROD_INDICE_C2[match(dep$year, PP$YEAR)]
+View(dep)
