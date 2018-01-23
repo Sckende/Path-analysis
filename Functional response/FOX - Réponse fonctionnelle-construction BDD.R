@@ -438,6 +438,12 @@ View(foxylag)
 ff2$fox_lag <- foxylag$prop_repro[match(ff2$year, foxylag$year)]
 ff2$prim_prod <- PP$PROD_INDICE_C2[match(ff2$year, PP$YEAR)]
 
+#Categories pour abondance de lemming - peak, crash and intermediate
+ff2$lmg_year <- ff2$year
+ff2$lmg_year[ff2$lmg_year == 1999] <- "crash"
+ff2$lmg_year[ff2$lmg_year == 1996 | ff2$lmg_year == 2004] <- "peak"
+ff2$lmg_year[ff2$lmg_year == 2005 | ff2$lmg_year == 1997 | ff2$lmg_year == 1998 | ff2$lmg_year == 2015] <- "intermed"
+
 #write.csv(ff2, "FOX-functional response V2.txt")
 
 
