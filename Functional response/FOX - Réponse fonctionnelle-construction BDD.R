@@ -439,10 +439,59 @@ ff2$fox_lag <- foxylag$prop_repro[match(ff2$year, foxylag$year)]
 ff2$prim_prod <- PP$PROD_INDICE_C2[match(ff2$year, PP$YEAR)]
 
 #Categories pour abondance de lemming - peak, crash and intermediate
-ff2$lmg_year <- ff2$year
-ff2$lmg_year[ff2$lmg_year == 1999] <- "crash"
-ff2$lmg_year[ff2$lmg_year == 1996 | ff2$lmg_year == 2004] <- "peak"
-ff2$lmg_year[ff2$lmg_year == 2005 | ff2$lmg_year == 1997 | ff2$lmg_year == 1998 | ff2$lmg_year == 2015] <- "intermed"
+#Indice camp 1
+plot(lmg$YEAR, lmg$LMG_C1, type="l")
+
+l1<-c(diff(lmg$LMG_C1,lag=1),NA)
+l2<-c(NA,rev(diff(rev(lmg$LMG_C1),lag=1)))
+
+lmg$pmax<-l1<0 & l2<0
+points(lmg$YEAR,lmg$LMG_C1,col=ifelse(lmg$pmax,"red",NA),pch=16)
+
+lmg$pmin<-l1>0 & l2>0
+points(lmg$YEAR,lmg$LMG_C1,col=ifelse(lmg$pmin,"blue",NA),pch=16)
+
+lmg$dyn_C1[lmg$pmax == TRUE] <- "peak"
+lmg$dyn_C1[lmg$pmin == TRUE] <- "crash"
+lmg$dyn_C1[lmg$pmax == FALSE & lmg$pmin == FALSE] <- "intermed"
+
+ff2$lmg_year_C1 <- lmg$dyn_C1[match(ff2$year, lmg$YEAR)]
+
+#Indice camp 2
+plot(lmg$YEAR, lmg$LMG_C2, type="l")
+
+l1<-c(diff(lmg$LMG_C2,lag=1),NA)
+l2<-c(NA,rev(diff(rev(lmg$LMG_C2),lag=1)))
+
+lmg$pmax<-l1<0 & l2<0
+points(lmg$YEAR,lmg$LMG_C2,col=ifelse(lmg$pmax,"red",NA),pch=16)
+
+lmg$pmin<-l1>0 & l2>0
+points(lmg$YEAR,lmg$LMG_C2,col=ifelse(lmg$pmin,"blue",NA),pch=16)
+
+lmg$dyn_C2[lmg$pmax == TRUE] <- "peak"
+lmg$dyn_C2[lmg$pmin == TRUE] <- "crash"
+lmg$dyn_C2[lmg$pmax == FALSE & lmg$pmin == FALSE] <- "intermed"
+
+ff2$lmg_year_C2 <- lmg$dyn_C2[match(ff2$year, lmg$YEAR)]
+
+#Indice camp 1-2
+plot(lmg$YEAR, lmg$LMG_C1_C2, type="l")
+
+l1<-c(diff(lmg$LMG_C1_C2,lag=1),NA)
+l2<-c(NA,rev(diff(rev(lmg$LMG_C1_C2),lag=1)))
+
+lmg$pmax<-l1<0 & l2<0
+points(lmg$YEAR,lmg$LMG_C1_C2,col=ifelse(lmg$pmax,"red",NA),pch=16)
+
+lmg$pmin<-l1>0 & l2>0
+points(lmg$YEAR,lmg$LMG_C1_C2,col=ifelse(lmg$pmin,"blue",NA),pch=16)
+
+lmg$dyn_C1_C2[lmg$pmax == TRUE] <- "peak"
+lmg$dyn_C1_C2[lmg$pmin == TRUE] <- "crash"
+lmg$dyn_C1_C2[lmg$pmax == FALSE & lmg$pmin == FALSE] <- "intermed"
+
+ff2$lmg_year_C1_C2 <- lmg$dyn_C1_C2[match(ff2$year, lmg$YEAR)]
 
 #write.csv(ff2, "FOX-functional response V2.txt")
 
@@ -452,3 +501,45 @@ ff2$lmg_year[ff2$lmg_year == 2005 | ff2$lmg_year == 1997 | ff2$lmg_year == 1998 
 dep <- ff2[,c(1, 7, 8)]
 dep$PP <- PP$PROD_INDICE_C2[match(dep$year, PP$YEAR)]
 View(dep)
+
+#min et max de abondance de lemmings
+set.seed(123) # permet de générer les même données aléatoires dans le but d'un exemple reproductible
+
+n<-20
+x<-rnorm(n,0,1)
+
+plot(1:n,x,type="l")
+
+l1<-c(diff(x,lag=1),NA)
+
+l2<-c(NA,rev(diff(rev(x),lag=1)))
+
+pmax<-l1<0 & l2<0
+
+points(1:n,x,col=ifelse(pmax,"red",NA),pch=16)
+
+pmin<-l1>0 & l2>0
+
+points(1:n,x,col=ifelse(pmin,"blue",NA),pch=16)
+
+# Avec donnees lemmings
+
+plot(lmg$YEAR, lmg$LMG_C1, type="l")
+
+l1<-c(diff(lmg$LMG_C1,lag=1),NA)
+
+l2<-c(NA,rev(diff(rev(lmg$LMG_C1),lag=1)))
+
+lmg$pmax<-l1<0 & l2<0
+
+points(lmg$YEAR,lmg$LMG_C1,col=ifelse(lmg$pmax,"red",NA),pch=16)
+
+lmg$pmin<-l1>0 & l2>0
+
+points(lmg$YEAR,lmg$LMG_C1,col=ifelse(lmg$pmin,"blue",NA),pch=16)
+
+lmg$dyn_C1[lmg$pmax == TRUE] <- "peak"
+lmg$dyn_C1[lmg$pmin == TRUE] <- "crash"
+lmg$dyn_C1[lmg$pmax == FALSE & lmg$pmin == FALSE] <- "intermed"
+
+
