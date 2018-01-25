@@ -10,7 +10,7 @@
 
 #####-------------------With SEM data-------------------#####
 setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
-
+rm( list = ls ())
 #####Succès de nidification#####
 nest<-read.csv("GOOSE_nest monitoring.csv")
 summary(nest)
@@ -257,7 +257,7 @@ summary(nini)
 
 ####Ajout des autres variables biologiques et météorologiques####
 fox<-read.csv("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",")
-lmg<-read.csv("LEM_96-2016.txt", sep = "\t", dec = ",")
+lmg<-read.csv("LEM_1993-2017.txt", sep = "\t", dec = ",")
 prod<-read.csv("VEG_Prod_prim_camp_2.txt", sep = "\t", dec = ",")
 AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
 breed<-read.csv("GOOSE_breeding_informations.txt", sep = "\t", dec = ".")
