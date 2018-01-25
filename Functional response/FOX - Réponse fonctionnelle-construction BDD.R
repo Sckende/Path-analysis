@@ -337,7 +337,7 @@ dim(ff2)
 #changement de répertoire
 setwd("/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 fox<-read.csv("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",")
-lmg<-read.csv("LEM_96-2016.txt", sep = "\t", dec = ",")
+lmg<-read.csv("LEM_1993-2017.txt", sep = "\t", dec = ",")
 AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
 breed<-read.csv("GOOSE_breeding_informations.txt", sep = "\t", dec = ".")
 PP <- read.csv("VEG_Prod_prim_camp_2.txt", sep = "\t", dec = ",")
@@ -439,7 +439,7 @@ for (k in 1:nrow(fox)){
   foxylag$year[k] <- fox$year[k]
   foxylag$prop_repro[k] <- fox$prop_natal_dens[k + 1]
 }
-View(foxylag)
+#View(foxylag)
 ff2$fox_lag <- foxylag$prop_repro[match(ff2$year, foxylag$year)]
 ff2$prim_prod <- PP$PROD_INDICE_C2[match(ff2$year, PP$YEAR)]
 
