@@ -368,6 +368,11 @@ for(n in 1:nrow(ff2)){
 }
 summary(ff2)
 
+#ajout des types d'annees de lemmings (peak, crash or intermediaire)
+ff2$lmg_year <- lmg$LMG_YEAR[match(ff2$year, lmg$YEAR)]
+#questionner quelles annees sont pic ou crash ou inter
+unique(ff2$year[which(ff2$lmg_year == "crash")]) # "peak" / "inter"
+
 ####ajout des données de températures moyennes et maximales et de précipitations cumulées
 #####Températures#####
 #chargement des données de températures
@@ -437,61 +442,6 @@ for (k in 1:nrow(fox)){
 View(foxylag)
 ff2$fox_lag <- foxylag$prop_repro[match(ff2$year, foxylag$year)]
 ff2$prim_prod <- PP$PROD_INDICE_C2[match(ff2$year, PP$YEAR)]
-
-#Categories pour abondance de lemming - peak, crash and intermediate
-#Indice camp 1
-plot(lmg$YEAR, lmg$LMG_C1, type="l")
-
-l1<-c(diff(lmg$LMG_C1,lag=1),NA)
-l2<-c(NA,rev(diff(rev(lmg$LMG_C1),lag=1)))
-
-lmg$pmax<-l1<0 & l2<0
-points(lmg$YEAR,lmg$LMG_C1,col=ifelse(lmg$pmax,"red",NA),pch=16)
-
-lmg$pmin<-l1>0 & l2>0
-points(lmg$YEAR,lmg$LMG_C1,col=ifelse(lmg$pmin,"blue",NA),pch=16)
-
-lmg$dyn_C1[lmg$pmax == TRUE] <- "peak"
-lmg$dyn_C1[lmg$pmin == TRUE] <- "crash"
-lmg$dyn_C1[lmg$pmax == FALSE & lmg$pmin == FALSE] <- "intermed"
-
-ff2$lmg_year_C1 <- lmg$dyn_C1[match(ff2$year, lmg$YEAR)]
-
-#Indice camp 2
-plot(lmg$YEAR, lmg$LMG_C2, type="l")
-
-l1<-c(diff(lmg$LMG_C2,lag=1),NA)
-l2<-c(NA,rev(diff(rev(lmg$LMG_C2),lag=1)))
-
-lmg$pmax<-l1<0 & l2<0
-points(lmg$YEAR,lmg$LMG_C2,col=ifelse(lmg$pmax,"red",NA),pch=16)
-
-lmg$pmin<-l1>0 & l2>0
-points(lmg$YEAR,lmg$LMG_C2,col=ifelse(lmg$pmin,"blue",NA),pch=16)
-
-lmg$dyn_C2[lmg$pmax == TRUE] <- "peak"
-lmg$dyn_C2[lmg$pmin == TRUE] <- "crash"
-lmg$dyn_C2[lmg$pmax == FALSE & lmg$pmin == FALSE] <- "intermed"
-
-ff2$lmg_year_C2 <- lmg$dyn_C2[match(ff2$year, lmg$YEAR)]
-
-#Indice camp 1-2
-plot(lmg$YEAR, lmg$LMG_C1_C2, type="l")
-
-l1<-c(diff(lmg$LMG_C1_C2,lag=1),NA)
-l2<-c(NA,rev(diff(rev(lmg$LMG_C1_C2),lag=1)))
-
-lmg$pmax<-l1<0 & l2<0
-points(lmg$YEAR,lmg$LMG_C1_C2,col=ifelse(lmg$pmax,"red",NA),pch=16)
-
-lmg$pmin<-l1>0 & l2>0
-points(lmg$YEAR,lmg$LMG_C1_C2,col=ifelse(lmg$pmin,"blue",NA),pch=16)
-
-lmg$dyn_C1_C2[lmg$pmax == TRUE] <- "peak"
-lmg$dyn_C1_C2[lmg$pmin == TRUE] <- "crash"
-lmg$dyn_C1_C2[lmg$pmax == FALSE & lmg$pmin == FALSE] <- "intermed"
-
-ff2$lmg_year_C1_C2 <- lmg$dyn_C1_C2[match(ff2$year, lmg$YEAR)]
 
 #write.csv(ff2, "FOX-functional response V2.txt")
 
