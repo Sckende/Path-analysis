@@ -22,9 +22,10 @@ rm(list = ls()) #clean R memory
 f <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
 
 # Premiere etape : retrait des variables inutiles pour les analyses de piste et qui pourraient engendrer des NAs (et donc de la perte de donnees) inutilement
-# Retrait de : X, NO, HABITAT, INI, INICOD, ECLO, EXPO, PRED, UTM.E, UTM.N, NB_VIS, NEST.TYPE, FIN, SD_TEMP, SD_prec, prim_prod, nest_density, clutch_size, egg_abun, ratio_JUVad, brood_size, nest_succ
+# Retrait de : X, NO, HABITAT, INI, INICOD, ECLO, EXPO, PRED, UTM.E, UTM.N, NB_VIS, NEST.TYPE, FIN, SD_TEMP, SD_prec, nest_density, clutch_size, egg_abun, ratio_JUVad, brood_size, nest_succ
 
 # BDD a utiliser si analyses avec lmg_C2 ou lmg_C1_C2
+mC2_pp <- f[,-c(1, 3:8, 10:14, 16, 18, 25, 42:47 )] # si modeles avec utilisation de la variable prim_prod
 mC2 <- f[,-c(1, 3:8, 10:14, 16, 18, 25, 35, 42:47 )]
 mC2 <- na.omit(mC2)
 summary(mC2)
@@ -32,6 +33,7 @@ pairs(mC2)
 
 # BDD a utiliser si analyses avec lmg_C1
 mC1 <- f[,-c(1, 3:8, 10:14, 16, 18, 25, 30, 32, 34, 35, 42:47 )]
+mC1_pp <- f[,-c(1, 3:8, 10:14, 16, 18, 25, 30, 32, 34, 42:47 )] # si modeles avec utilisation de la variable prim_prod
 summary(mC1)
 
 
@@ -87,9 +89,9 @@ sem.plot(M3f6, mC2, show.nonsig = T)
 
 #Exploration visuelle des donnees
 X11()
-pairs(mC2[,c(16, 17, 20, 12, 4, 26)], upper.panel = panel.cor)
+pairs(mC2[,c(16, 17, 20, 12, 4, 26, 27)], upper.panel = panel.cor)
 
-#Modele de piste
+#### Modele ro *** ####
 ro <- list(
   lm(prop_fox_dens ~ lmg_C2 + winAO + cumul_prec + MEAN_temp, data = mC2),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC2, family = binomial(link = "logit")),
@@ -97,16 +99,16 @@ ro <- list(
 # Get goodness-of-fit and AIC
 sem.fit(ro, mC2, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
 
-#Significant missing paths !!!!
-#sem.coefs(ro, mC2)
-#sem.plot(ro, mC2, show.nonsig = T)
-##### A RETRAVAILLER ####
+#NO Significant missing path !!!!
+sem.coefs(ro, mC2)
+sem.plot(ro, mC2, show.nonsig = T)
+
 
 #### Même modele que pcdt en remplacant lmg_C2 par lmg_C1_C2 - ro1*** #####
 
 #Exploration visuelle des donnees
 X11()
-pairs(mC2[,c(16, 19, 20, 12, 4, 26)], upper.panel = panel.cor)
+pairs(mC2[,c(16, 19, 20, 12, 4, 26, 27)], upper.panel = panel.cor)
 
 #Modele de piste
 ro1 <- list(
@@ -121,10 +123,9 @@ sem.coefs(ro1, mC2)
 sem.plot(ro1, mC2, show.nonsig = T)
 
 #Standardisation des données
-nene<-mC2[,c(16, 19, 20, 12, 4, 26)]
+nene<-mC2[,c(16, 19, 20, 12, 4, 26, 27)]
 nenescale<-scale(nene[,1:5])
-nenescale<-cbind(mC2[,c(1, 26)], as.data.frame(nenescale))
-names(nenescale)[c(1,2)] <- c("AN", "SN")
+nenescale<-cbind(mC2[,c(1, 26, 27)], as.data.frame(nenescale))
 head(nenescale)
 
 ##### Modèle ro1 SCALE#####
@@ -147,7 +148,7 @@ sem.model.fits(ro1sc) #calcul des R2
 
 #Exploration visuelle des donnees
 X11()
-pairs(mC1[,c(15, 16, 17, 12, 4, 23)], upper.panel = panel.cor)
+pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
 
 #Modele de piste
 ro2 <- list(
@@ -162,7 +163,80 @@ sem.coefs(ro2, mC1)
 sem.plot(ro2, mC1, show.nonsig = T)
 ##### Modele valide mais refaire les etapes ulterieures ####
 
-#### Exploration du modele ro1 avec le jeu de donnees mC2 ####
+#### Nouveau modele en remplacant lmg_C1 par lmg_year - ro3*** #####
+#Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
+
+#Exploration visuelle des donnees
+X11()
+pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
+
+#Modele de piste
+ro3 <- list(
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro3, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro3, mC1)
+sem.plot(ro3, mC1, show.nonsig = T)
+
+#### Meme modele que precedemment mais avec ajout de la variable prim_prod (BDD "mC1_pp") - ro4 ####
+#Exploration visuelle des donnees
+X11()
+mC1_pp <- na.omit(mC1_pp)
+pairs(mC1_pp[,c(15, 16, 17, 18, 12, 4, 24, 25)], upper.panel = panel.cor)
+#Modele de piste
+ro4 <- list(
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp, data = mC1_pp),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp +prim_prod + (1|AN), data = mC1_pp, family = binomial(link = "logit")),
+  lm(prim_prod ~ cumul_prec + MEAN_temp, data = mC1_pp))
+# Get goodness-of-fit and AIC
+sem.fit(ro4, mC1_pp, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro4, mC1_pp)
+sem.plot(ro4, mC1_pp, show.nonsig = T)
+
+#Pas de relation avec le SN mais lien fort avec prop_fox_dens ==> ABANDON
+
+#### Meme modele que precedemment mais avec ajout de la variable prim_prod (BDD "mC2_pp") - ro5 ####
+#Exploration visuelle des donnees
+X11()
+mC2_pp <- na.omit(mC2_pp)
+pairs(mC2_pp[,c(16, 17, 20, 12, 4, 27, 28)], upper.panel = panel.cor)
+#Modele de piste
+ro5 <- list(
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp, data = mC2_pp),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp +prim_prod + (1|AN), data = mC2_pp, family = binomial(link = "logit")),
+  lm(prim_prod ~ cumul_prec + MEAN_temp, data = mC2_pp))
+# Get goodness-of-fit and AIC
+sem.fit(ro5, mC2_pp, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro5, mC2_pp)
+sem.plot(ro5, mC2_pp, show.nonsig = T)
+#Pas de relation avec le SN mais lien fort avec prop_fox_dens ==> ABANDON
+
+#### Modele n'utilisant que les variables climatiques globales (AO) - ro7*** ####
+names(f)
+glo <- f[, c(2, 31, 33, 36:41, 48, 49)]
+pairs(glo, upper.panel = panel.cor)
+#Modele de piste
+ro7 <- list(
+  lm(prop_fox_dens ~ lmg_C1 + winAO + sumAO + sprAO, data = glo),
+  glmer(SN ~ prop_fox_dens + sumAO + sprAO + (1|AN), data = glo, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ sprAO + winAO + sumAO , data = glo)
+)
+
+# Get goodness-of-fit and AIC
+sem.fit(ro7, glo, conditional = T)
+sem.coefs(ro7, mC2_pp)
+
+#Tres interessant. Possibilité d'émettre trois modeles differents selon si ajout de liens entre SN et winAO/sprAO. AIC comparables. Relation forte entre le climat globale et la productivite des especes en Arctique toute l'annee
+
+##### BROUILLON #####
+#### Exploration du modele ro1 ####
 #Modele de piste
 ro1a <- list(
   lm(prop_fox_dens ~ lmg_C1_C2 + winAO + cumul_prec + MEAN_temp, data = mC2),
@@ -176,7 +250,7 @@ sem.fit(ro1a, mC2, conditional = T)
 sem.coefs(ro1a, mC2)
 sem.plot(ro1, mC2, show.nonsig = T)
 
-#### Exploration du modele ro2 avec le jeu de donnees mC1 ####
+#### Exploration du modele ro2 ####
 #Modele de piste
 ro2a <- list(
   lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp, data = mC1),
