@@ -296,13 +296,19 @@ for(n in m){
 nini<-cbind(nini,suite)
 summary(nini)
 
+#ajout des types d'annees de lemmings (peak, crash or intermediaire)
+nini$lmg_year <- lmg$LMG_YEAR[match(nini$AN, lmg$YEAR)]
+#questionner quelles annees sont pic ou crash ou inter
+unique(nini$AN[which(nini$lmg_year == "inter")]) # "peak" / "inter"
+
+
 ####Conversion des issues des nids en variable binomiale SN####
 nini$SN[nini$ISSUE == 1]<-1
 nini$SN[nini$ISSUE == 2 |nini$ISSUE == 3 ]<-0
 
 
 #write.csv(nini,"Path analysis_data 3.txt")
-write.csv(nini,"Path analysis_data 3bis.txt") #idem que fichier Path analysis_data 3 mais avec variable proportion de taniere en reproduction en plus et les variable sumAO, AOnidif
+write.csv(nini,"Path analysis_data 3bis.txt") #idem que fichier Path analysis_data 3 mais avec variable proportion de taniere en reproduction en plus et les variable sumAO, AOnidif, et type d'annee de lemming
 #write.csv(nini,"Path analysis_AOnidif.txt")
 
 ##### EXTRA #####
