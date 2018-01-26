@@ -181,7 +181,97 @@ sem.fit(ro3, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
 sem.coefs(ro3, mC1)
 sem.plot(ro3, mC1, show.nonsig = T)
 
-#### Meme modele que precedemment mais avec ajout de la variable prim_prod (BDD "mC1_pp") - ro4 ####
+#### Idem + winAO - ro3a*** #####
+#Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
+
+#Exploration visuelle des donnees
+X11()
+pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
+
+#Modele de piste
+ro3a <- list(
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro3a, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro3a, mC1)
+sem.plot(ro3a, mC1, show.nonsig = T)
+
+#### Idem + sprAO - ro3b*** #####
+#Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
+
+#Exploration visuelle des donnees
+X11()
+pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
+
+#Modele de piste
+ro3b <- list(
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sprAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro3b, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro3b, mC1)
+sem.plot(ro3b, mC1, show.nonsig = T)
+
+#### Idem ro3a + sumAO - ro3c*** #####
+#Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
+
+#Exploration visuelle des donnees
+X11()
+pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
+
+#Modele de piste
+ro3c <- list(
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro3c, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro3c, mC1)
+sem.plot(ro3c, mC1, show.nonsig = T)
+
+#### Idem + sprAO - ro3d*** #####
+#Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
+
+#Exploration visuelle des donnees
+X11()
+pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
+
+#Modele de piste
+ro3d <- list(
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro3d, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro3d, mC1)
+sem.plot(ro3d, mC1, show.nonsig = T)
+
+#### Idem + SN -- sumAO - ro3e*** #####
+#Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
+
+#Exploration visuelle des donnees
+X11()
+pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
+
+#Modele de piste
+ro3e <- list(
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + sumAO + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro3e, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro3e, mC1)
+sem.plot(ro3e, mC1, show.nonsig = T)
+
+#### Meme modele ro3 + prim_prod (BDD "mC1_pp") - ro4 ####
 #Exploration visuelle des donnees
 X11()
 mC1_pp <- na.omit(mC1_pp)
@@ -200,7 +290,7 @@ sem.plot(ro4, mC1_pp, show.nonsig = T)
 
 #Pas de relation avec le SN mais lien fort avec prop_fox_dens ==> ABANDON
 
-#### Meme modele que precedemment mais avec ajout de la variable prim_prod (BDD "mC2_pp") - ro5 ####
+#### Meme modele prim_prod (BDD "mC2_pp") - ro5 ####
 #Exploration visuelle des donnees
 X11()
 mC2_pp <- na.omit(mC2_pp)
@@ -231,9 +321,24 @@ ro7 <- list(
 
 # Get goodness-of-fit and AIC
 sem.fit(ro7, glo, conditional = T)
-sem.coefs(ro7, mC2_pp)
+sem.coefs(ro7, glo)
 
 #Tres interessant. Possibilité d'émettre trois modeles differents selon si ajout de liens entre SN et winAO/sprAO. AIC comparables. Relation forte entre le climat globale et la productivite des especes en Arctique toute l'annee
+
+#### Idem sans sprAO -- SN - ro7a*** ####
+names(f)
+glo <- f[, c(2, 31, 33, 36:41, 48, 49)]
+pairs(glo, upper.panel = panel.cor)
+#Modele de piste
+ro7a <- list(
+  lm(prop_fox_dens ~ lmg_C1 + winAO + sumAO + sprAO, data = glo),
+  glmer(SN ~ prop_fox_dens + sumAO + (1|AN), data = glo, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ sprAO + winAO + sumAO , data = glo)
+)
+
+# Get goodness-of-fit and AIC
+sem.fit(ro7a, glo, conditional = T)
+sem.coefs(ro7a, glo)
 
 ##### BROUILLON #####
 #### Exploration du modele ro1 ####
