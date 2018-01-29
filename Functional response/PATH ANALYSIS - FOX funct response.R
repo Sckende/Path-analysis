@@ -12,8 +12,8 @@ fan <- fox[, -31]
 summary(fan)
 
 fan_C2 <- na.omit(fan) # A utiliser pour les analyses avec lmg_C2
-summary(nane)
-dim(nane)
+summary(fan)
+dim(fan)
 
 #Package nécessaires
 require(nlme)
@@ -48,8 +48,8 @@ plot(fan$sprAO,fan$atq_rate, ylab = "Attack rate (attack nb/second)", xlab = "sp
 plot(fan$lmg_C1,fan$atq_rate, ylab = "Attack rate (attack nb/second)", xlab = "index of lemming abundance C1")
 
 # Graphic functional response style
-plot(fan$lmg_C2, fan$atq_rate, ylab = "Attack rate (attack nb/second)", xlab = "index of lemming abundance C2")
-ajout <- with(fan, smooth.spline(lmg_C2,atq_rate))
+plot(fan_C2$lmg_C2, fan_C2$atq_rate, ylab = "Attack rate (attack nb/second)", xlab = "index of lemming abundance C2")
+ajout <- with(fan_C2, smooth.spline(lmg_C2,atq_rate))
 ajout
 lines(ajout, col = "orange")
 
@@ -92,8 +92,81 @@ M1<-list(
 
 # Get goodness-of-fit and AIC
 sem.fit(M1, fan, conditional = T)
+# Extract path coefficients
+sem.coefs(M1, fan)
+
 # MISSING PATHS
 #important probleme de missing path between lmg and NS, ce quelque soit l'indice de lemming utilise (C1, C2 ou C1_2)
+
+#### Idem precedent + nest_succ -- lmg_C1 - M1a ####
+#Exploration visuelle des donnees
+names(fan)
+X11()
+pairs(fan[,c(8, 12, 24, 27, 29, 14)], upper.panel = panel.cor)
+
+M1a <-list(
+  lme(atq_rate ~ lmg_C1, data = fan, random = ~1|year),
+  lm(nest_succ ~ atq_rate + mean_temp + cumul_prec + lmg_C1, data = fan),
+  lme(mean_temp ~ sprAO, data = fan, random = ~1|year),
+  lme(cumul_prec ~ sprAO, data = fan, random = ~1|year))
+
+# Get goodness-of-fit and AIC
+sem.fit(M1a, fan, conditional = T)
+# Extract path coefficients
+sem.coefs(M1a, fan)
+
+#### Idem precedent + nest_succ -- sprAO - M1b ####
+#Exploration visuelle des donnees
+names(fan)
+X11()
+pairs(fan[,c(8, 12, 24, 27, 29, 14)], upper.panel = panel.cor)
+
+M1b <-list(
+  lme(atq_rate ~ lmg_C1, data = fan, random = ~1|year),
+  lm(nest_succ ~ atq_rate + mean_temp + cumul_prec + lmg_C1 + sprAO, data = fan),
+  lme(mean_temp ~ sprAO, data = fan, random = ~1|year),
+  lme(cumul_prec ~ sprAO, data = fan, random = ~1|year))
+
+# Get goodness-of-fit and AIC
+sem.fit(M1b, fan, conditional = T)
+# Extract path coefficients
+sem.coefs(M1b, fan)
+
+#### Idem precedent + lmg -- prec et temp - M1c ####
+#Exploration visuelle des donnees
+names(fan)
+X11()
+pairs(fan[,c(8, 12, 24, 27, 29, 14)], upper.panel = panel.cor)
+
+M1c <-list(
+  lme(atq_rate ~ lmg_C1, data = fan, random = ~1|year),
+  lm(nest_succ ~ atq_rate + mean_temp + cumul_prec + lmg_C1 + sprAO, data = fan),
+  lme(mean_temp ~ sprAO, data = fan, random = ~1|year),
+  lme(cumul_prec ~ sprAO, data = fan, random = ~1|year),
+  lm(lmg_C1 ~ mean_temp + cumul_prec, data = fan))
+
+# Get goodness-of-fit and AIC
+sem.fit(M1c, fan, conditional = T)
+# Extract path coefficients
+sem.coefs(M1c, fan)
+
+#### Idem sans atq_rate -- lmg_C1 - M1d ####
+#Exploration visuelle des donnees
+names(fan)
+X11()
+pairs(fan[,c(8, 12, 24, 27, 29, 14)], upper.panel = panel.cor)
+
+M1d <-list(
+  #lme(atq_rate ~ lmg_C1, data = fan, random = ~1|year),
+  lm(nest_succ ~ atq_rate + mean_temp + cumul_prec + lmg_C1 + sprAO, data = fan),
+  lme(mean_temp ~ sprAO, data = fan, random = ~1|year),
+  lme(cumul_prec ~ sprAO, data = fan, random = ~1|year),
+  lm(lmg_C1 ~ mean_temp + cumul_prec, data = fan))
+
+# Get goodness-of-fit and AIC
+sem.fit(M1d, fan, conditional = T)
+# Extract path coefficients
+sem.coefs(M1d, fan)
 
 #### Modèle 2 - avec lmg_C2 et prim_prod ####
 ##   *** = modele plausible. Pas de piste manquante et probabilite de C Fisher > 0.05
@@ -169,6 +242,15 @@ M4a <- list(
   lm(nest_succ ~ atq_rate + mean_temp + cumul_prec + lmg_year, data = fan))
 # Get goodness-of-fit and AIC
 sem.fit(M4a, fan, conditional = T)
+# Extract path coefficients
+sem.coefs(M4a, fan)
+
+#### Modele 4 b*** ####
+M4b <- list( 
+
+  lm(nest_succ ~ atq_rate + mean_temp + cumul_prec + lmg_year, data = fan))
+# Get goodness-of-fit and AIC
+sem.fit(M4b, fan, conditional = T)
 # Extract path coefficients
 sem.coefs(M4a, fan)
 
