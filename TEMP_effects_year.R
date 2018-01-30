@@ -114,7 +114,7 @@ pairs(p[, c(2 : 7)], upper.panel = panel.cor)
 dev.copy2pdf()
 dev.off()
 
-#temp vs ao
+#temp vs AO
 x11()
 par(mfrow = c(2, 3))
 plot(p$nidTEMP, p$winAO, xlab = "Nidification temperature", ylab = "Winter AO")
@@ -134,7 +134,7 @@ lines(smooth.spline(p$nidTEMP, p$lsumAO, df = 2), col = "orange")
 
 plot(p$nidTEMP, p$nidAO, xlab = "Nidification temperature", ylab = "Nidification AO")
 lines(smooth.spline(p$nidTEMP, p$nidAO, df = 2), col = "orange")
-
+dev.copy2pdf()
 dev.off()
 #### Brouillon ####
 x11()
