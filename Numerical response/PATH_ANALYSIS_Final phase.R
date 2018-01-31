@@ -1,5 +1,4 @@
 ########## Path analysis - Numerical response ###############
-rm(list = ls()) #clean R memory
 setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 
 
@@ -61,7 +60,6 @@ panel.cor <- function(x, y, digits = 2, cex.cor, ...)
   if(p<0.01) txt2 <- paste("p= ", "<0.01", sep = "")
   text(0.5, 0.4, txt2)
 }
-
 
 #### Path analysis with Path analysis_data 3 #####
 #i.e. lmg_C2 et fox_dens avec le jeu de donnees mC2
@@ -458,3 +456,4 @@ sem.fit(ro2_asc, nenescale, conditional = T, corr.errors = "MEAN_temp ~~ cumul_p
 sem.coefs(ro2_asc, nenescale)
 #sem.plot(ro2_asc, nenescale, show.nonsig = T)
 sem.model.fits(ro2_asc) #calcul des R2
+

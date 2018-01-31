@@ -134,8 +134,17 @@ lines(smooth.spline(p$nidTEMP, p$lsumAO, df = 2), col = "orange")
 
 plot(p$nidTEMP, p$nidAO, xlab = "Nidification temperature", ylab = "Nidification AO")
 lines(smooth.spline(p$nidTEMP, p$nidAO, df = 2), col = "orange")
-dev.copy2pdf()
+#dev.copy2pdf()
 dev.off()
+
+### ATTENTION LA PERIODE DE 2016 PAS COMPLETE POUR LE CALCUL DES TEMP
+x11()
+plot(p$year, p$nidTEMP, xlab = "Year", ylab = "Mean summer temperatures")
+lines(smooth.spline(p$year, p$nidTEMP, df = 4), col = "purple")
+lines(smooth.spline(p$year, p$nidTEMP, df = 8), col = "blue")
+#dev.copy2pdf()
+dev.off()
+
 #### Brouillon ####
 x11()
 plot(t$jj[t$jj >= g$lay_date_jj[g$YEAR == 2000] & t$jj <= g$hatch_date_jj[g$YEAR == 2000] & t$YEAR == 2000], t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == 2000] & t$jj <= g$hatch_date_jj[g$YEAR == 2000] & t$YEAR == 2000])
