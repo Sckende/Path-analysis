@@ -1,6 +1,6 @@
 rm(list = ls())
 
-setwd("/Users/nicolas/Documents/Claire/Doc doc doc !/R analysis/Data")
+setwd("/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
  
 hum <- read.table("HUMI_BYLCAMP.txt", h = T, sep = "\t", dec = ".")
 temp <- read.table("TEMP_BYLCAMP.txt", h = T, sep = "\t", dec = ".")
@@ -34,7 +34,7 @@ temp$JJ <- temp$date$yday + 1 # Add 1 because $yday starts at 0
 
 # To check validity of JJ data
 j <- list(hum, temp)
-# Process min (= 0) and max (= 366) of JJ for bissextil years (e.g. 2008, 2012, 2016)
+# Process min (= 0) and max (= 366) of JJ for bissextil years (e.g. 1996, 2000, 2004, 2008, 2012, 2016)
 for (r in 1:2) {
   for (i in c(2008, 2012, 2016)) {
     print (max(j[[r]]$JJ[j[[r]]$YEAR == i]))
@@ -94,3 +94,18 @@ x11()
 plot(p$JJ,p$TEMP)
 rrr <- predict(loess(p$TEMP~p$JJ))
 lines(p$JJ, rrr, col = "red")
+#### Interannual trend of summer precipitations ####
+
+head(prec)
+pre <- na.omit(prec)
+b <- cbind(1995:2016, as.data.frame(tapply(pre$RAIN, pre$YEAR, sum)))
+names(b) <- c("year", "cumul_prec")
+dim(b)
+summary(b)
+
+x11()
+plot(b$year, b$cumul_prec, xlab = "year", ylab = "Cumulative precipitation during summer")
+lines(smooth.spline(b$year, b$cumul_prec, df = 4), col = "green")
+lines(smooth.spline(b$year, b$cumul_prec, df = 2), col = "blue")
+dev.copy2pdf()
+dev.off()
