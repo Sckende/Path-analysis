@@ -158,8 +158,27 @@ sem.fit(ro2, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
 
 #NO significant missing paths
 sem.coefs(ro2, mC1)
-sem.plot(ro2, mC1, show.nonsig = T)
-##### Modele valide mais refaire les etapes ulterieures ####
+#sem.plot(ro2, mC1, show.nonsig = T)
+
+##### Modèle ro2 SCALE#####
+#Standardisation des données
+nene<-mC1[,c(4, 12, 15 : 17)]
+nenescale<-scale(nene[,1:5])
+nenescale<-cbind(mC1[,c(1, 24)], as.data.frame(nenescale))
+head(nenescale)
+
+#Modele de piste
+ro2sc <- list(
+  lm(prop_fox_dens ~ lmg_C1 + winAO + cumul_prec + MEAN_temp, data = nenescale),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nenescale, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ winAO + MEAN_temp + cumul_prec, data = nenescale))
+# Get goodness-of-fit and AIC
+sem.fit(ro2sc, nenescale, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(ro2sc, nenescale)
+#sem.plot(ro1sc, nenescale, show.nonsig = T)
+sem.model.fits(ro2sc) #calcul des R2
 
 #### Nouveau modele en remplacant lmg_C1 par lmg_year - ro3*** #####
 #Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
