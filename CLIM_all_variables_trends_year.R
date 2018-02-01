@@ -7,6 +7,8 @@ g <- read.table("GOOSE_breeding_informations.txt", sep = "\t", dec = ",", h = T)
 head(g)
 t <- read.table("TEMP_Tair moy 1989-2016 BYLCAMP.txt", sep = "\t", dec = ",", h = T)
 head(t)
+AO <- read.table("AO_daily.txt", h = T, sep = "\t", dec = ".")
+head(AO)
 
 #### Obtention des jours juliens pour les dates GOOSE ####
 Sys.setlocale(category = "LC_TIME", locale = "en_US") #setting in english to read month
@@ -43,14 +45,13 @@ for (i in 1996:2015) {
 #dev.copy2pdf("Nidifi_temp_trends_1996-2015.pdf")
 dev.off()
 
-#### Relations entre les temperatures et les differentes periode de AO ####
-
-AO <- read.table("AO_daily.txt", h = T, sep = "\t", dec = ".")
+#### Trends of AO ####
+#Obtention of DB
 head(AO)
 AO <- AO[AO$YEAR >= 1996,]
 AO$jj <- strptime(paste(AO$DAY, AO$MONTH, AO$YEAR, sep = "-"), format = "%d-%m-%Y")
 AO$jj <- AO$jj$yday + 1
-View(AO[AO$MONTH == 12,]) # to check bissextile years
+#View(AO[AO$MONTH == 12,]) # to check bissextile years
 
 # RAPPEL
 #Winter AO = Novembre à avril (month 10 to 4) - Aanes et al 2002
@@ -84,6 +85,7 @@ esumAO <- tapply(AO$AO[AO$jj >= 172 & AO$jj <= 196], AO$YEAR[AO$jj >= 172 & AO$j
 lsumAO <- tapply(AO$AO[AO$jj >= 197 & AO$jj <= 227], AO$YEAR[AO$jj >= 197 & AO$jj <= 227], mean)
 sumAO <- tapply(AO$AO[AO$jj >= 172 & AO$jj <= 227], AO$YEAR[AO$jj >= 172 & AO$jj <= 227], mean)
 nidAO <- tapply(AO$AO[AO$jj >= 155 & AO$jj <= 200], AO$YEAR[AO$jj >= 155 & AO$jj <= 200], mean)
+### ATTENTION LA PERIODE DE 2016 PAS COMPLETE POUR LE CALCUL DES TEMP
 nidTEMP <- tapply(t$TEMP[t$jj >= 155 & t$jj <= 200], t$YEAR[t$jj >= 155 & t$jj <= 200], mean)
 
 p <- cbind(1996 : 2016, TAB[-22,2], as.data.frame(sprAO), esumAO, lsumAO, sumAO, nidAO, nidTEMP)
@@ -113,8 +115,31 @@ x11()
 pairs(p[, c(2 : 7)], upper.panel = panel.cor)
 dev.copy2pdf()
 dev.off()
+#Trends of AO depending on the season
+x11()
+par(mfrow = c(2,2))
+#Winter AO
+plot(p$year, p$winAO, xlab = "Year", ylab = "Winter AO index")
+lines(smooth.spline(p$year, p$winAO, df = 2), col = "aquamarine")
+
+#Spring AO
+plot(p$year, p$sprAO, xlab = "Year", ylab = "Spring AO index")
+lines(smooth.spline(p$year, p$sprAO, df = 2), col = "aquamarine1")
+
+#Summer AO
+plot(p$year, p$sumAO, xlab = "Year", ylab = "Summer AO index")
+lines(smooth.spline(p$year, p$sprAO, df = 2), col = "aquamarine2")
+
+#Nidification AO
+plot(p$year, p$nidAO, xlab = "Year", ylab = "AO index during goose nidification")
+lines(smooth.spline(p$year, p$nidAO, df = 2), col = "aquamarine3")
+
+#dev.copy2pdf()
+dev.off()
 
 #temp vs AO
+
+### ATTENTION LA PERIODE DE 2016 PAS COMPLETE POUR LE CALCUL DES TEMP
 x11()
 par(mfrow = c(2, 3))
 plot(p$nidTEMP, p$winAO, xlab = "Nidification temperature", ylab = "Winter AO")
