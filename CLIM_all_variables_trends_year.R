@@ -117,22 +117,47 @@ dev.copy2pdf()
 dev.off()
 #Trends of AO depending on the season
 x11()
-par(mfrow = c(2,2))
+par(mfrow = c(2,2)) #Disvision of the graphic device
+
 #Winter AO
-plot(p$year, p$winAO, xlab = "Year", ylab = "Winter AO index")
-lines(smooth.spline(p$year, p$winAO, df = 2), col = "aquamarine")
+plot(p$year, p$winAO, xlab = "Year", ylab = "Winter AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "orange", pch = 19)
+lines(smooth.spline(p$year, p$winAO, df = 2), col = "orange", lwd = 3)
+#Modification x axis
+xtick <- seq(1996, 2016, by = 1)
+axis(side = 1, at = xtick)
+#Modification y axis
+ytick<-seq(-2, 1.5, by = 0.5)
+axis(side = 2, at = ytick)
 
 #Spring AO
-plot(p$year, p$sprAO, xlab = "Year", ylab = "Spring AO index")
-lines(smooth.spline(p$year, p$sprAO, df = 2), col = "aquamarine1")
+plot(p$year, p$sprAO, xlab = "Year", ylab = "Spring AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "orange", pch = 19)
+lines(smooth.spline(p$year, p$sprAO, df = 2), col = "orange", lwd = 3)
+#Modification x axis
+xtick <- seq(1996, 2016, by = 1)
+axis(side = 1, at = xtick)
+#Modification y axis
+ytick<-seq(-2, 1.5, by = 0.5)
+axis(side = 2, at = ytick)
 
 #Summer AO
-plot(p$year, p$sumAO, xlab = "Year", ylab = "Summer AO index")
-lines(smooth.spline(p$year, p$sprAO, df = 2), col = "aquamarine2")
+plot(p$year, p$sumAO, xlab = "Year", ylab = "Summer AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "orange", pch = 19)
+lines(smooth.spline(p$year, p$sumAO, df = 2), col = "orange", lwd = 3)
+#Modification x axis
+xtick <- seq(1996, 2016, by = 1)
+axis(side = 1, at = xtick)
+#Modification y axis
+ytick<-seq(-2, 1.5, by = 0.5)
+axis(side = 2, at = ytick)
 
 #Nidification AO
-plot(p$year, p$nidAO, xlab = "Year", ylab = "AO index during goose nidification")
-lines(smooth.spline(p$year, p$nidAO, df = 2), col = "aquamarine3")
+plot(p$year, p$nidAO, xlab = "Year", ylab = "Nidification AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "orange", pch = 19)
+lines(smooth.spline(p$year, p$nidAO, df = 2), col = "orange", lwd = 3)
+#Modification x axis
+xtick <- seq(1996, 2016, by = 1)
+axis(side = 1, at = xtick)
+#Modification y axis
+ytick<-seq(-2, 1.5, by = 0.5)
+axis(side = 2, at = ytick)
 
 #dev.copy2pdf()
 dev.off()
