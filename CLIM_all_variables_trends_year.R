@@ -20,15 +20,16 @@ h <- cbind(1996:2017, h); names(h) <- c("year", "rain")
 head(h)
 h <- h[-22,]
 #plot
+tiff("Prec1.tiff", res=300, width=29, height=20, pointsize=12, unit="cm", bg="transparent")
 plot(h$year, h$rain, xlab = "Year", ylab = "Cumulative summer precipitation", ylim = c(0, 155), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 2, cex.lab = 2, col = "orange", pch = 19)
-lines(smooth.spline(h$year, h$rain, df = 3), col = "blue", lwd = 4)
+lines(smooth.spline(h$year, h$rain, df = 3), col = "orange", lwd = 4)
 #Modification x axis
 xtick <- seq(1996, 2016, by = 1)
 axis(side = 1, at = xtick)
 #Modification y axis
 ytick<-seq(0, 155, by = 10)
 axis(side = 2, at = ytick)
-
+dev.off()
 
 #### Obtention des jours juliens pour les dates GOOSE ####
 Sys.setlocale(category = "LC_TIME", locale = "en_US") #setting in english to read month
@@ -116,9 +117,15 @@ head(p)
 
 
 #### Plot of nidification temperatures trends ####
+plot(p$year, p$nidTEMP, bty = "n", ltw = 3, xaxp = c(1996, 2016, 10), ylim = c(3, 5.5), cex = 2, pch = 19, cex.lab = 1, col = "orange", xlab = "Year", ylab = "Mean temperature (°c)")
+lines(smooth.spline(p$year, p$nidTEMP, df = 2), lwd = 5, col = "orange")
+
+tiff("Fig1.tiff", res=300, width=20, height=29, pointsize=12, unit="cm", bg="transparent")
 plot(p$year, p$nidTEMP, bty = "n", ltw = 3, xaxp = c(1996, 2016, 10), ylim = c(3, 5.5), cex = 2, pch = 19, cex.lab = 2, col = "orange")
 lines(smooth.spline(p$year, p$nidTEMP, df = 2), lwd = 5, col = "orange")
 dev.off()
+
+
 
 # Fonction pour impression coef correlation et p.value sur les pair.panels avec variables utilisees dans analyses de piste
 panel.cor <- function(x, y, digits = 2, cex.cor, ...)
