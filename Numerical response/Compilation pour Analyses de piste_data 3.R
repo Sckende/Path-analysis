@@ -151,7 +151,9 @@ nini<-nini[!is.na(nini$INI),]
 #à partir d'ici nidif a été simplement remplacé par nini
 #chargement des données de températures
 #temp<-read.table("temperature_pond_inlet_1996-2015.txt", h=T, sep="\t", dec=",")
-temp<-read.table("TEMP_Tair moy 1989-2016 BYLCAMP.txt", h=T, sep="\t", dec=",")
+#temp<-read.table("TEMP_Tair moy 1989-2016 BYLCAMP.txt", h=T, sep="\t", dec=",")
+temp<-read.table("TEMP_Tair moy 1989-2017 BYLCAMP.txt", h=T, sep="\t", dec=",")
+temp <- temp[!temp$YEAR == 2017,]
 summary(temp)
 #temp<-na.omit(temp)
 #transformation date en jour julien#
