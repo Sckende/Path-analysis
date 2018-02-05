@@ -5,13 +5,13 @@ setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. 
 list.files()
 g <- read.table("GOOSE_breeding_informations.txt", sep = "\t", dec = ",", h = T)
 head(g)
-t <- read.table("TEMP_Tair moy 1989-2016 BYLCAMP.txt", sep = "\t", dec = ",", h = T)
-head(t)
+t <- read.table("TEMP_Tair moy 1989-2017 BYLCAMP.txt", sep = "\t", dec = ",", h = T)
+t <- t[t$YEAR >= 1996 & !t$YEAR == 2017,]; head(t)
 AO <- read.table("AO_daily.txt", h = T, sep = "\t", dec = ".")
 head(AO)
 rain <- read.table("PREC_precipitation_Bylot_1996-2016.txt", h = T, sep = "\t", dec = ",")
 
-#### Summer precipitation trends
+#### Summer precipitation trends ####
 head(rain)
 rain <- na.omit(rain)
 summary(rain)
@@ -20,14 +20,15 @@ h <- cbind(1996:2017, h); names(h) <- c("year", "rain")
 head(h)
 h <- h[-22,]
 #plot
-plot(h$year, h$rain, xlab = "Year", ylab = "Cumulative summer precipitation", ylim = c(0, 155), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "blue", pch = 19)
-lines(smooth.spline(h$year, h$rain, df = 3), col = "blue", lwd = 3)
+plot(h$year, h$rain, xlab = "Year", ylab = "Cumulative summer precipitation", ylim = c(0, 155), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 2, cex.lab = 2, col = "orange", pch = 19)
+lines(smooth.spline(h$year, h$rain, df = 3), col = "blue", lwd = 4)
 #Modification x axis
 xtick <- seq(1996, 2016, by = 1)
 axis(side = 1, at = xtick)
 #Modification y axis
 ytick<-seq(0, 155, by = 10)
 axis(side = 2, at = ytick)
+
 
 #### Obtention des jours juliens pour les dates GOOSE ####
 Sys.setlocale(category = "LC_TIME", locale = "en_US") #setting in english to read month
@@ -48,16 +49,16 @@ plot(NONbiss$LAY_DATE, NONbiss$lay_date_jj)
 plot(NONbiss$HATCH_DATE, NONbiss$hatch_date_jj)
 
 #### Obtention des jours juliens pour les dates TEMP ####
-t <- t[t$YEAR >= 1996,]
 head(t)
 t$jj <- strptime(paste(t$DAY, t$MONTH, t$YEAR, sep = "-"), format = "%d-%m-%Y")
 t$jj <- t$jj$yday + 1 #comme dates continues pas besoin de traiter separemment annees bissextiles et annees ordinaires
 
 #### Temperatures trends 
 #### Relations entre les temperatures et la periode de nidification de oies ####
-x11(title = "Nidification temperature trends between 1996 & 2015 ")
+x11(title = "Nidification temperature trends between 1996 & 2016 ")
+#dev.off()
 par(mfrow = c(4, 5))
-for (i in 1996:2015) {
+for (i in 1997:2016) {
   plot(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], main = i, xlab = "Julian day", ylab = "temp", ylim = c(0, 12), xlim = c(160, 195))
   ajout <- with(t, smooth.spline(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], df = 2))
   ajout
@@ -106,13 +107,18 @@ esumAO <- tapply(AO$AO[AO$jj >= 172 & AO$jj <= 196], AO$YEAR[AO$jj >= 172 & AO$j
 lsumAO <- tapply(AO$AO[AO$jj >= 197 & AO$jj <= 227], AO$YEAR[AO$jj >= 197 & AO$jj <= 227], mean)
 sumAO <- tapply(AO$AO[AO$jj >= 172 & AO$jj <= 227], AO$YEAR[AO$jj >= 172 & AO$jj <= 227], mean)
 nidAO <- tapply(AO$AO[AO$jj >= 155 & AO$jj <= 200], AO$YEAR[AO$jj >= 155 & AO$jj <= 200], mean)
-### ATTENTION LA PERIODE DE 2016 PAS COMPLETE POUR LE CALCUL DES TEMP
 nidTEMP <- tapply(t$TEMP[t$jj >= 155 & t$jj <= 200], t$YEAR[t$jj >= 155 & t$jj <= 200], mean)
 
 p <- cbind(1996 : 2016, TAB[-22,2], as.data.frame(sprAO), esumAO, lsumAO, sumAO, nidAO, nidTEMP)
 summary(p)
 names(p)[1: 2] <- c("year", "winAO")
 head(p)
+
+
+#### Plot of nidification temperatures trends ####
+plot(p$year, p$nidTEMP, bty = "n", ltw = 3, xaxp = c(1996, 2016, 10), ylim = c(3, 5.5), cex = 2, pch = 19, cex.lab = 2, col = "orange")
+lines(smooth.spline(p$year, p$nidTEMP, df = 2), lwd = 5, col = "orange")
+dev.off()
 
 # Fonction pour impression coef correlation et p.value sur les pair.panels avec variables utilisees dans analyses de piste
 panel.cor <- function(x, y, digits = 2, cex.cor, ...)
