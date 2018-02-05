@@ -260,7 +260,18 @@ fox<-read.csv("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",")
 lmg<-read.csv("LEM_1993-2017.txt", sep = "\t", dec = ",")
 prod<-read.csv("VEG_Prod_prim_camp_2.txt", sep = "\t", dec = ",")
 AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
-breed<-read.csv("GOOSE_breeding_informations.txt", sep = "\t", dec = ".")
+breed<-read.csv("GOOSE_breeding_informations.txt", sep = "\t", dec = ",")
+
+#Graphic with lmg and fox
+plotlmg <- lmg[lmg$YEAR >= 1996 & lmg$YEAR < 2017, ]
+plotfox <- fox[fox$year >= 1996 & fox$year < 2017, ]
+
+plot(plotlmg$YEAR, plotlmg$LMG_C1, col = "green", bty = "n", ylim = c(0, 5), type = "l",  xaxp = c(1996, 2016, 10), xlab = "Année", lwd = 3)
+lines(plotfox$year, plotfox$prop_natal_dens/10, type = "h", col = "blue", lwd = 3)
+#Graphc with nesting success
+plotgee <- breed[breed$YEAR <= 2016,]
+
+plot(plotgee$YEAR, plotgee$NEST_SUCC, col = "green", bty = "n", ylim = c(0, 1), type = "l",  xaxp = c(1996, 2016, 10), xlab = "Année", lwd = 3)
 
 m<-unique(nini$ID)
 suite<-NULL
