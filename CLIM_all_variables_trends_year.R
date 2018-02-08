@@ -19,10 +19,12 @@ h <- as.data.frame(tapply(rain$RAIN, rain$YEAR, sum))
 h <- cbind(1996:2017, h); names(h) <- c("year", "rain")
 head(h)
 h <- h[-22,]
+h$moy <- mean(h$rain)
 #plot
 tiff("Prec1.tiff", res=300, width=29, height=20, pointsize=12, unit="cm", bg="transparent")
 plot(h$year, h$rain, xlab = "Year", ylab = "Cumulative summer precipitation", ylim = c(0, 155), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 2, cex.lab = 2, col = "orange", pch = 19)
 lines(smooth.spline(h$year, h$rain, df = 3), col = "orange", lwd = 4)
+lines(h$year, h$moy, type = "l", lty = 4, col = "orange")
 #Modification x axis
 xtick <- seq(1996, 2016, by = 1)
 axis(side = 1, at = xtick)
@@ -30,6 +32,29 @@ axis(side = 1, at = xtick)
 ytick<-seq(0, 155, by = 10)
 axis(side = 2, at = ytick)
 dev.off()
+
+#depuis 2008
+h08 <- h[h$year >= 2008,]
+plot(h08$year, h08$rain)
+lines(smooth.spline(h08$year, h08$rain, df = 2))
+lines(gam(h08$year, h08$rain))
+
+#Utilisation de la commande gam
+require(mgcv)
+M3 <- gam(h$rain ~ s(h$year, fx = FALSE, k=6,bs = "cr"))#k pour knots, k=3 recommandé pour n<10
+summary(M3);AIC(M3)
+coef(M3)
+
+col2rgb(col="blue")
+
+
+par(bg=NA)#fond de graphique transparent
+plot(h$year, h$rain, xlab = "year", ylab = "Cumulative precipitation",
+  xlim = c(1996, 2016),ylim = c(0, 155),col="blue",lwd=4,cex.axis=1.8,pch=16,cex=2)#nuage de points
+par(new=T)#pour superposition d'un nouveau graphique
+par(bg=NA)
+couleur<-rgb(0,0,0.5,0.2)#définition d'une couleur pour l'intervalle de confiance
+plot.gam(M3,shade = T,shade.col =couleur,pers = T,xlab = "",yaxt="n",ylab="",xaxt="n",lwd=4)#plot de la smooth curve et de l'intervalle de confiance à 95% associée
 
 #### Obtention des jours juliens pour les dates GOOSE ####
 Sys.setlocale(category = "LC_TIME", locale = "en_US") #setting in english to read month
@@ -114,6 +139,7 @@ p <- cbind(1996 : 2016, TAB[-22,2], as.data.frame(sprAO), esumAO, lsumAO, sumAO,
 summary(p)
 names(p)[1: 2] <- c("year", "winAO")
 head(p)
+p$motem <- mean(p$nidTEMP)
 
 
 #### Plot of nidification temperatures trends ####
@@ -121,8 +147,9 @@ plot(p$year, p$nidTEMP, bty = "n", ltw = 3, xaxp = c(1996, 2016, 10), ylim = c(3
 lines(smooth.spline(p$year, p$nidTEMP, df = 2), lwd = 5, col = "orange")
 
 tiff("Fig1.tiff", res=300, width=20, height=29, pointsize=12, unit="cm", bg="transparent")
-plot(p$year, p$nidTEMP, bty = "n", ltw = 3, xaxp = c(1996, 2016, 10), ylim = c(3, 5.5), cex = 2, pch = 19, cex.lab = 2, col = "orange")
-lines(smooth.spline(p$year, p$nidTEMP, df = 2), lwd = 5, col = "orange")
+plot(p$year, p$nidTEMP, bty = "n", ltw = 3, xaxp = c(1996, 2016, 10), ylim = c(3, 5.5), cex = 2, pch = 19, cex.lab = 1, col = "orange", xlab = "Year", ylab = "Mean summer temperature (°c)")
+lines(smooth.spline(p$year, p$nidTEMP, df = 2), lwd = 3, col = "orange")
+lines(p$year, p$motem, type = "l", lty = 4, col = "orange")
 dev.off()
 
 
@@ -154,14 +181,20 @@ x11()
 par(mfrow = c(2,2)) #Disvision of the graphic device
 
 #Winter AO
-plot(p$year, p$winAO, xlab = "Year", ylab = "Winter AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "orange", pch = 19)
+plot(p$year, p$winAO, xlab = "Year", ylab = "Winter AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1, cex.lab = 1, col = "orange", pch = 19)
 lines(smooth.spline(p$year, p$winAO, df = 2), col = "orange", lwd = 3)
+lines(p$year, p$mo, type = "l", lty = 4, col = "orange")
 #Modification x axis
 xtick <- seq(1996, 2016, by = 1)
 axis(side = 1, at = xtick)
 #Modification y axis
 ytick<-seq(-2, 1.5, by = 0.5)
 axis(side = 2, at = ytick)
+#Method 2
+library(splines)
+spline <- interpSpline(p$year, p$winAO)
+plot(spline)
+points(p$year, p$winAO)
 
 #Spring AO
 plot(p$year, p$sprAO, xlab = "Year", ylab = "Spring AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "orange", pch = 19)
@@ -220,7 +253,6 @@ plot(p$nidTEMP, p$nidAO, xlab = "Nidification temperature", ylab = "Nidification
 lines(smooth.spline(p$nidTEMP, p$nidAO, df = 2), col = "orange")
 #dev.copy2pdf()
 dev.off()
-
 ### ATTENTION LA PERIODE DE 2016 PAS COMPLETE POUR LE CALCUL DES TEMP
 x11()
 plot(p$year, p$nidTEMP, xlab = "Year", ylab = "Mean summer temperatures")
