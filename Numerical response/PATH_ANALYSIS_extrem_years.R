@@ -140,6 +140,7 @@ dev.off()
 # 1 - comme les précipitations, années chaudes vs. années froides
 # 2 - Découpe avant 2006 et qprès 2006
 
+#### Option 1 - Années chaudes vs. années froides ####
 # Creation de deux BDD avec années chaudes vs. années froides
 mC1$tempe_year <- c$tempe[match(mC1$AN, c$year)]
 HOT <- mC1[mC1$tempe_year >= unique(c$moy),] 
@@ -177,5 +178,44 @@ sem.coefs(mCOLD, COLD)
 #sem.plot(mCOLD, COLD, show.nonsig = T)
 
 
+#### Option 2 - Années avant 2006 vs. années après 2006 ####
+# Creation de deux BDD avec années chaudes vs. années froides
+
+AFT <- mC1[mC1$AN >= 2006,] 
+BEF <- mC1[mC1$AN < 2006,] 
+
+# Superposition des points sur graphique précédent
+# Check-point
+par(new = TRUE)
+par(bg = "transparent")
+points(AFT$AN, AFT$tempe_year, col = "black")
+points(BEF$AN, BEF$tempe_year, col = "white")
+
+#### Modele de piste - après 2006 ####
+mAFT <- list(
+  lm(prop_fox_dens ~ lmg_C1 + winAO + cumul_prec + MEAN_temp, data = AFT),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = AFT, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ winAO + MEAN_temp + cumul_prec, data = AFT))
+# Get goodness-of-fit and AIC
+sem.fit(mAFT, AFT, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(mAFT, AFT)
+#sem.plot(mAFT, AFT, show.nonsig = T)
+
+#### Modele de piste - avant 2006 ####
+mBEF <- list(
+  lm(prop_fox_dens ~ lmg_C1 + winAO + cumul_prec + MEAN_temp, data = BEF),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = BEF, family = binomial(link = "logit")),
+  lm(lmg_C1 ~ winAO + MEAN_temp + cumul_prec, data = BEF))
+# Get goodness-of-fit and AIC
+sem.fit(mBEF, BEF, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+
+#NO significant missing paths
+sem.coefs(mBEF, BEF)
+#sem.plot(mBEF, BEF, show.nonsig = T)
+
+
 #### Présence de différence dans les forces de liens entre les modèles de piste ####
 #### Possibilité de creuser davantage avec la division des années plus précises -- > mettre un buffer pour des années normales et comparer avec les années en dehors de ce buffer ####
+
