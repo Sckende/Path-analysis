@@ -175,3 +175,7 @@ sem.fit(mCOLD, COLD, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
 #NO significant missing paths
 sem.coefs(mCOLD, COLD)
 #sem.plot(mCOLD, COLD, show.nonsig = T)
+
+
+#### Présence de différence dans les forces de liens entre les modèles de piste ####
+#### Possibilité de creuser davantage avec la division des années plus précises -- > mettre un buffer pour des années normales et comparer avec les années en dehors de ce buffer ####
