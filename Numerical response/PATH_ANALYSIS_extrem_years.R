@@ -29,12 +29,17 @@ h <- as.data.frame(tapply(rain$RAIN, rain$YEAR, sum)) # Cumulative precipitation
 h <- cbind(1996:2017, h); names(h) <- c("year", "rain")
 head(h)
 h <- h[-22, ] # retrait 2017
+#moyenne des précipitations moyenne pour toutes les années
 h$moy <- mean(h$rain)
+# Écart-type
+h$sd <- sd(h$rain)
 
 # Graphic
 plot(h$year, h$rain, xlab = "Year", ylab = "Cumulative summer precipitation", ylim = c(0, 155), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 2, cex.lab = 2, col = "orange", pch = 19)
 lines(smooth.spline(h$year, h$rain, df = 3), col = "orange", lwd = 4)
 lines(h$year, h$moy, type = "l", lty = 4, col = "orange")
+lines(h$year, h$moy + h$sd, type = "l", lty = 3, lwd = 0.7 )
+lines(h$year, h$moy - h$sd, type = "l", lty = 3, lwd = 0.7 )
 #Modification x axis
 xtick <- seq(1996, 2016, by = 1)
 axis(side = 1, at = xtick)
@@ -124,6 +129,7 @@ t$ECLO_date[t$YEAR == 1996] == g$hatch_date_jj[g$YEAR == 1996]
 c <- as.data.frame(tapply(t$TEMP[t$jj >= 155 & t$jj <= 200], t$YEAR[t$jj >= 155 & t$jj <= 200], mean))
 c <- cbind(1996:2016, c); names(c) <- c("year", "tempe")
 c$moy <- mean(c$tempe)
+c$sd <- sd(c$tempe)
 head(c)
 
 # Graphic
