@@ -192,6 +192,18 @@ sem.fit(ro2a, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2a, mC1)
 
+##### Modèle ro2a SCALE #####
+#Modele de piste
+ro2aSC <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp, data = nenescale),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nenescale, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2aSC, nenescale, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2aSC, nenescale)
+
+
 #### ro2b *** ####
 
 #Modele de piste
@@ -203,7 +215,16 @@ sem.fit(ro2b, mC1, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro2b, mC1)
+##### Modèle ro2b SCALE #####
+#Modele de piste
+ro2bSC <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp + winAO, data = nenescale),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nenescale, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2bSC, nenescale, conditional = T)
 
+#NO significant missing paths
+sem.coefs(ro2bSC, nenescale)
 
 #### ro2c *** ####
 #Modele de piste
@@ -216,7 +237,7 @@ sem.fit(ro2c, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2c, mC1)
 
-#### ro2d ####
+#### ro2d *** ####
 #Modele de piste
 ro2d <- list(
   lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
@@ -227,7 +248,7 @@ sem.fit(ro2d, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2d, mC1)
 
-#### ro2e ####
+#### ro2e *** ####
 #Modele de piste
 ro2e <- list(
   lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
