@@ -140,6 +140,7 @@ sem.coefs(ro1sc, nenescale)
 #sem.plot(ro1sc, nenescale, show.nonsig = T)
 sem.model.fits(ro1sc) #calcul des R2
 
+####### MODELES AVEC LMG QUANTITATIF ##########
 
 #### Même modele que pcdt en remplacant lmg_C1_C2 par lmg_C1 - ro2*** #####
 #Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
@@ -154,7 +155,7 @@ ro2 <- list(
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
   lm(lmg_C1 ~ winAO + MEAN_temp + cumul_prec, data = mC1))
 # Get goodness-of-fit and AIC
-sem.fit(ro2, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+sem.fit(ro2, mC1, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro2, mC1)
@@ -173,12 +174,73 @@ ro2sc <- list(
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nenescale, family = binomial(link = "logit")),
   lm(lmg_C1 ~ winAO + MEAN_temp + cumul_prec, data = nenescale))
 # Get goodness-of-fit and AIC
-sem.fit(ro2sc, nenescale, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+sem.fit(ro2sc, nenescale, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro2sc, nenescale)
 #sem.plot(ro1sc, nenescale, show.nonsig = T)
 sem.model.fits(ro2sc) #calcul des R2
+
+#### ro2a *** ####
+#Modele de piste
+ro2a <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2a, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2a, mC1)
+
+#### ro2b *** ####
+
+#Modele de piste
+ro2b <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp + winAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2b, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2b, mC1)
+
+
+#### ro2c *** ####
+#Modele de piste
+ro2c <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp + winAO + sprAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2c, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2c, mC1)
+
+#### ro2d ####
+#Modele de piste
+ro2d <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2d, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2d, mC1)
+
+#### ro2e ####
+#Modele de piste
+ro2e <- list(
+  lm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + sumAO + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2e, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2e, mC1)
+
+
+####### MODELES AVEC LMG CATEGORIE ##########
+
 
 #### Nouveau modele en remplacant lmg_C1 par lmg_year - ro3*** #####
 #Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
@@ -192,7 +254,7 @@ ro3 <- list(
   lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp, data = mC1),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
-sem.fit(ro3, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+sem.fit(ro3, mC1, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro3, mC1)
@@ -210,7 +272,7 @@ ro3a <- list(
   lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO, data = mC1),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
-sem.fit(ro3a, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+sem.fit(ro3a, mC1, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro3a, mC1)
@@ -228,7 +290,7 @@ ro3b <- list(
   lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sprAO, data = mC1),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
-sem.fit(ro3b, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+sem.fit(ro3b, mC1, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro3b, mC1)
@@ -246,11 +308,30 @@ ro3c <- list(
   lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
-sem.fit(ro3c, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+sem.fit(ro3c, mC1, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro3c, mC1)
 sem.plot(ro3c, mC1, show.nonsig = T)
+
+#### Idem ro3c + sumAO -- SN - ro3c1*** #####
+#Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
+
+#Exploration visuelle des donnees
+X11()
+pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
+
+#Modele de piste
+ro3c1 <- list(
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + sumAO + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro3c1, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro3c1, mC1)
+sem.plot(ro3c1, mC1, show.nonsig = T)
+
 
 #### Idem + sprAO - ro3d*** #####
 #Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
@@ -262,15 +343,15 @@ pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
 #Modele de piste
 ro3d <- list(
   lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
-  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + sumAO + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
-sem.fit(ro3d, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+sem.fit(ro3d, mC1, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro3d, mC1)
 sem.plot(ro3d, mC1, show.nonsig = T)
 
-#### Idem + SN -- sumAO - ro3e*** #####
+#### Idem - sprAO -- fox - ro3e*** #####
 #Changement de jeu de donnees. Utilisation de mC1 qui contient plus d'annees
 
 #Exploration visuelle des donnees
@@ -279,10 +360,10 @@ pairs(mC1[,c(15, 16, 17, 12, 4, 23, 24)], upper.panel = panel.cor)
 
 #Modele de piste
 ro3e <- list(
-  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, data = mC1),
+  lm(prop_fox_dens ~ lmg_year + cumul_prec + MEAN_temp + winAO + sumAO, data = mC1),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + sumAO + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
-sem.fit(ro3e, mC1, conditional = T, corr.errors = "MEAN_temp ~~ cumul_prec")
+sem.fit(ro3e, mC1, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro3e, mC1)
@@ -475,4 +556,18 @@ sem.fit(ro2_asc, nenescale, conditional = T, corr.errors = "MEAN_temp ~~ cumul_p
 sem.coefs(ro2_asc, nenescale)
 #sem.plot(ro2_asc, nenescale, show.nonsig = T)
 sem.model.fits(ro2_asc) #calcul des R2
+
+
+
+ro2 <- list(
+  lm(prop_fox_dens ~ lmg_year + winAO + cumul_prec + MEAN_temp, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
+  lm(lmg_year ~ winAO + MEAN_temp + cumul_prec, data = mC1))
+# Get goodness-of-fit and AIC
+sem.fit(ro2, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2, mC1)
+
+
 
