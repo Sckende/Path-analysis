@@ -180,9 +180,9 @@ x11()
 par(mfrow = c(2,2)) #Disvision of the graphic device
 
 #Winter AO
-tiff("winAO.tiff", res=300, width=10, height=10, pointsize=12, unit="cm", bg="transparent")
+png("winAO.png", res=300, width=10, height=10, pointsize=12, unit="cm", bg="transparent")
 plot(p$year, p$winAO, xlab = "Year", ylab = "Winter AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1, cex.lab = 1, col = "orange", pch = 19, type = 'b')
-lines(smooth.spline(p$year, p$winAO, df = 2), col = "orange", lwd = 2)
+#lines(smooth.spline(p$year, p$winAO, df = 2), col = "orange", lwd = 2)
 lines(p$year, p$mo, type = "l", lty = 4, col = "orange")
 #Modification x axis
 xtick <- seq(1996, 2016, by = 1)
@@ -194,7 +194,7 @@ p$winAOmean <- mean(p$winAO)
 lines(p$year, p$winAOmean, lty = 4, col = 'orange')
 dev.off()
 
-jo <- lm(p$winAO ~ p$year, method = 'pearson')
+jo <- lm(p$winAO ~ p$year)
 summary(jo)
 
 #Method 2
@@ -204,24 +204,32 @@ plot(spline)
 points(p$year, p$winAO)
 
 #Spring AO
-plot(p$year, p$sprAO, xlab = "Year", ylab = "Spring AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "orange", pch = 19)
-lines(smooth.spline(p$year, p$sprAO, df = 2), col = "orange", lwd = 3)
+png("sprAO.png", res=300, width=10, height=10, pointsize=12, unit="cm", bg="transparent")
+plot(p$year, p$sprAO, xlab = "Year", ylab = "Spring AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1, cex.lab = 1, col = "orange", pch = 19, type = 'b')
+#lines(smooth.spline(p$year, p$sprAO, df = 2), col = "orange", lwd = 2)
+p$sprAOmoy <- mean(p$sprAO)
+lines(p$year, p$sprAOmoy, type = "l", lty = 4, col = "orange")
 #Modification x axis
 xtick <- seq(1996, 2016, by = 1)
 axis(side = 1, at = xtick)
 #Modification y axis
 ytick<-seq(-2, 1.5, by = 0.5)
 axis(side = 2, at = ytick)
+dev.off()
 
 #Summer AO
-plot(p$year, p$sumAO, xlab = "Year", ylab = "Summer AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "orange", pch = 19)
-lines(smooth.spline(p$year, p$sumAO, df = 2), col = "orange", lwd = 3)
+png("sumAO.png", res=300, width=10, height=10, pointsize=12, unit="cm", bg="transparent")
+plot(p$year, p$sumAO, xlab = "Year", ylab = "Summer AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1, cex.lab = 1, col = "orange", pch = 19, type = 'b')
+#lines(smooth.spline(p$year, p$sumAO, df = 2), col = "orange", lwd = 2)
+p$sumAOmoy <- mean(p$sumAO)
+lines(p$year, p$sumAOmoy, type = "l", lty = 4, col = "orange")
 #Modification x axis
 xtick <- seq(1996, 2016, by = 1)
 axis(side = 1, at = xtick)
 #Modification y axis
 ytick<-seq(-2, 1.5, by = 0.5)
 axis(side = 2, at = ytick)
+dev.off()
 
 #Nidification AO
 plot(p$year, p$nidAO, xlab = "Year", ylab = "Nidification AO index", ylim = c(-2, 1.5), xlim = c(1996, 2016), bty = "n", yaxt = "n", xaxt = "n", cex = 1.5, cex.lab = 1.3, line = 2, col = "orange", pch = 19)
@@ -238,26 +246,28 @@ dev.off()
 
 #### Superposition of temperature and precipitation in time ####
 
-tiff("prec_temp.tiff", res=300, width=10, height=15, pointsize=12, unit="cm", bg="transparent")
-plot(h$year, h$rain, xlab = "Year", ylab = "", xaxp = c(1996, 2016, 10), ylim = c(0, 250), bty = "n", yaxt = "n", xaxt = "n", cex = 1, cex.lab = 1, col = "cadetblue", pch = 19, type = 'b')
-lines(smooth.spline(h$year, h$rain, df = 2), col = "cadetblue", lwd = 2)
+png("prec_temp.tiff", res=300, width=10, height=15, pointsize=12, unit="cm", bg="transparent")
+plot(h$year, h$rain, xlab = "Year", ylab = "", xaxp = c(1996, 2016, 10), ylim = c(0, 250), bty = "n", yaxt = "n", xaxt = "n", cex = 1, cex.lab = 1, col = "darkblue", pch = 19, type = 'b')
+#lines(smooth.spline(h$year, h$rain, df = 2), col = "cadetblue", lwd = 2)
 
-lines(h$year, h$moy, col = "cadetblue", type = "l", lty = 4)
+lines(h$year, h$moy, col = "darkblue", type = "l", lty = 4)
 axis(side = 4, lwd = 1)
 axis(side = 1, at = 1996:2016, lwd = 1)
 par(bg = "transparent")
 plot(p$year, p$nidTEMP, xlab = "", ylab = "", ylim = c(0, 5.5), bty = "n", yaxt = "n", xaxt = "n", cex = 1, cex.lab = 1, col = "chocolate", pch = 17, type = 'b')
 axis(side = 2, lwd = 1, at = 0:5.5)
-lines(smooth.spline(p$year, p$nidTEMP, df = 2), col = "chocolate", lwd = 2)
+#lines(smooth.spline(p$year, p$nidTEMP, df = 2), col = "chocolate", lwd = 2)
 lines(p$year, p$motem, col = "chocolate", lty = 4)
 
-mtext(c("Cumulative precipitation (mm)", "Mean temperature (°C)"), side = c(4, 2), line = 1)
+#mtext(c("Cumulative precipitation (mm)", "Mean temperature (°C)"), side = c(4, 2), line = 1)
 dev.off()
 
 
 jj <- lm(p$nidTEMP ~ p$year)
 summary(jj)
 
+jjj <- lm(h$rain ~ p$year)
+summary(jjj)
 ### ATTENTION LA PERIODE DE 2016 PAS COMPLETE POUR LE CALCUL DES TEMP
 x11()
 par(mfrow = c(2, 3))
