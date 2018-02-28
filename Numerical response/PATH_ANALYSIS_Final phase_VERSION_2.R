@@ -1,4 +1,4 @@
-setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+setwd(dir = "C:/Users/God/Desktop/Claire/Data")
 
 rm(list = ls()) #clean R memory
 f <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
@@ -21,7 +21,7 @@ head(fox)
 
 mC1$monit_dens <- fox$monit_dens[match(mC1$AN, fox$year)]
 mC1$breed_dens <- fox$litter_number[match(mC1$AN, fox$year)]
-mC1$prop_fox_dens <- mC1$breed_dens/mC1$monit_dens
+mC1$prop_fox_dens_2 <- mC1$breed_dens/mC1$monit_dens
 head(mC1)
 
 
@@ -180,3 +180,59 @@ sem.fit(ro2e, mC1, conditional = T)
 
 #NO significant missing paths
 sem.coefs(ro2e, mC1)
+
+
+#### Plots des glms compris dans Ro2b ####
+
+# GLM 1
+j <- glm(prop_fox_dens_2 ~ lmg_C1 + cumul_prec + MEAN_temp + winAO, family = binomial, weights = monit_dens, data = mC1)
+summary(j)
+
+# Production of range of values to predict
+# Fox vs lmg
+j1 <- glm(prop_fox_dens_2 ~ lmg_C1, family = binomial, weights = monit_dens, data = mC1)
+summary(j1)
+range(m1$lmg_C1)
+xlmg <- seq(0, 4.4, 0.01)
+yfox <- predict(j1, list(lmg_C1 = xlmg), type = 'response')
+# Plot values
+plot(mC1$lmg_C1, mC1$prop_fox_dens_2, pch = 16, xlab = 'Lemming abundance', ylab = 'Proportion of fox breeding dens', ylim = c(0, 0.45), bty = 'n', col = 'darkblue')
+lines(xlmg, yfox, col = 'darkblue')
+
+
+# GLM 2
+k <-  glmer(SN ~ prop_fox_dens_2 + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit"))
+summary(k)
+
+# Production of range of values to predict
+# Goose vs fox
+k1 <- glmer(SN ~ prop_fox_dens_2 + (1|AN), data = mC1, family = binomial(link = "logit"))
+summary(k1)
+range(mC1$prop_fox_dens_2)
+xfox <- seq(0, 0.33, 0.01)
+y <- predict(k1, list(prop_fox_dens_2 = xfox, AN = mC1$AN), type = 'response')
+# Plot values
+plot(mC1$prop_fox_dens_2, mC1$SN, pch = 16, xlab = 'Proportion of fox breeding dens', ylab = 'Goose nesting success', ylim = c(0, 1), bty = 'n', col = 'olivedrab')
+lines(xlmg, yfox, col = 'olivedrab')
+
+# Goose vs temperature
+k2 <- glm(SN ~ MEAN_temp, data = mC1, family = binomial(link = "logit"))
+summary(k2)
+range(mC1$MEAN_temp)
+xtemp <- seq(-0.85, 8.98, 0.01)
+ySN <- predict(k2, list(MEAN_temp = xtemp), type = 'response')
+# Plot values
+plot(mC1$MEAN_temp, mC1$SN, pch = 16, xlab = 'Mean temprature (C)', ylab = 'Goose nesting success', ylim = c(0, 1), bty = 'n', col = 'olivedrab')
+lines(xtemp, ySN, col = 'olivedrab')
+
+
+# Goose vs precipitation
+# Plot values
+k3 <- glm(SN ~ cumul_prec, data = mC1, family = binomial(link = "logit"))
+summary(k3)
+range(mC1$cumul_prec)
+xprec <- seq(0, 69, 0.01)
+ySN <- predict(k3, list(cumul_prec = xprec), type = 'response')
+# Plot values
+plot(mC1$cumul_prec, mC1$SN, pch = 16, xlab = 'Cumulative precipitation (mm)', ylab = 'Goose nesting success', ylim = c(0, 1), bty = 'n', col = 'olivedrab')
+lines(xprec, ySN, col = 'olivedrab')
