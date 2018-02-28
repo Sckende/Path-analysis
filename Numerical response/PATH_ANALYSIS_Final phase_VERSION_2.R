@@ -196,17 +196,21 @@ range(m1$lmg_C1)
 xlmg <- seq(0, 4.4, 0.01)
 yfox <- predict(j1, list(lmg_C1 = xlmg), type = 'response')
 # Plot values
-plot(mC1$lmg_C1, mC1$prop_fox_dens_2, pch = 16, xlab = 'Lemming abundance', ylab = 'Proportion of fox breeding dens', ylim = c(0, 0.45), bty = 'n', col = 'darkblue')
-lines(xlmg, yfox, col = 'darkblue')
+png("fox vs lmg.png", res=300, width=15, height=15, pointsize=12, unit="cm", bg="transparent")
+plot(mC1$lmg_C1, mC1$prop_fox_dens_2, pch = 16, xlab = 'Lemming abundance', ylab = 'Proportion of fox breeding dens', ylim = c(0, 0.45), bty = 'n', col = 'skyblue4', yaxt = 'n', xaxt = 'n')
+lines(xlmg, yfox, col = 'skyblue4', lwd = 2)
+axis(side = 1, lwd = 2)
+axis(side = 2, lwd = 2)
+dev.off()
 
 
 # GLM 2
 k <-  glmer(SN ~ prop_fox_dens_2 + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit"))
 summary(k)
 
-# Production of range of values to predict
+# Ici probleme car utilisation de glm et non pas glmm pour produire les figures
 # Goose vs fox
-k1 <- glmer(SN ~ prop_fox_dens_2 + (1|AN), data = mC1, family = binomial(link = "logit"))
+k1 <- glm(SN ~ prop_fox_dens_2, data = mC1, family = binomial(link = "logit"))
 summary(k1)
 range(mC1$prop_fox_dens_2)
 xfox <- seq(0, 0.33, 0.01)
@@ -222,8 +226,12 @@ range(mC1$MEAN_temp)
 xtemp <- seq(-0.85, 8.98, 0.01)
 ySN <- predict(k2, list(MEAN_temp = xtemp), type = 'response')
 # Plot values
-plot(mC1$MEAN_temp, mC1$SN, pch = 16, xlab = 'Mean temprature (C)', ylab = 'Goose nesting success', ylim = c(0, 1), bty = 'n', col = 'olivedrab')
-lines(xtemp, ySN, col = 'olivedrab')
+png("goose vs temp.png", res=300, width=15, height=15, pointsize=12, unit="cm", bg="transparent")
+plot(mC1$MEAN_temp, mC1$SN, pch = 16, xlab = 'Mean temprature (C)', ylab = 'Goose nesting success', ylim = c(0, 1), bty = 'n', col = 'olivedrab', yaxt = 'n', xaxt = 'n')
+lines(xtemp, ySN, col = 'olivedrab', lwd = 2)
+axis(side = 1, lwd = 2)
+axis(side = 2, lwd = 2)
+dev.off()
 
 
 # Goose vs precipitation
@@ -234,5 +242,9 @@ range(mC1$cumul_prec)
 xprec <- seq(0, 69, 0.01)
 ySN <- predict(k3, list(cumul_prec = xprec), type = 'response')
 # Plot values
-plot(mC1$cumul_prec, mC1$SN, pch = 16, xlab = 'Cumulative precipitation (mm)', ylab = 'Goose nesting success', ylim = c(0, 1), bty = 'n', col = 'olivedrab')
-lines(xprec, ySN, col = 'olivedrab')
+png("goose vs prec.png", res=300, width=15, height=15, pointsize=12, unit="cm", bg="transparent")
+plot(mC1$cumul_prec, mC1$SN, pch = 16, xlab = 'Cumulative precipitation (mm)', ylab = 'Goose nesting success', ylim = c(0, 1), bty = 'n', col = 'olivedrab', yaxt = 'n', xaxt = 'n')
+lines(xprec, ySN, col = 'olivedrab', lwd = 2)
+axis(side = 1, lwd = 2)
+axis(side = 2, lwd = 2)
+dev.off()
