@@ -236,7 +236,7 @@ dev.off()
 
 # Goose vs precipitation
 # Plot values
-k3 <- glm(SN ~ cumul_prec, data = mC1, family = binomial(link = "logit"))
+k3 <- glm(SN ~ cumul_prec, data = mC1, family = binomial(link = "cloglog"))
 summary(k3)
 range(mC1$cumul_prec)
 xprec <- seq(0, 69, 0.01)
