@@ -1,6 +1,6 @@
 rm(list = ls()) #clean R memory
 
-setwd(dir = "/Users/gravellab/Desktop/Claire/Data")
+setwd(dir = "/home/claire/OneDriveDoc/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 list.files()
 g <- read.table("GOOSE_breeding_informations.txt", sep = "\t", dec = ",", h = T)
 head(g)
@@ -56,7 +56,8 @@ couleur<-rgb(0,0,0.5,0.2)#définition d'une couleur pour l'intervalle de confian
 plot.gam(M3,shade = T,shade.col =couleur,pers = T,xlab = "",yaxt="n",ylab="",xaxt="n",lwd=4)#plot de la smooth curve et de l'intervalle de confiance à 95% associée
 
 #### Obtention des jours juliens pour les dates GOOSE ####
-Sys.setlocale(category = "LC_TIME", locale = "en_US") #setting in english to read month
+Sys.setlocale(category = "LC_TIME", locale = "en_US.utf8") #en_US.utf8 pour linux, en_US pour macOS 
+#setting in english to read month
 g$lay_date_jj <- paste(g$LAY_DATE, g$YEAR, sep = " ")
 g$lay_date_jj <- strptime(g$lay_date_jj, format = "%d %B %Y")
 g$lay_date_jj <- g$lay_date_jj$yday
