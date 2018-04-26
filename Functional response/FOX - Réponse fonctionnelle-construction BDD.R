@@ -390,7 +390,7 @@ temp$JJ<-as.numeric(temp$JJ)
 
 #calcul de la température moyenne entre la première et la dernière date d'observation de renard pour chaque année
 #retrait de 2016 car données manquantes pour températures
-ff2 <- ff2[!ff2$year == 2016,]
+#ff2 <- ff2[!ff2$year == 2016,]
 for(n in 1:nrow(ff2)){
   d<-ff2$year[n]
   #mini_jour <- ff2$min_date[n]
@@ -415,6 +415,7 @@ lines(smoothingSpline, col = "orange")
 boxplot(ff2$atq_rate~ff2$max_temp, xlab = "Maximal temperature", ylab = "Attack rate")
 
 boxplot(ff2$atq_rate~ff2$mean_temp, xlab = "Maximal temperature", ylab = "Attack rate")
+
 #####Précipitations#####
 #calcul précipitation cumulée entre la première et la dernière date d'observation de renard pour chaque année 
 
