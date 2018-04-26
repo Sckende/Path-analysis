@@ -4,7 +4,7 @@
 # ICI CREATION DE BDD AVEC UN TAUX D'ATTAQUE PAR INDIVIDU
 
 getwd ()
-setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+setwd(dir = "/home/claire/OneDriveDoc/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 
 rm( list = ls ())
 
@@ -335,7 +335,7 @@ dim(ff2)
 
 ####Ajout des autres variables biologiques et météorologiques####
 #changement de répertoire
-setwd("/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+setwd("/home/claire/OneDriveDoc/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 fox<-read.csv("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",")
 lmg<-read.csv("LEM_1993-2017.txt", sep = "\t", dec = ",")
 AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
