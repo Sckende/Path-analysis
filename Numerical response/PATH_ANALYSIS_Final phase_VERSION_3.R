@@ -17,22 +17,7 @@ require(ggm)
 # nom des fichiers contenus dans le répertoire
 list.files()
 
-# Ajout de abondance de lemmings C1 CORRIGE (cf courriel Gilles - 12 juin 2018)
-lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
-mC1$lmg_C1_CORR <- lmg$LMG_C1_CORR[match(mC1$AN, lmg$YEAR)]
-
-# Verification
-plot(tapply(mC1$lmg_C1, mC1$AN, unique),
-     type ="l",
-     ylim = c(0, 10),
-     lwd = 3,
-     col = "darkgoldenrod2")
-lines(tapply(mC1$lmg_C1_CORR, mC1$AN, unique),
-      type ="b",
-      lwd = 3,
-      col = "olivedrab3")
-
-# Association des données de renard pour les proportions dans le glm
+#### Association des données de renard pour les proportions dans le glm ####
 fox <- read.table("FOX_abundance_Chevallier.txt", h = T, sep = "\t", dec = ",")
 head(fox)
 
@@ -58,7 +43,20 @@ par(mfrow = c(2,2))
 plot(jo)
 
 
-#### Liste de modèles à corriger ####
+#### Ajout de abondance de lemmings C1 CORRIGE (cf courriel Gilles - 12 juin 2018) ####
+lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
+mC1$lmg_C1_CORR <- lmg$LMG_C1_CORR[match(mC1$AN, lmg$YEAR)]
+
+# Verification
+plot(tapply(mC1$lmg_C1, mC1$AN, unique),
+     type ="l",
+     ylim = c(0, 10),
+     lwd = 3,
+     col = "darkgoldenrod2")
+lines(tapply(mC1$lmg_C1_CORR, mC1$AN, unique),
+      type ="b",
+      lwd = 3,
+      col = "olivedrab3")
 
 #### ro2*** #####
 #Modele de piste
@@ -84,9 +82,19 @@ sem.fit(ro2a, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2a, mC1)
 
+# CORRECTION WITH LAST LEMMING ABUNDANCE
+ro2a <- list(
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2a, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2a, mC1)
+
 ##### Modèle ro2a SCALE #####
 # Normalisation des données
-n <- mC1[, c(4, 12, 15, 16, 17)]
+n <- mC1[, c(4, 12, 15, 16, 17, 28)]
 nsc <- scale(n)
 # Ajout des variable AN, prop_fox_dens, SN & monit_dens
 nsc <- cbind(mC1[, c(1, 24, 25)], nsc)
@@ -114,10 +122,20 @@ sem.fit(ro2b, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2b, mC1)
 
-##### Modèle ro2b SCALE #####
+# CORRECTION WITH THE LAST LEMMING ABUNDANCE
+ro2b <- list(
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2b, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2b, mC1)
+
+##### Modèle ro2b SCALE - WITH CORRECTION OF LEMMING ABUNDANCE #####
 #Modele de piste
 ro2bSC <- list(
-  glm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = nsc),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = nsc),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nsc, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2bSC, nsc, conditional = T)
