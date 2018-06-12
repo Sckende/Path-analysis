@@ -1,6 +1,6 @@
 #### TEST MICRO ####
 
-setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 
 rm(list = ls()) #clean R memory
 f <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
@@ -16,6 +16,21 @@ require(ggm)
 
 # nom des fichiers contenus dans le répertoire
 list.files()
+
+# Ajout de abondance de lemmings C1 CORRIGE (cf courriel Gilles - 12 juin 2018)
+lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
+mC1$lmg_C1_CORR <- lmg$LMG_C1_CORR[match(mC1$AN, lmg$YEAR)]
+
+# Verification
+plot(tapply(mC1$lmg_C1, mC1$AN, unique),
+     type ="l",
+     ylim = c(0, 10),
+     lwd = 3,
+     col = "darkgoldenrod2")
+lines(tapply(mC1$lmg_C1_CORR, mC1$AN, unique),
+      type ="b",
+      lwd = 3,
+      col = "olivedrab3")
 
 # Association des données de renard pour les proportions dans le glm
 fox <- read.table("FOX_abundance_Chevallier.txt", h = T, sep = "\t", dec = ",")
