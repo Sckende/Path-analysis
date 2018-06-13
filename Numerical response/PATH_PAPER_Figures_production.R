@@ -12,7 +12,7 @@ t <- t[t$YEAR >= 1996 & !t$YEAR == 2017,]; head(t); summary(t)
 AO <- read.table("AO_daily.txt", h = T, sep = "\t", dec = ".")
 AO <- AO[AO$YEAR >= 1996 & !AO$YEAR == 2017,]; head(AO); summary(AO)
 
-rain <- read.table("PREC_precipitation_Bylot_1996-2016.txt", h = T, sep = "\t", dec = ",")
+rain <- read.table("PREC_precipitation_Bylot_1995-2016.txt", h = T, sep = "\t", dec = ",")
 rain <- rain[rain$YEAR >= 1996 & !rain$YEAR == 2017,]; head(rain); summary(rain)
 rain <- na.omit(rain)
 
@@ -108,52 +108,65 @@ png("prec_temp.tiff",
     unit="cm",
     bg="transparent")
 
-plot(h$year,
-     h$rain,
-     xlab = "Year",
-     ylab = "",
-     xaxp = c(1996, 2016, 10),
-     ylim = c(0, 250),
-     bty = "n",
-     yaxt = "n",
-     xaxt = "n",
-     cex = 1,
-     cex.lab = 1,
-     col = "darkblue",
-     pch = 19,
-     type = 'b')
-#lines(smooth.spline(h$year, h$rain, df = 2), col = "cadetblue", lwd = 2)
+#x11()
 
-lines(h$year,
-      h$moy,
+plot(WEA$YEAR,
+               WEA$cumRAIN,
+               xlab = "Year",
+               ylab = "",
+               xaxp = c(1996, 2016, 10),
+               ylim = c(0, 150),
+               bty = "n",
+               yaxt = "n",
+               xaxt = "n",
+               cex = 1,
+               cex.lab = 1,
+               col = "darkblue",
+               pch = 19,
+               type = 'b')
+
+lines(WEA$YEAR,
+      rep(mean(WEA$cumRAIN), 21),
       col = "darkblue",
       type = "l",
       lty = 4)
 
 axis(side = 4,
      lwd = 1)
+mtext(side = 4,
+      line = 3,
+      "Rainfall (mm)")
+
+par(new = T)
+
+plot(WEA$YEAR,
+              WEA$meanTEMP,
+                    xlab = "",
+                    ylab = "",
+                    ylim = c(0, 6.5),
+                    bty = "n",
+                    yaxt = "n",
+                    xaxt = "n",
+                    cex = 1,
+                    cex.lab = 1,
+                    col = "chocolate",
+                    pch = 17,
+                    type = 'b')
+lines(WEA$YEAR,
+      rep(mean(WEA$meanTEMP), 21),
+      col = "chocolate",
+      type = "l",
+      lty = 4)
+
 axis(side = 1,
      at = 1996:2016,
      lwd = 1)
+axis(side = 2,
+     lwd = 1,
+     at = 0:6.5)
 
-par(bg = "transparent")
-plot(p$year,
-     p$nidTEMP,
-     xlab = "",
-     ylab = "",
-     ylim = c(0, 5.5),
-     bty = "n",
-     yaxt = "n",
-     xaxt = "n",
-     cex = 1,
-     cex.lab = 1,
-     col = "chocolate",
-     pch = 17,
-     type = 'b')
 
-axis(side = 2, lwd = 1, at = 0:5.5)
-#lines(smooth.spline(p$year, p$nidTEMP, df = 2), col = "chocolate", lwd = 2)
-lines(p$year, p$motem, col = "chocolate", lty = 4)
+mtext(side = 2,
+      line = 3,
+      "Mean temperature (c)")
 
-#mtext(c("Cumulative precipitation (mm)", "Mean temperature (°C)"), side = c(4, 2), line = 1)
-dev.off()
