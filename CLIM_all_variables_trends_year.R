@@ -8,16 +8,16 @@ t <- read.table("TEMP_Tair moy 1989-2017 BYLCAMP.txt", sep = "\t", dec = ",", h 
 t <- t[t$YEAR >= 1996 & !t$YEAR == 2017,]; head(t)
 AO <- read.table("AO_daily.txt", h = T, sep = "\t", dec = ".")
 head(AO)
-rain <- read.table("PREC_precipitation_Bylot_1996-2016.txt", h = T, sep = "\t", dec = ",")
+rain <- read.table("PREC_precipitation_Bylot_1995-2016.txt", h = T, sep = "\t", dec = ",")
+rain <- rain[rain$YEAR >= 1996 & !rain$YEAR == 2017,]
 
 #### Summer precipitation trends ####
 head(rain)
 rain <- na.omit(rain)
 summary(rain)
 h <- as.data.frame(tapply(rain$RAIN, rain$YEAR, sum))
-h <- cbind(1996:2017, h); names(h) <- c("year", "rain")
+h <- cbind(1996:2016, h); names(h) <- c("year", "rain")
 head(h)
-h <- h[-22,]
 h$moy <- mean(h$rain)
 #plot
 tiff("Prec1.tiff", res=300, width=29, height=20, pointsize=12, unit="cm", bg="transparent")
@@ -47,7 +47,8 @@ coef(M3)
 col2rgb(col="blue")
 
 
-par(bg=NA)#fond de graphique transparent
+par(new = T) # Superposition de plots
+#par(bg=NA)#fond de graphique transparent
 plot(h$year, h$rain, xlab = "year", ylab = "Cumulative precipitation",
   xlim = c(1996, 2016),ylim = c(0, 155),col="blue",lwd=4,cex.axis=1.8,pch=16,cex=2)#nuage de points
 par(new=T)#pour superposition d'un nouveau graphique
