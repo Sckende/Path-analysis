@@ -36,7 +36,124 @@ t$jj <- strptime(paste(t$DAY, t$MONTH, t$YEAR, sep = "-"), format = "%d-%m-%Y")
 t$jj <- t$jj$yday + 1
 
 # Exemple de Vérification de la valeur des JJ pour les années bissextiles (366 jours - 1996, 2000, 2004, 2008, 2012, 2016) et non bissextiles
-NONbiss <- g[!(g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016),]
-biss <- g[g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016,]
-plot(biss$LAY_DATE, biss$lay_date_jj)
-plot(biss$HATCH_DATE, biss$hatch_date_jj)
+#NONbiss <- g[!(g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016),]
+#biss <- g[g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016,]
+#plot(biss$LAY_DATE, biss$lay_date_jj)
+#plot(biss$HATCH_DATE, biss$hatch_date_jj)
+
+#### Temperatures trends ####
+#### Relations entre les temperatures et la periode de nidification de oies ####
+x11(title = "Nidification temperature trends between 1996 & 2016 ")
+#dev.off()
+par(mfrow = c(3, 7))
+for (i in 1996:2016) {
+  plot(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], main = i, xlab = "Julian day", ylab = "temp", ylim = c(-1, 14), xlim = c(158, 195))
+  ajout <- with(t, smooth.spline(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], df = 2))
+  ajout
+  lines(ajout, col = "blue")
+}
+#dev.copy2pdf("Nidifi_temp_trends_1996-2015.pdf")
+dev.off()
+
+#### Rainfall trends ####
+#### Relations entre les précipitations et la periode de nidification de oies ####
+x11(title = "Nidification rainfall trends between 1996 & 2016 ")
+#dev.off()
+par(mfrow = c(3, 7))
+for (i in 1996:2016) {
+  plot(rain$JJ[rain$JJ >= g$lay_date_jj[g$YEAR == i] & rain$JJ <= g$hatch_date_jj[g$YEAR == i] & rain$YEAR == i],
+       rain$RAIN[rain$JJ >= g$lay_date_jj[g$YEAR == i] & rain$JJ <= g$hatch_date_jj[g$YEAR == i] & rain$YEAR == i],
+       main = i,
+       xlab = "Julian day",
+       ylab = "Rainfall",
+       ylim = c(-1, max(rain$RAIN)),
+       xlim = c(158, 195))
+  ajout <- with(rain,
+                smooth.spline(rain$JJ[rain$JJ >= g$lay_date_jj[g$YEAR == i] & rain$JJ <= g$hatch_date_jj[g$YEAR == i] & rain$YEAR == i],
+                              rain$RAIN[rain$JJ >= g$lay_date_jj[g$YEAR == i] & rain$JJ <= g$hatch_date_jj[g$YEAR == i] & rain$YEAR == i],
+                              df = 2))
+  ajout
+  lines(ajout, col = "blue")
+}
+#dev.copy2pdf("Nidifi_temp_trends_1996-2015.pdf")
+dev.off()
+
+
+#### Calcul des valeurs de précipitations cumulées et de températures moyennes par années entre les dates moyennes d'initiation et d'éclosion
+
+WEA <- NULL
+
+for(i in g$YEAR){
+  YEAR <- i
+  LAY <- g$lay_date_jj[g$YEAR == i]
+  HATCH <- g$hatch_date_jj[g$YEAR == i]
+  summerRAIN <- sum(rain$RAIN[rain$YEAR == i])
+  cumRAIN <- sum(rain$RAIN[rain$YEAR == i & rain$JJ <= HATCH & rain$JJ >= LAY])
+  meanTEMP <- mean(t$TEMP[t$YEAR == i & t$jj <= HATCH & t$jj >= LAY])
+  sdTEMP <- sd(t$TEMP[t$YEAR == i & t$jj <= HATCH & t$jj >= LAY])
+  
+  c <- data.frame(YEAR, LAY, HATCH, summerRAIN, cumRAIN, meanTEMP, sdTEMP)
+  
+  WEA <- rbind(WEA, c)
+}
+
+summary(WEA)
+#### Superposition of temperature and precipitation in time ####
+
+png("prec_temp.tiff",
+    res=300,
+    width=10,
+    height=15,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
+
+plot(h$year,
+     h$rain,
+     xlab = "Year",
+     ylab = "",
+     xaxp = c(1996, 2016, 10),
+     ylim = c(0, 250),
+     bty = "n",
+     yaxt = "n",
+     xaxt = "n",
+     cex = 1,
+     cex.lab = 1,
+     col = "darkblue",
+     pch = 19,
+     type = 'b')
+#lines(smooth.spline(h$year, h$rain, df = 2), col = "cadetblue", lwd = 2)
+
+lines(h$year,
+      h$moy,
+      col = "darkblue",
+      type = "l",
+      lty = 4)
+
+axis(side = 4,
+     lwd = 1)
+axis(side = 1,
+     at = 1996:2016,
+     lwd = 1)
+
+par(bg = "transparent")
+plot(p$year,
+     p$nidTEMP,
+     xlab = "",
+     ylab = "",
+     ylim = c(0, 5.5),
+     bty = "n",
+     yaxt = "n",
+     xaxt = "n",
+     cex = 1,
+     cex.lab = 1,
+     col = "chocolate",
+     pch = 17,
+     type = 'b')
+
+axis(side = 2, lwd = 1, at = 0:5.5)
+#lines(smooth.spline(p$year, p$nidTEMP, df = 2), col = "chocolate", lwd = 2)
+lines(p$year, p$motem, col = "chocolate", lty = 4)
+
+#mtext(c("Cumulative precipitation (mm)", "Mean temperature (°C)"), side = c(4, 2), line = 1)
+dev.off()
