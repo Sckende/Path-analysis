@@ -9,7 +9,7 @@
 
 
 #####-------------------With SEM data-------------------#####
-setwd(dir = "/Users/nicolas/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 rm( list = ls ())
 #####Succès de nidification#####
 nest<-read.csv("GOOSE_nest monitoring.csv")
@@ -268,7 +268,8 @@ breed<-read.csv("GOOSE_breeding_informations.txt", sep = "\t", dec = ",")
 plotlmg <- lmg[lmg$YEAR >= 1996 & lmg$YEAR < 2017, ]
 plotfox <- fox[fox$year >= 1996 & fox$year < 2017, ]
 
-plot(plotlmg$YEAR, plotlmg$LMG_C1, col = "green", bty = "n", ylim = c(0, 5), type = "l",  xaxp = c(1996, 2016, 10), xlab = "Année", lwd = 3)
+plot(plotlmg$YEAR, plotlmg$LMG_C1, col = "green", bty = "n", ylim = c(0, 10), type = "l",  xaxp = c(1996, 2016, 10), xlab = "Année", lwd = 3)
+lines(plotlmg$YEAR, plotlmg$LMG_C1_CORR, col = "darkgreen", bty = "n", ylim = c(0, 5), type = "b",  xaxp = c(1996, 2016, 10), xlab = "Année", lwd = 3)
 lines(plotfox$year, plotfox$prop_natal_dens/10, type = "h", col = "blue", lwd = 3)
 #Graphc with nesting success
 plotgee <- breed[breed$YEAR <= 2016,]
@@ -285,6 +286,7 @@ for(n in m){
   #fox_dens_timelag<-fox$natal_growth_dens[fox$year == d+ ou - 1]
   lmg_C2<-lmg$LMG_C2[lmg$YEAR == d]
   lmg_C1<-lmg$LMG_C1[lmg$YEAR == d]
+  lmg_C1_CORR<-lmg$LMG_C1_CORR[lmg$YEAR == d]
   lmg_C1_C2<-lmg$LMG_C1_C2[lmg$YEAR == d]
   prim_prod<-prod$PROD_INDICE_C2[prod$YEAR == d]
   

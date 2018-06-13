@@ -1,6 +1,6 @@
 rm(list = ls()) #clean R memory
 
-setwd(dir = "/home/claire/OneDriveDoc/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 list.files()
 g <- read.table("GOOSE_breeding_informations.txt", sep = "\t", dec = ",", h = T)
 head(g)
@@ -56,23 +56,22 @@ couleur<-rgb(0,0,0.5,0.2)#définition d'une couleur pour l'intervalle de confian
 plot.gam(M3,shade = T,shade.col =couleur,pers = T,xlab = "",yaxt="n",ylab="",xaxt="n",lwd=4)#plot de la smooth curve et de l'intervalle de confiance à 95% associée
 
 #### Obtention des jours juliens pour les dates GOOSE ####
-Sys.setlocale(category = "LC_TIME", locale = "en_US.utf8") #en_US.utf8 pour linux, en_US pour macOS 
+Sys.setlocale(category = "LC_TIME", locale = "English") #en_US.utf8 pour linux, en_US pour macOS 
 #setting in english to read month
 g$lay_date_jj <- paste(g$LAY_DATE, g$YEAR, sep = " ")
 g$lay_date_jj <- strptime(g$lay_date_jj, format = "%d %B %Y")
-g$lay_date_jj <- g$lay_date_jj$yday
-g$lay_date_jj[g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016] <- g$lay_date_jj[g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016] + 1
+g$lay_date_jj <- g$lay_date_jj$yday +1
 
 g$hatch_date_jj <- paste(g$HATCH_DATE, g$YEAR, sep = " ")
 g$hatch_date_jj <- strptime(g$hatch_date_jj, format = "%d %B %Y")
-g$hatch_date_jj <- g$hatch_date_jj$yday
-g$hatch_date_jj[g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016] <- g$hatch_date_jj[g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016] + 1
+g$hatch_date_jj <- g$hatch_date_jj$yday +1
+
 
 #Verfication des dates avec annees bissextiles (1996, 2000, 2004, 2008, 2012, 2016) et non
 NONbiss <- g[!(g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016),]
 biss <- g[g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016,]
-plot(NONbiss$LAY_DATE, NONbiss$lay_date_jj)
-plot(NONbiss$HATCH_DATE, NONbiss$hatch_date_jj)
+plot(biss$LAY_DATE, biss$lay_date_jj)
+plot(biss$HATCH_DATE, biss$hatch_date_jj)
 
 #### Obtention des jours juliens pour les dates TEMP ####
 head(t)

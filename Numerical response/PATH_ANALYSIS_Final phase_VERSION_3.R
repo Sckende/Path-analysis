@@ -99,9 +99,9 @@ nsc <- scale(n)
 # Ajout des variable AN, prop_fox_dens, SN & monit_dens
 nsc <- cbind(mC1[, c(1, 24, 25)], nsc)
 
-#Modele de piste
+#Modele de piste - CORRECTION LEMMING ABUNDANCE
 ro2aSC <- list(
-  glm(prop_fox_dens ~ lmg_C1 + cumul_prec + MEAN_temp, weights = monit_dens, data = nsc),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = nsc),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nsc, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2aSC, nsc, conditional = T)
