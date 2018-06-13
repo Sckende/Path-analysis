@@ -51,8 +51,10 @@ par(new = T) # Superposition de plots
 #par(bg=NA)#fond de graphique transparent
 plot(h$year, h$rain, xlab = "year", ylab = "Cumulative precipitation",
   xlim = c(1996, 2016),ylim = c(0, 155),col="blue",lwd=4,cex.axis=1.8,pch=16,cex=2)#nuage de points
+
 par(new=T)#pour superposition d'un nouveau graphique
 par(bg=NA)
+
 couleur<-rgb(0,0,0.5,0.2)#définition d'une couleur pour l'intervalle de confiance
 plot.gam(M3,shade = T,shade.col =couleur,pers = T,xlab = "",yaxt="n",ylab="",xaxt="n",lwd=4)#plot de la smooth curve et de l'intervalle de confiance à 95% associée
 
@@ -83,8 +85,8 @@ t$jj <- t$jj$yday + 1 #comme dates continues pas besoin de traiter separemment a
 #### Relations entre les temperatures et la periode de nidification de oies ####
 x11(title = "Nidification temperature trends between 1996 & 2016 ")
 #dev.off()
-par(mfrow = c(4, 5))
-for (i in 1997:2016) {
+par(mfrow = c(3, 7))
+for (i in 1996:2016) {
   plot(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], main = i, xlab = "Julian day", ylab = "temp", ylim = c(0, 12), xlim = c(160, 195))
   ajout <- with(t, smooth.spline(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], df = 2))
   ajout
@@ -143,7 +145,7 @@ p$motem <- mean(p$nidTEMP)
 
 
 #### Plot of nidification temperatures trends ####
-plot(p$year, p$nidTEMP, bty = "n", ltw = 3, xaxp = c(1996, 2016, 10), ylim = c(3, 5.5), cex = 2, pch = 19, cex.lab = 1, col = "orange", xlab = "Year", ylab = "Mean temperature (°c)")
+plot(p$year, p$nidTEMP, bty = "n", ltw = 3, xaxp = c(1996, 2016, 10), ylim = c(3, 5.5), cex = 2, pch = 19, cex.lab = 1, col = "orange", xlab = "Year", ylab = "Mean temperature (°c)", type = "b")
 lines(smooth.spline(p$year, p$nidTEMP, df = 2), lwd = 5, col = "orange")
 
 tiff("Fig1.tiff", res=300, width=20, height=29, pointsize=12, unit="cm", bg="transparent")
