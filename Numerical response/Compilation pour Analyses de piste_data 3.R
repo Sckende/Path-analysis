@@ -216,7 +216,7 @@ nini<-cbind(nini,TAB_temp)
 #Boucle calcul range précipitation par individus nichant selon le nombre de jours d'exposition 
 #à partir de la date d'initiation
 
-prec<-read.table("PREC_precipitation_Bylot_1996-2016.txt",h=T, dec = ",", sep = "\t")
+prec<-read.table("PREC_precipitation_Bylot_1995-2016.txt",h=T, dec = ",", sep = "\t")
 summary(prec)
 
 j<-unique(nini$AN)
