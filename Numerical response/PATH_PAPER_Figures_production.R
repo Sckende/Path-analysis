@@ -143,7 +143,7 @@ plot(WEA$YEAR,
               WEA$meanTEMP,
                     xlab = "",
                     ylab = "",
-                    ylim = c(0, 6.5),
+                    ylim = c(0, 7),
                     bty = "n",
                     yaxt = "n",
                     xaxt = "n",
@@ -163,7 +163,7 @@ axis(side = 1,
      lwd = 1)
 axis(side = 2,
      lwd = 1,
-     at = 0:6.5)
+     at = 0:7)
 
 
 mtext(side = 2,
