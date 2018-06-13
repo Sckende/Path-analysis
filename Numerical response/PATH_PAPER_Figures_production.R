@@ -169,4 +169,4 @@ axis(side = 2,
 mtext(side = 2,
       line = 3,
       "Mean temperature (c)")
-
+dev.off()
