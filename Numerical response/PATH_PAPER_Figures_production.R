@@ -47,11 +47,20 @@ t$jj <- t$jj$yday + 1
 #### Temperatures trends ####
 #### Relations entre les temperatures et la periode de nidification de oies ####
 x11(title = "Nidification temperature trends between 1996 & 2016 ")
+
 #dev.off()
 par(mfrow = c(3, 7))
 for (i in 1996:2016) {
-  plot(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], main = i, xlab = "Julian day", ylab = "temp", ylim = c(-1, 14), xlim = c(158, 195))
-  ajout <- with(t, smooth.spline(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i], df = 2))
+  plot(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i],
+       t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i],
+       main = i,
+       xlab = "Julian day",
+       ylab = "temp",
+       ylim = c(-1, 14),
+       xlim = c(158, 195))
+  ajout <- with(t, smooth.spline(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i],
+                                 t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i],
+                                 df = 2))
   ajout
   lines(ajout, col = "blue")
 }
@@ -61,6 +70,7 @@ dev.off()
 #### Rainfall trends ####
 #### Relations entre les précipitations et la periode de nidification de oies ####
 x11(title = "Nidification rainfall trends between 1996 & 2016 ")
+
 #dev.off()
 par(mfrow = c(3, 7))
 for (i in 1996:2016) {
@@ -103,13 +113,13 @@ for(i in g$YEAR){
 summary(WEA)
 #### Superposition of temperature and precipitation in time ####
 
-#png("prec_temp.tiff",
-#    res=300,
- #   width=10,
-  #  height=15,
-   # pointsize=12,
-    #unit="cm",
-    #bg="transparent")
+png("prec_temp.tiff",
+    res=300,
+    width=20,
+    height=15,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
 
 #x11()
 
@@ -126,13 +136,15 @@ plot(WEA$YEAR,
                cex.lab = 1,
                col = "darkblue",
                pch = 19,
+              lwd = 3,
                type = 'b')
 
 lines(WEA$YEAR,
       rep(mean(WEA$cumRAIN), 21),
       col = "darkblue",
       type = "l",
-      lty = 4)
+      lty = 4,
+      lwd = 2)
 
 axis(side = 4,
      lwd = 1)
@@ -154,12 +166,14 @@ plot(WEA$YEAR,
                     cex.lab = 1,
                     col = "chocolate",
                     pch = 17,
-                    type = 'b')
+                    type = 'b',
+                    lwd = 3)
 lines(WEA$YEAR,
       rep(mean(WEA$meanTEMP), 21),
       col = "chocolate",
       type = "l",
-      lty = 4)
+      lty = 4,
+      lwd = 2)
 
 axis(side = 1,
      at = 1996:2016,
@@ -173,7 +187,7 @@ mtext(side = 2,
       line = 3,
       "Mean temperature (c)")
 
-#dev.off()
+dev.off()
 
 
 #### GOOSE - LEMMING - FOX PLOT ####
@@ -184,7 +198,15 @@ lmg <- lmg[lmg$YEAR >= 1996 & !lmg$YEAR == 2017,]; head(lmg); summary(lmg)
 fox <- read.table("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",", h = T)
 fox <- fox[fox$year >= 1996 & !fox$year == 2017,]; head(fox); summary(fox)
 
-x11()
+png("fox_lmg_gee.tiff",
+    res=300,
+   width=10,
+  height=15,
+ pointsize=12,
+ unit="cm",
+bg="transparent")
+
+#x11()
 
 plot(lmg$YEAR,
      lmg$LMG_C1_CORR,
@@ -235,3 +257,82 @@ axis(side = 4,
 mtext(side = 4,
       line = 3,
       "Goose nesting succeess & fox breeding dens proportion")
+
+dev.off()
+
+
+#### FOX VS. LEMMING PLOT ####
+png("fox_vs_lem.tiff",
+    res=300,
+   width=20,
+  height=15,
+ pointsize=12,
+unit="cm",
+bg="transparent")
+
+#x11()
+
+plot(lmg$LMG_C1_CORR,
+     fox$prop_natal_dens,
+     xlim = c(0, 10),
+     ylim = c(0, 40),
+     col = "dodgerblue4",
+     bty = "n",
+     pch = 16,
+     #type = "p",
+     lwd = 3,
+     xlab = "Lemming abundance",
+     ylab = "Proportion of fox breeding dens")
+
+lines(smooth.spline(lmg$LMG_C1_CORR,
+                    fox$prop_natal_dens,
+                    df = 3),
+      col = "dodgerblue4",
+      lwd = 3)
+
+lines(smooth.spline(lmg$LMG_C1_CORR,
+                    fox$prop_natal_dens,
+                    df = 2),
+      col = "darkgoldenrod3",
+      lwd = 3)
+
+legend(0,
+       40,
+       legend = c("df = 3", "df = 2"),
+       col = c("dodgerblue4", "darkgoldenrod3"),
+       pch = "-",
+       lwd = 3,
+       bty = "n")
+
+dev.off()
+
+#### FOX VS. LEMMING PLOT WITHOUT 2000 ####
+png("fox_vs_lem_WITHOUT_2000.tiff",
+    res=300,
+    width=10,
+    height=20,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
+
+#x11()
+
+plot(lmg$LMG_C1_CORR[!lmg$YEAR == 2000],
+     fox$prop_natal_dens[!fox$year == 2000],
+     xlim = c(0, 10),
+     ylim = c(0, 40),
+     col = "dodgerblue4",
+     bty = "n",
+     pch = 16,
+     #type = "p",
+     lwd = 3,
+     xlab = "Lemming abundance",
+     ylab = "Proportion of fox breeding dens")
+
+lines(smooth.spline(lmg$LMG_C1_CORR[!lmg$YEAR == 2000],
+                    fox$prop_natal_dens[!fox$year == 2000],
+                    df = 3),
+      col = "dodgerblue4",
+      lwd = 3)
+dev.off()
+
