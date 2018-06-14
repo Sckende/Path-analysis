@@ -189,7 +189,7 @@ x11()
 plot(lmg$YEAR,
      lmg$LMG_C1_CORR,
      xlab = "Year",
-     ylab = "",
+     ylab = "Lemming abundance",
      xaxp = c(1996, 2016, 10),
      ylim = c(0, 12),
      bty = "n",
@@ -203,9 +203,9 @@ plot(lmg$YEAR,
 
 axis(side = 2,
      lwd = 1)
-mtext(side = 4,
-      line = 3,
-      "Lemming abundance")
+axis(side = 1,
+     at = 1996:2016,
+     lwd = 1)
 
 par(new = T)
 
