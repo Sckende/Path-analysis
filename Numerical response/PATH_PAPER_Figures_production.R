@@ -3,6 +3,9 @@ rm(list = ls()) #clean R memory
 setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 list.files()
 
+
+#### TEMPERATURES AND RAINFALL PLOTS ####
+
 g <- read.table("GOOSE_breeding_informations.txt", sep = "\t", dec = ",", h = T)
 g <- g[g$YEAR >= 1996 & !g$YEAR == 2017,]; head(g); summary(g)
 
@@ -100,13 +103,13 @@ for(i in g$YEAR){
 summary(WEA)
 #### Superposition of temperature and precipitation in time ####
 
-png("prec_temp.tiff",
-    res=300,
-    width=10,
-    height=15,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
+#png("prec_temp.tiff",
+#    res=300,
+ #   width=10,
+  #  height=15,
+   # pointsize=12,
+    #unit="cm",
+    #bg="transparent")
 
 #x11()
 
@@ -169,4 +172,66 @@ axis(side = 2,
 mtext(side = 2,
       line = 3,
       "Mean temperature (c)")
-dev.off()
+
+#dev.off()
+
+
+#### GOOSE - LEMMING - FOX PLOT ####
+
+lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
+lmg <- lmg[lmg$YEAR >= 1996 & !lmg$YEAR == 2017,]; head(lmg); summary(lmg)
+
+fox <- read.table("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",", h = T)
+fox <- fox[fox$year >= 1996 & !fox$year == 2017,]; head(fox); summary(fox)
+
+x11()
+
+plot(lmg$YEAR,
+     lmg$LMG_C1_CORR,
+     xlab = "Year",
+     ylab = "",
+     xaxp = c(1996, 2016, 10),
+     ylim = c(0, 12),
+     bty = "n",
+     yaxt = "n",
+     xaxt = "n",
+     cex = 1,
+     cex.lab = 1,
+     col = "chartreuse3",
+     type = 'h',
+     lwd = 3)
+
+axis(side = 2,
+     lwd = 1)
+mtext(side = 4,
+      line = 3,
+      "Lemming abundance")
+
+par(new = T)
+
+plot(g$YEAR,
+     g$NEST_SUCC*100,
+     xlab = "",
+     ylab = "",
+     ylim = c(0, 100),
+     bty = "n",
+     yaxt = "n",
+     xaxt = "n",
+     cex = 1,
+     cex.lab = 1,
+     col = "darkolivegreen4",
+     pch = 19,
+     type = 'b',
+     lwd = 3)
+lines(fox$year,
+      fox$prop_natal_dens,
+      col = "dodgerblue4",
+      pch = 19,
+      type = 'b',
+      lwd = 3)
+
+axis(side = 4,
+     lwd = 1)
+mtext(side = 4,
+      line = 3,
+      "Goose nesting succeess & fox breeding dens proportion")
