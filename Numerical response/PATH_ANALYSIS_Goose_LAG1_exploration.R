@@ -40,9 +40,9 @@ for(i in unique(mC1$AN)) {
 mC1 <- na.omit(mC1)
 
 
-#### Nouveau modele de piste ####
+#### Nouveaux modeles de piste ####
 
-#Modele de piste
+#Modele de piste - VERSION COMPLETE
 mo1 <- list(
   glm(prop_fox_dens ~ lmg_C1_CORR + winAO + sprAO, weights = monit_dens, data = mC1),
   glmer(SN ~ cumul_prec + MEAN_temp + sprAO + (1|AN), data = mC1, family = binomial(link = "logit")),
@@ -58,7 +58,7 @@ sem.coefs(mo1, mC1)
 #sem.plot(mo1, mC1, show.nonsig = T)
 
 
-#Modele de piste
+#Modele de piste - VERSION SIMPLE
 mo2 <- list(
   glm(prop_fox_dens ~ lmg_C1_CORR, weights = monit_dens, data = mC1),
   glmer(SN ~ cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
