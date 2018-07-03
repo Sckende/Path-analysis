@@ -58,6 +58,30 @@ lines(tapply(mC1$lmg_C1_CORR, mC1$AN, unique),
       lwd = 3,
       col = "olivedrab3")
 
+#### Computation of difference between two consecutive years ####
+# Lemming
+r <- as.data.frame(tapply(mC1$lmg_C1_CORR, mC1$AN, unique))
+r <- cbind(r, 1996:2016)
+names(r) <- c("lmg_CORR", "YEAR")
+head(r)
+d <- diff(r$lmg_CORR, lag = 1); d
+summary(d)
+
+# fox
+r <- as.data.frame(tapply(mC1$prop_fox_dens, mC1$AN, unique))
+r <- cbind(r, 1996:2016)
+names(r) <- c("fox_prop", "YEAR")
+head(r)
+d <- diff(r$fox_prop, lag = 1); d
+summary(d)
+
+# goose
+g<- read.table("GOOSE_breeding_informations.txt", sep = "\t", dec = ",", h = T)
+g <- g[g$YEAR >= 1996 & !g$YEAR == 2017,]; head(g); summary(g)
+
+d <- diff(g$NEST_SUCC, lag = 1); d
+summary(d)
+
 #### ro2*** #####
 #Modele de piste
 ro2 <- list(
