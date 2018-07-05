@@ -136,7 +136,7 @@ plot(WEA$YEAR,
                cex.lab = 1,
                col = "darkblue",
                pch = 19,
-              lwd = 3,
+              lwd = 2,
                type = 'b')
 
 lines(WEA$YEAR,
@@ -147,9 +147,11 @@ lines(WEA$YEAR,
       lwd = 2)
 
 axis(side = 4,
-     lwd = 1)
+     lwd = 1,
+     las = 2)
 mtext(side = 4,
       line = 3,
+      las = 2,
       "Rainfall (mm)")
 
 par(new = T)
@@ -167,7 +169,7 @@ plot(WEA$YEAR,
                     col = "chocolate",
                     pch = 17,
                     type = 'b',
-                    lwd = 3)
+                    lwd = 2)
 lines(WEA$YEAR,
       rep(mean(WEA$meanTEMP), 21),
       col = "chocolate",
@@ -180,11 +182,13 @@ axis(side = 1,
      lwd = 1)
 axis(side = 2,
      lwd = 1,
+     las = 2,
      at = 0:7)
 
 
 mtext(side = 2,
       line = 3,
+      las = 2,
       "Mean temperature (c)")
 
 dev.off()
@@ -200,13 +204,16 @@ fox <- fox[fox$year >= 1996 & !fox$year == 2017,]; head(fox); summary(fox)
 
 png("fox_lmg_gee.tiff",
     res=300,
-   width=10,
+   width=15,
   height=15,
  pointsize=12,
  unit="cm",
 bg="transparent")
 
-#x11()
+x11()
+
+#par(oma=c(0,0,0,3)) # outer margin
+par(mar=c(5,5,1,5)) # inner margin - default parameter is par("mar") <- 5.1 4.1 4.1 2.1
 
 plot(lmg$YEAR,
      lmg$LMG_C1_CORR,
@@ -221,10 +228,11 @@ plot(lmg$YEAR,
      cex.lab = 1,
      col = "chartreuse3",
      type = 'h',
-     lwd = 3)
+     lwd = 4)
 
 axis(side = 2,
-     lwd = 1)
+     lwd = 1, 
+     las = 2)
 axis(side = 1,
      at = 1996:2016,
      lwd = 1)
@@ -244,16 +252,17 @@ plot(g$YEAR,
      col = "darkolivegreen4",
      pch = 19,
      type = 'b',
-     lwd = 3)
+     lwd = 2)
 lines(fox$year,
       fox$prop_natal_dens,
       col = "dodgerblue4",
       pch = 19,
       type = 'b',
-      lwd = 3)
+      lwd = 2)
 
 axis(side = 4,
-     lwd = 1)
+     lwd = 1,
+     las = 2)
 mtext(side = 4,
       line = 3,
       "Goose nesting succeess & fox breeding dens proportion")
