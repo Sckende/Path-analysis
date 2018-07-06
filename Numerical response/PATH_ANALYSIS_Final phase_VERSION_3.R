@@ -48,15 +48,16 @@ lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
 mC1$lmg_C1_CORR <- lmg$LMG_C1_CORR[match(mC1$AN, lmg$YEAR)]
 
 # Verification
-plot(tapply(mC1$lmg_C1, mC1$AN, unique),
-     type ="l",
+plot(tapply(mC1$lmg_C1_CORR, mC1$AN, unique),
+     type ="h",
+     lwd = 3,
      ylim = c(0, 10),
+     col = "olivedrab3")
+lines(tapply(mC1$lmg_C1, mC1$AN, unique),
+     type ="l",
      lwd = 3,
      col = "darkgoldenrod2")
-lines(tapply(mC1$lmg_C1_CORR, mC1$AN, unique),
-      type ="b",
-      lwd = 3,
-      col = "olivedrab3")
+
 
 #### Computation of difference between two consecutive years ####
 # Lemming
