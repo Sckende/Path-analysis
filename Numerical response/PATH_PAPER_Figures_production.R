@@ -3,7 +3,117 @@ rm(list = ls()) #clean R memory
 setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 list.files()
 
+#### WINTER, SPRING & SUMMER AO ####
+  # Winter AO = November to April
+  # Spring AO = 20 MAy - 20 June
+  # Summer AO =
 
+AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
+head(AO)
+
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/AO_seasons.tiff",
+    res=300,
+    width=15,
+    height= 25,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
+#x11()
+par(mfrow = c(3, 1), mar = c(1, 5, 1, 1))
+
+plot(AO$YEAR[AO$YEAR <= 2016 & AO$YEAR >= 1996],
+     AO$winAO[AO$YEAR <= 2016 & AO$YEAR >= 1996],
+     xlab = "",
+     ylab = "",
+     xaxp = c(1996, 2016, 10),
+     ylim = c(-2.0, 1.5),
+     bty = "n",
+     yaxt = "s",
+     xaxt = "n",
+     cex = 1,
+     cex.lab = 1,
+    cex.axis = 1.5,
+     col = "orange",
+     pch = 19,
+     lwd = 2,
+     type = 'b',
+     las = 2)
+lines(AO$YEAR[AO$YEAR <= 2016 & AO$YEAR >= 1996],
+      rep(mean(AO$winAO[AO$YEAR <= 2016 & AO$YEAR >= 1996]), 21),
+      col = "orange",
+      type = "l",
+      lty = 4,
+      lwd = 2)
+legend(1995,
+       1.8,
+       "Winter AO index",
+       bty = "n",      
+       cex = 2,
+       text.col = "Orange")
+plot(AO$YEAR[AO$YEAR <= 2016 & AO$YEAR >= 1996],
+     AO$sprAO[AO$YEAR <= 2016 & AO$YEAR >= 1996],
+     xlab = "",
+     ylab = "",
+     xaxp = c(1996, 2016, 10),
+     ylim = c(-2.0, 1.5),
+     bty = "n",
+     yaxt = "s",
+     xaxt = "n",
+     cex = 1,
+     cex.lab = 1,
+     cex.axis = 1.5,
+     col = "orange",
+     pch = 19,
+     lwd = 2,
+     type = 'b',
+     las = 2)
+lines(AO$YEAR[AO$YEAR <= 2016 & AO$YEAR >= 1996],
+      rep(mean(AO$sprAO[AO$YEAR <= 2016 & AO$YEAR >= 1996]), 21),
+      col = "orange",
+      type = "l",
+      lty = 4,
+      lwd = 2)
+legend(1995,
+       1.8,
+       "Spring AO index",
+       bty = "n",      
+       cex = 2,
+       text.col = "Orange")
+par(mar = c(2, 5, 1, 1))
+plot(AO$YEAR[AO$YEAR <= 2016 & AO$YEAR >= 1996],
+     AO$sumAO[AO$YEAR <= 2016 & AO$YEAR >= 1996],
+     xlab = "",
+     ylab = "",
+     xaxp = c(1996, 2016, 10),
+     ylim = c(-2.0, 1.5),
+     bty = "n",
+     yaxt = "s",
+     xaxt = "n",
+     cex = 1,
+     cex.lab = 1,
+     cex.axis = 1.5,
+     col = "orange",
+     pch = 19,
+     lwd = 2,
+     type = 'b',
+     las = 2)
+lines(AO$YEAR[AO$YEAR <= 2016 & AO$YEAR >= 1996],
+      rep(mean(AO$sumAO[AO$YEAR <= 2016 & AO$YEAR >= 1996]), 21),
+      col = "orange",
+      type = "l",
+      lty = 4,
+      lwd = 2)
+axis(side = 1,
+     at = 1996:2016,
+     lwd = 1,
+     cex.axis = 1.5)
+legend(1995,
+       1.8,
+       "Summer AO index",
+       bty = "n",      
+       cex = 2,
+       text.col = "Orange")
+dev.off()
 #### TEMPERATURES AND RAINFALL PLOTS ####
 
 g <- read.table("GOOSE_breeding_informations.txt", sep = "\t", dec = ",", h = T)
@@ -113,7 +223,7 @@ for(i in g$YEAR){
 summary(WEA)
 #### Superposition of temperature and precipitation in time ####
 
-png("prec_temp.tiff",
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/prec_temp.tiff",
     res=300,
     width=20,
     height=15,
@@ -151,10 +261,10 @@ lines(WEA$YEAR,
 axis(side = 4,
      lwd = 1,
      las = 2)
-mtext(side = 4,
-      line = 3,
-      las = 2,
-      "Rainfall (mm)")
+#mtext(side = 4,
+     # line = 3,
+     # "Rainfall (mm)",
+     # las = 2)
 
 par(new = T)
 
@@ -188,10 +298,10 @@ axis(side = 2,
      at = 0:7)
 
 
-mtext(side = 2,
-      line = 3,
-      las = 2,
-      "Mean temperature (c)")
+#mtext(side = 2,
+ #     line = 3,
+  #    "Mean temperature (c)",
+   #   las = 2)
 
 dev.off()
 
@@ -204,23 +314,23 @@ lmg <- lmg[lmg$YEAR >= 1996 & !lmg$YEAR == 2017,]; head(lmg); summary(lmg)
 fox <- read.table("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",", h = T)
 fox <- fox[fox$year >= 1996 & !fox$year == 2017,]; head(fox); summary(fox)
 
-png("fox_lmg_gee.tiff",
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_lmg_gee.tiff",
     res=300,
-   width=15,
+   width=20,
   height=15,
  pointsize=12,
  unit="cm",
 bg="transparent")
 
-x11()
+#x11()
 
 #par(oma=c(0,0,0,3)) # outer margin
 par(mar=c(5,5,1,5)) # inner margin - default parameter is par("mar") <- 5.1 4.1 4.1 2.1
 
 plot(lmg$YEAR,
      lmg$LMG_C1_CORR,
-     xlab = "Year",
-     ylab = "Lemming abundance",
+     xlab = "",
+     ylab = "",
      xaxp = c(1996, 2016, 10),
      ylim = c(0, 12),
      bty = "n",
@@ -228,16 +338,19 @@ plot(lmg$YEAR,
      xaxt = "n",
      cex = 1,
      cex.lab = 1,
+     cex.axis = 1,
      col = "chartreuse3",
      type = 'h',
      lwd = 4)
 
 axis(side = 2,
      lwd = 1, 
-     las = 2)
+     las = 2,
+     cex.axis = 1)
 axis(side = 1,
      at = 1996:2016,
-     lwd = 1)
+     lwd = 1,
+     cex.axis = 1)
 
 par(new = T)
 
@@ -264,10 +377,11 @@ lines(fox$year,
 
 axis(side = 4,
      lwd = 1,
-     las = 2)
-mtext(side = 4,
-      line = 3,
-      "Goose nesting succeess & fox breeding dens proportion")
+     las = 2,
+     cex.axis = 1)
+#mtext(side = 4,
+ #     line = 3,
+  #    "Goose nesting succeess & fox breeding dens proportion")
 
 dev.off()
 
@@ -290,7 +404,7 @@ plot(lmg$LMG_C1_CORR,
      col = "dodgerblue4",
      bty = "n",
      pch = 16,
-     #type = "p",
+     type = "p",
      lwd = 3,
      xlab = "Lemming abundance",
      ylab = "Proportion of fox breeding dens")
