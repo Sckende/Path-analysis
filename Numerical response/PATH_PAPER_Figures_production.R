@@ -122,6 +122,8 @@ png("prec_temp.tiff",
     bg="transparent")
 
 #x11()
+#par(oma=c(0,0,0,3)) # outer margin
+par(mar=c(5,5,1,5)) # inner margin - default parameter is par("mar") <- 5.1 4.1 4.1 2.1
 
 plot(WEA$YEAR,
                WEA$cumRAIN,
