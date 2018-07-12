@@ -387,15 +387,16 @@ dev.off()
 
 
 #### FOX VS. LEMMING PLOT ####
-png("fox_vs_lem.tiff",
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_vs_lmg.tiff",
     res=300,
-   width=20,
-  height=15,
- pointsize=12,
-unit="cm",
-bg="transparent")
+    width=20,
+    height=15,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
 
 #x11()
+par(mar=c(3,3,1,1)) # inner margin - default parameter is par("mar") <- 5.1 4.1 4.1 2.1
 
 plot(lmg$LMG_C1_CORR,
      fox$prop_natal_dens,
@@ -405,29 +406,36 @@ plot(lmg$LMG_C1_CORR,
      bty = "n",
      pch = 16,
      type = "p",
-     lwd = 3,
-     xlab = "Lemming abundance",
-     ylab = "Proportion of fox breeding dens")
+     lwd = 2,
+     cex.axis = 1,
+     xlab = "",
+     ylab = "",
+     las = 2,
+     xaxt = "n")
+
+axis(side = 1,
+     lwd = 1,
+     cex.axis = 1)
 
 lines(smooth.spline(lmg$LMG_C1_CORR,
                     fox$prop_natal_dens,
                     df = 3),
       col = "dodgerblue4",
-      lwd = 3)
+      lwd = 2)
 
-lines(smooth.spline(lmg$LMG_C1_CORR,
-                    fox$prop_natal_dens,
-                    df = 2),
-      col = "darkgoldenrod3",
-      lwd = 3)
+#lines(smooth.spline(lmg$LMG_C1_CORR,
+ #                   fox$prop_natal_dens,
+  #                  df = 2),
+   #   col = "darkgoldenrod3",
+    #  lwd = 3)
 
-legend(0,
-       40,
-       legend = c("df = 3", "df = 2"),
-       col = c("dodgerblue4", "darkgoldenrod3"),
-       pch = "-",
-       lwd = 3,
-       bty = "n")
+#legend(0,
+ #      40,
+  #     legend = c("df = 3", "df = 2"),
+   #    col = c("dodgerblue4", "darkgoldenrod3"),
+    #   pch = "-",
+     #  lwd = 3,
+      # bty = "n")
 
 dev.off()
 
