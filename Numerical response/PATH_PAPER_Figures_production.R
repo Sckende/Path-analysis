@@ -365,7 +365,7 @@ plot(g$YEAR,
      cex = 1,
      cex.lab = 1,
      col = "darkolivegreen4",
-     pch = 19,
+     pch = 17,
      type = 'b',
      lwd = 2)
 lines(fox$year,
@@ -422,6 +422,19 @@ lines(smooth.spline(lmg$LMG_C1_CORR,
                     df = 3),
       col = "dodgerblue4",
       lwd = 2)
+
+# Plot confident intervals
+
+fit <- smooth.spline(lmg$LMG_C1_CORR,
+                     fox$prop_natal_dens, df = 3)     # smooth.spline fit
+res <- (fit$yin - fit$y)/(1-fit$lev)      # jackknife residuals
+sigma <- sqrt(var(res))                     # estimate sd
+
+upper <- fit$y + 2.0*sigma*sqrt(fit$lev)   # upper 95% conf. band
+lower <- fit$y - 2.0*sigma*sqrt(fit$lev)   # lower 95% conf. band
+par(new = T)
+matplot(fit$x, cbind(upper, lower), type="l", lty = "dotdash", ylim = c(0, 40), xaxt = "n", yaxt = "n", ylab = "", xlab = "", bty = "n", col = "dodgerblue4")
+
 
 #lines(smooth.spline(lmg$LMG_C1_CORR,
  #                   fox$prop_natal_dens,
