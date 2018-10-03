@@ -482,3 +482,56 @@ lines(smooth.spline(lmg$LMG_C1_CORR[!lmg$YEAR == 2000],
       lwd = 3)
 dev.off()
 
+#### Plot SN vs. prec ####
+
+setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+
+rm(list = ls()) #clean R memory
+f <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
+
+
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/goose vs prec_temp.tiff",
+    res=300,
+    width=25,
+    height=15,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
+
+par(mfrow = c(1, 2))
+# SN vs. prec
+k3 <- glm(SN ~ cumul_prec, data = f, family = binomial(link = "cloglog"))
+summary(k3)
+range(f$cumul_prec)
+xprec <- seq(0, 69, 0.01)
+ySN <- predict(k3, list(cumul_prec = xprec), type = 'response')
+# Plot values
+require(scales) # For the transparency of points - alpha()
+
+par(mar = c(5.1, 4.1, 5, 0.1))
+plot(f$cumul_prec, f$SN, pch = 16, xlab = '', ylab = '', ylim = c(0, 1), bty = 'n', col = alpha('olivedrab', 0.4), yaxt = 'n', xaxt = 'n')
+lines(xprec, ySN, col = 'olivedrab', lwd = 2)
+axis(side = 1, lwd = 1)
+axis(side = 2, lwd = 1)
+
+#legend(65, 1.06, "(a)", bty = "n")
+
+
+# SN vs. temp
+k2 <- glm(SN ~ MEAN_temp, data = f, family = binomial(link = "logit"))
+summary(k2)
+range(f$MEAN_temp)
+xtemp <- seq(-0.85, 8.98, 0.01)
+ySN <- predict(k2, list(MEAN_temp = xtemp), type = 'response')
+# Plot values
+require(scales) # For the transparency of points
+par(mar = c(5.1, 0, 5, 2.1))
+plot(f$MEAN_temp, f$SN, pch = 16, xlab = '', ylab = '', ylim = c(0, 1), bty = 'n', col = alpha('olivedrab', 0.4), yaxt = 'n', xaxt = 'n', xlim = c(-1, 9))
+lines(xtemp, ySN, col = 'olivedrab', lwd = 2)
+axis(side = 1, lwd = 1, xaxp = c(-1, 9, 10))
+#axis(side = 2, lwd = 1)
+
+#legend(8.5, 1.3, "(b)", bty = "n")
+
+dev.off()
+
