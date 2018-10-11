@@ -219,3 +219,31 @@ lines(lowess(X1, residuals(reg)), col="black", lwd=2)
 lines(lowess(X1[Y==0], residuals(reg)[Y==0]), col="blue")
 lines(lowess(X1[Y==1], residuals(reg)[Y==1]), col="red")
 abline(h=0, lty=2, col="grey")
+
+#### Causal link between lemming and goose ####
+
+#### Equivalent ro2-a ####
+#Modele de piste
+ro2a_L <- list(
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1),
+  glmer(SN ~ cumul_prec + MEAN_temp + lmg_C1_CORR + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2a_L, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2a_L, mC1)
+
+
+#### Equivalent de ro2 ####
+#Modele de piste
+ro2_L <- list(
+  glm(prop_fox_dens ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1),
+  glmer(SN ~ lmg_C1_CORR + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
+  lm(lmg_C1_CORR ~ winAO + MEAN_temp + cumul_prec, data = mC1))
+# Get goodness-of-fit and AIC
+sem.fit(ro2_L, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2_L, mC1)
+
+#### Non-significative link between lmg and goose ####
