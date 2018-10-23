@@ -246,4 +246,27 @@ sem.fit(ro2_L, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2_L, mC1)
 
-#### Non-significative link between lmg and goose ####
+#### EQUIVALENT PATH DIAGRAM ####
+library(CauseAndCorrelation)
+library(ggm)
+
+# Code for the equivalent DAG we want to test, including latent variables
+# ------- both egg.conso and lmg.conso influenced by temp & prec ------ #
+test <- DAG (
+  lmg.conso ~ lmg + temp + prec,
+  egg.conso ~ lmg.conso + prec + temp,
+  fox ~ lmg.conso + egg.conso + winAO,
+  goose ~ egg.conso
+)
+
+Observed.Equivalent.DAG(test, latents = c("lmg.conso", "egg.conso"))
+
+# ------- egg.conso influenced by temp & prec ------ #
+test2 <- DAG (
+  lmg.conso ~ lmg,
+  egg.conso ~ lmg.conso + prec + temp,
+  fox ~ lmg.conso + egg.conso + winAO,
+  goose ~ egg.conso
+)
+
+Observed.Equivalent.DAG(test2, latents = c("lmg.conso", "egg.conso"))
