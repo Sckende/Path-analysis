@@ -422,7 +422,6 @@ lines(smooth.spline(lmg$LMG_C1_CORR,
                     df = 3),
       col = "dodgerblue4",
       lwd = 2)
-
 # Plot confident intervals
 
 fit <- smooth.spline(lmg$LMG_C1_CORR,
@@ -437,21 +436,43 @@ matplot(fit$x, cbind(upper, lower), type="l", lty = "dotdash", ylim = c(0, 40), 
 
 
 #lines(smooth.spline(lmg$LMG_C1_CORR,
- #                   fox$prop_natal_dens,
-  #                  df = 2),
-   #   col = "darkgoldenrod3",
-    #  lwd = 3)
+#                   fox$prop_natal_dens,
+#                  df = 2),
+#   col = "darkgoldenrod3",
+#  lwd = 3)
 
 #legend(0,
- #      40,
-  #     legend = c("df = 3", "df = 2"),
-   #    col = c("dodgerblue4", "darkgoldenrod3"),
-    #   pch = "-",
-     #  lwd = 3,
-      # bty = "n")
+#      40,
+#     legend = c("df = 3", "df = 2"),
+#    col = c("dodgerblue4", "darkgoldenrod3"),
+#   pch = "-",
+#  lwd = 3,
+# bty = "n")
 
 dev.off()
 
+# OR ELSE
+f <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
+# BDD a utiliser si analyses avec lmg_C1
+mC1 <- f[,-c(1, 3:8, 10:14, 16, 18, 25, 30, 32, 34, 35, 42:47 )]
+lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
+mC1$lmg_C1_CORR <- lmg$LMG_C1_CORR[match(mC1$AN, lmg$YEAR)]
+fox <- read.table("FOX_abundance_Chevallier.txt", h = T, sep = "\t", dec = ",")
+mC1$monit_dens <- fox$monit_dens[match(mC1$AN, fox$year)]
+mC1$breed_dens <- fox$litter_number[match(mC1$AN, fox$year)]
+mC1$prop_fox <- round(mC1$breed_dens/mC1$monit_dens, digits = 3)
+mC1$prop_fox_dens <- mC1$prop_fox_dens/100
+summary(mC1)
+
+#Package nécessaires
+require(nlme)
+require(lme4)
+require(piecewiseSEM)
+require(ggm)
+
+g <- glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1)
+
+g2 <- glm(prop_fox_dens ~ lmg_C1_CORR, weights = monit_dens, data = mC1)
 #### FOX VS. LEMMING PLOT WITHOUT 2000 ####
 png("fox_vs_lem_WITHOUT_2000.tiff",
     res=300,
