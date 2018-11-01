@@ -452,6 +452,9 @@ matplot(fit$x, cbind(upper, lower), type="l", lty = "dotdash", ylim = c(0, 40), 
 dev.off()
 
 # OR ELSE
+
+rm(list = ls()) #clean R memory
+setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 f <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
 # BDD a utiliser si analyses avec lmg_C1
 mC1 <- f[,-c(1, 3:8, 10:14, 16, 18, 25, 30, 32, 34, 35, 42:47 )]
@@ -470,9 +473,40 @@ require(lme4)
 require(piecewiseSEM)
 require(ggm)
 
-g <- glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1)
+a <- as.data.frame(tapply(mC1$winAO, mC1$AN, unique))
+d <- as.data.frame(tapply(mC1$lmg_C1_CORR, mC1$AN, unique))
+e <- as.data.frame(tapply(mC1$prop_fox_dens, mC1$AN, unique))
+f <- as.data.frame(tapply(mC1$monit_dens, mC1$AN, unique))
 
-g2 <- glm(prop_fox_dens ~ lmg_C1_CORR, weights = monit_dens, data = mC1)
+data <- cbind(1996:2016, a, d, e, f)
+names(data) <- c( "year", "winAO", "lmg_C1_CORR", "prop_fox_dens", "monit_dens")
+head(data)
+data$natal_dens <- fox$natal_growth_dens[match(data$year, fox$year)]
+
+
+
+g <- glm(prop_fox_dens ~ lmg_C1_CORR, weights = monit_dens, data = data, family = binomial)
+g
+
+
+
+v <- seq(0, 10, by = 0.1)
+p <- predict(g, newdata = data.frame(lmg_C1_CORR = v), type = "response", se.fit = TRUE)
+
+plot(data$lmg_C1_CORR, data$prop_fox_dens)
+lines(v, p$fit)
+
+
+g2 <- glm(cbind(natal_dens, monit_dens - natal_dens) ~ lmg_C1_CORR, data = data, family = binomial)
+g2
+
+v <- seq(0, 10, by = 0.1)
+p2 <- predict(g2, newdata = data.frame(lmg_C1_CORR = v), type = "response", se.fit = TRUE)
+
+plot(data$lmg_C1_CORR, data$prop_fox_dens)
+lines(v, p2$fit, type = "l")
+####### ! AJOUTER INTERVALLE DE CONFIANCE EN LES CALCULANT AVEC SE #####
+
 #### FOX VS. LEMMING PLOT WITHOUT 2000 ####
 png("fox_vs_lem_WITHOUT_2000.tiff",
     res=300,
