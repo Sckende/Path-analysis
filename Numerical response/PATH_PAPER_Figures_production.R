@@ -482,10 +482,33 @@ summary(g2)
 
 p2 <- predict(g2, newdata = data.frame(lmg_C1_CORR = v), type = "response", se.fit = TRUE)
 
-plot(mC1$lmg_C1_CORR, mC1$prop_fox_dens)
-lines(v, p2$fit, type = "l", col = "darkgreen")
-lines(v, (p2$fit - 1.96 * p2$se.fit), type = "l", col = "red")
-lines(v, (p2$fit + 1.96 * p2$se.fit), type = "l", col = "red")
+par(las = 1)
+
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_vs_lmg_v3.tiff",
+    res=300,
+    width=20,
+    height=15,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
+plot(mC1$lmg_C1_CORR, mC1$prop_fox_dens,
+     xlim = c(0, 10),
+     ylim = c(0, 0.40),
+     col = "dodgerblue4",
+     bty = "n",
+     pch = 16,
+     type = "p",
+     lwd = 2,
+     cex.axis = 1,
+     xlab = "",
+     ylab = "")
+lines(v, p2$fit,
+      col = "dodgerblue4",
+      lwd = 1)
+lines(v, (p2$fit - 1.96 * p2$se.fit), type = "l", col = "dodgerblue4", lty = "dashed")
+lines(v, (p2$fit + 1.96 * p2$se.fit), type = "l", col = "dodgerblue4", lty = "dashed")
+dev.off()
+
 
 g3 <- glm(cbind(breed_dens, monit_dens - breed_dens) ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, data = mC1, family = binomial)
 summary(g3)
@@ -497,8 +520,8 @@ lines(predict(g3, type = "response"), col = "red", lty = "dashed")
 #### FOX VS. LEMMING PLOT WITHOUT 2000 ####
 png("fox_vs_lem_WITHOUT_2000.tiff",
     res=300,
-    width=10,
-    height=20,
+    width=20,
+    height=15,
     pointsize=12,
     unit="cm",
     bg="transparent")
