@@ -455,17 +455,7 @@ dev.off()
 
 rm(list = ls()) #clean R memory
 setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
-f <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
-# BDD a utiliser si analyses avec lmg_C1
-mC1 <- f[,-c(1, 3:8, 10:14, 16, 18, 25, 30, 32, 34, 35, 42:47 )]
-lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
-mC1$lmg_C1_CORR <- lmg$LMG_C1_CORR[match(mC1$AN, lmg$YEAR)]
-fox <- read.table("FOX_abundance_Chevallier.txt", h = T, sep = "\t", dec = ",")
-mC1$monit_dens <- fox$monit_dens[match(mC1$AN, fox$year)]
-mC1$breed_dens <- fox$litter_number[match(mC1$AN, fox$year)]
-mC1$prop_fox <- round(mC1$breed_dens/mC1$monit_dens, digits = 3)
-mC1$prop_fox_dens <- mC1$prop_fox_dens/100
-summary(mC1)
+mC1 <- read.table("mC1_path_data.txt", h = T)
 
 #Package nécessaires
 require(nlme)
@@ -473,40 +463,37 @@ require(lme4)
 require(piecewiseSEM)
 require(ggm)
 
-a <- as.data.frame(tapply(mC1$winAO, mC1$AN, unique))
-d <- as.data.frame(tapply(mC1$lmg_C1_CORR, mC1$AN, unique))
-e <- as.data.frame(tapply(mC1$prop_fox_dens, mC1$AN, unique))
-f <- as.data.frame(tapply(mC1$monit_dens, mC1$AN, unique))
+g <- glm(prop_fox_dens ~ lmg_C1_CORR, weights = monit_dens, data = mC1, family = binomial)
+summary(g)
 
-data <- cbind(1996:2016, a, d, e, f)
-names(data) <- c( "year", "winAO", "lmg_C1_CORR", "prop_fox_dens", "monit_dens")
-head(data)
-data$natal_dens <- fox$natal_growth_dens[match(data$year, fox$year)]
-
-
-
-g <- glm(prop_fox_dens ~ lmg_C1_CORR, weights = monit_dens, data = data, family = binomial)
-g
-
-
-
+# plot predicted values on raw data
+range(mC1$lmg_C1_CORR)
+# For creation new dataframe for lmg values simulation
 v <- seq(0, 10, by = 0.1)
 p <- predict(g, newdata = data.frame(lmg_C1_CORR = v), type = "response", se.fit = TRUE)
 
-plot(data$lmg_C1_CORR, data$prop_fox_dens)
-lines(v, p$fit)
+plot(mC1$lmg_C1_CORR, mC1$prop_fox_dens)
+lines(p$fit, type = "l", col = "green")
 
 
-g2 <- glm(cbind(natal_dens, monit_dens - natal_dens) ~ lmg_C1_CORR, data = data, family = binomial)
-g2
+g2 <- glm(cbind(breed_dens, monit_dens - breed_dens) ~ lmg_C1_CORR, data = mC1, family = binomial)
+summary(g2)
 
-v <- seq(0, 10, by = 0.1)
+
 p2 <- predict(g2, newdata = data.frame(lmg_C1_CORR = v), type = "response", se.fit = TRUE)
 
-plot(data$lmg_C1_CORR, data$prop_fox_dens)
-lines(v, p2$fit, type = "l")
-####### ! AJOUTER INTERVALLE DE CONFIANCE EN LES CALCULANT AVEC SE #####
+plot(mC1$lmg_C1_CORR, mC1$prop_fox_dens)
+lines(v, p2$fit, type = "l", col = "darkgreen")
+lines(v, (p2$fit - 1.96 * p2$se.fit), type = "l", col = "red")
+lines(v, (p2$fit + 1.96 * p2$se.fit), type = "l", col = "red")
 
+g3 <- glm(cbind(breed_dens, monit_dens - breed_dens) ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, data = mC1, family = binomial)
+summary(g3)
+
+plot(mC1$AN, mC1$prop_fox_dens)
+lines(mC1$AN, mC1$prop_fox_dens)
+
+lines(predict(g3, type = "response"), col = "red", lty = "dashed")
 #### FOX VS. LEMMING PLOT WITHOUT 2000 ####
 png("fox_vs_lem_WITHOUT_2000.tiff",
     res=300,
