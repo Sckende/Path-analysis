@@ -46,6 +46,7 @@ dev.off()
 #### Ajout de abondance de lemmings C1 CORRIGE (cf courriel Gilles - 12 juin 2018) ####
 lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
 mC1$lmg_C1_CORR <- lmg$LMG_C1_CORR[match(mC1$AN, lmg$YEAR)]
+#write.table(mC1, "mC1_path_data.txt")
 
 # Verification
 plot(tapply(mC1$lmg_C1_CORR, mC1$AN, unique),
@@ -86,7 +87,7 @@ summary(d)
 #### ro2*** #####
 #Modele de piste
 ro2 <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1),
+  glm(prop_fox_dens ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1, family =binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
   lm(lmg_C1_CORR ~ winAO + MEAN_temp + cumul_prec, data = mC1))
 # Get goodness-of-fit and AIC
@@ -99,7 +100,7 @@ sem.coefs(ro2, mC1)
 #### ro2a *** ####
 #Modele de piste
 ro2a <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1, family =binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2a, mC1, conditional = T)
@@ -116,7 +117,7 @@ nsc <- cbind(mC1[, c(1, 24, 25)], nsc)
 
 #Modele de piste - CORRECTION LEMMING ABUNDANCE
 ro2aSC <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = nsc),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = nsc, family =binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nsc, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2aSC, nsc, conditional = T)
@@ -129,7 +130,7 @@ sem.model.fits(ro2aSC) #calcul des R2
 
 #Modele de piste
 ro2b <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2b, mC1, conditional = T)
@@ -140,7 +141,7 @@ sem.coefs(ro2b, mC1)
 ##### Modèle ro2b SCALE - WITH CORRECTION OF LEMMING ABUNDANCE #####
 #Modele de piste
 ro2bSC <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = nsc),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = nsc, family =binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = nsc, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2bSC, nsc, conditional = T)
@@ -152,7 +153,7 @@ sem.model.fits(ro2bSC) #calcul des R2
 #### ro2c *** ####
 #Modele de piste
 ro2c <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO + sprAO, weights = monit_dens, data = mC1),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO + sprAO, weights = monit_dens, data = mC1, family =binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2c, mC1, conditional = T)
@@ -163,7 +164,7 @@ sem.coefs(ro2c, mC1)
 #### ro2d ####
 #Modele de piste
 ro2d <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, weights = monit_dens, data = mC1),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, weights = monit_dens, data = mC1, family =binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2d, mC1, conditional = T)
@@ -174,7 +175,7 @@ sem.coefs(ro2d, mC1)
 #### ro2e *** ####
 #Modele de piste
 ro2e <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, weights = monit_dens, data = mC1),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, weights = monit_dens, data = mC1, family =binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + sumAO + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2e, mC1, conditional = T)
@@ -225,7 +226,7 @@ abline(h=0, lty=2, col="grey")
 #### Equivalent ro2-a ####
 #Modele de piste
 ro2a_L <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1),
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1, family =binomial),
   glmer(SN ~ cumul_prec + MEAN_temp + lmg_C1_CORR + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2a_L, mC1, conditional = T)
@@ -237,7 +238,7 @@ sem.coefs(ro2a_L, mC1)
 #### Equivalent de ro2 ####
 #Modele de piste
 ro2_L <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1),
+  glm(prop_fox_dens ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1, family =binomial),
   glmer(SN ~ lmg_C1_CORR + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
   lm(lmg_C1_CORR ~ winAO + MEAN_temp + cumul_prec, data = mC1))
 # Get goodness-of-fit and AIC
