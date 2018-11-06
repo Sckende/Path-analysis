@@ -132,6 +132,11 @@ sem.model.fits(ro2aSC) #calcul des R2
 ro2b <- list(
   glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+
+
+ro2b <- list(
+  glm(cbind(breed_dens, monit_dens-breed_dens) ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = binomial, data = mC1),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
 sem.fit(ro2b, mC1, conditional = T)
 
@@ -271,3 +276,25 @@ test2 <- DAG (
 )
 
 Observed.Equivalent.DAG(test2, latents = c("lmg.conso", "egg.conso"))
+
+
+#### Resolving fox glm issues #### 
+
+jo <- glm(cbind(breed_dens, monit_dens-breed_dens) ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = binomial, data = mC1)
+summary(jo)
+
+# Check overdispersion
+E1 <- resid(jo, type = "pearson")
+sum(E1^2) / (jo$df.residual) # Huge overdispersion !!!
+
+# Try glm without 2000 year = outlier lmg abundance
+mC1bis <- mC1[!(mC1$AN == 2000),]
+
+jo <- glm(cbind(breed_dens, monit_dens-breed_dens) ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = binomial, data = mC1bis)
+summary(jo)
+
+# Check overdispersion
+E1 <- resid(jo, type = "pearson")
+sum(E1^2) / (jo$df.residual) # Still huge overdispersion !!!
+
+#### TO CONTINUE !!!! ####
