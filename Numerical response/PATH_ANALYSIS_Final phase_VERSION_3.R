@@ -279,9 +279,15 @@ Observed.Equivalent.DAG(test2, latents = c("lmg.conso", "egg.conso"))
 
 
 #### Resolving fox glm issues #### 
+setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
+mC1 <- read.table("mC1_path_data.txt", h = T)
 
 jo <- glm(cbind(breed_dens, monit_dens-breed_dens) ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = binomial, data = mC1)
 summary(jo)
+
+x11()
+par(mfrow = c(2,2))
+plot(jo)
 
 # Check overdispersion
 E1 <- resid(jo, type = "pearson")
@@ -297,4 +303,28 @@ summary(jo)
 E1 <- resid(jo, type = "pearson")
 sum(E1^2) / (jo$df.residual) # Still huge overdispersion !!!
 
-#### TO CONTINUE !!!! ####
+# Try glm only with fox variable
+
+jo <- glm(cbind(breed_dens, monit_dens-breed_dens) ~ lmg_C1_CORR, family = binomial, data = mC1)
+summary(jo)
+
+# Check overdispersion
+E1 <- resid(jo, type = "pearson")
+sum(E1^2) / (jo$df.residual) # Still huge overdispersion !!!
+
+#### Same but with no repetition of values 
+lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
+lmg <- lmg[lmg$YEAR >= 1996 & !lmg$YEAR == 2017,]; head(lmg); summary(lmg)
+
+fox <- read.table("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",", h = T)
+fox <- fox[fox$year >= 1996 & !fox$year == 2017,]; head(fox); summary(fox)
+
+fox$LMG_C1_CORR <- lmg$LMG_C1_CORR[match(fox$year, lmg$YEAR)]
+head(fox)
+
+jj <- glm(cbind(natal_growth_dens, monit_dens-natal_growth_dens) ~ LMG_C1_CORR, family = binomial, data = fox)
+summary(jj)
+
+# Check overdispersion
+Ejj <- resid(jj, type = "pearson")
+sum(Ejj^2) / (jj$df.residual)
