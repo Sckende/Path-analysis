@@ -137,11 +137,17 @@ ro2b <- list(
 ro2b <- list(
   glm(cbind(breed_dens, monit_dens-breed_dens) ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = binomial, data = mC1),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+
+# Without 2000 and with log(lmg)
+mC1bis <- mC1[!(mC1$AN == 2000),]
+ro2b <- list(
+  glm(cbind(breed_dens, monit_dens-breed_dens) ~ log(lmg_C1_CORR) + cumul_prec + MEAN_temp + winAO, family = binomial, data = mC1bis),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1bis, family = binomial(link = "logit")))
 # Get goodness-of-fit and AIC
-sem.fit(ro2b, mC1, conditional = T)
+sem.fit(ro2b, mC1bis, conditional = T)
 
 #NO significant missing paths
-sem.coefs(ro2b, mC1)
+sem.coefs(ro2b, mC1bis)
 
 ##### Modèle ro2b SCALE - WITH CORRECTION OF LEMMING ABUNDANCE #####
 #Modele de piste
