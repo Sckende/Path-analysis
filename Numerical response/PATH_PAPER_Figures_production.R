@@ -475,7 +475,7 @@ p <- predict(g, newdata = data.frame(lmg_C1_CORR = v), type = "response", se.fit
 plot(mC1$lmg_C1_CORR, mC1$prop_fox_dens)
 lines(p$fit, type = "l", col = "green")
 
-
+#
 g2 <- glm(cbind(breed_dens, monit_dens - breed_dens) ~ lmg_C1_CORR, data = mC1, family = binomial)
 summary(g2)
 
@@ -509,7 +509,7 @@ lines(v, (p2$fit - 1.96 * p2$se.fit), type = "l", col = "dodgerblue4", lty = "da
 lines(v, (p2$fit + 1.96 * p2$se.fit), type = "l", col = "dodgerblue4", lty = "dashed")
 dev.off()
 
-
+#
 g3 <- glm(cbind(breed_dens, monit_dens - breed_dens) ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, data = mC1, family = binomial)
 summary(g3)
 
@@ -517,6 +517,49 @@ plot(mC1$AN, mC1$prop_fox_dens)
 lines(mC1$AN, mC1$prop_fox_dens)
 
 lines(predict(g3, type = "response"), col = "red", lty = "dashed")
+
+# Log of lemming abundance
+#g4 <- glm(cbind(breed_dens, monit_dens - breed_dens) ~ log(lmg_C1_CORR) + winAO + cumul_prec + MEAN_temp, data = mC1, family = binomial)
+g4 <- glm(cbind(breed_dens, monit_dens - breed_dens) ~ log(lmg_C1_CORR), data = mC1, family = binomial)
+summary(g4)
+
+Eg4 <- resid(g4, type = "pearson")
+sum(Eg4^2) / (g4$df.residual)
+
+# plot predicted values on raw data
+range(log(mC1$lmg_C1_CORR))
+# For creation new dataframe for lmg values simulation
+xv <- seq(-4, 2.30, by = 0.1)
+yv <- predict(g4, list(lmg_C1_CORR = exp(xv)), type = "response", se.fit = TRUE)
+p <- mC1$breed_dens/(mC1$monit_dens)
+
+plot(p ~ log(mC1$lmg_C1_CORR), ylab = "Proportion breeding dens")
+lines(yv$fit ~ xv, col = "red")
+lines((yv$fit - 1.96 * yv$se.fit) ~ xv, type = "l", col = "dodgerblue4", lty = "dashed")
+lines((yv$fit + 1.96 * yv$se.fit) ~ xv, type = "l", col = "dodgerblue4", lty = "dashed")
+
+# Log of lemming abundance without 2000
+mC1bis <- mC1[!(mC1$AN == 2000),]
+g5 <- glm(cbind(breed_dens, monit_dens - breed_dens) ~ log(lmg_C1_CORR) + winAO + cumul_prec + MEAN_temp, data = mC1bis, family = binomial)
+
+summary(g5)
+
+Eg5 <- resid(g5, type = "pearson")
+sum(Eg5^2) / (g5$df.residual) # Overdisp. = 1.13 for the complete modele
+
+# plot predicted values on raw data
+range(log(mC1$lmg_C1_CORR))
+# For creation new dataframe for lmg values simulation
+xv <- seq(-4, 2.30, by = 0.1)
+yv <- predict(g5, list(lmg_C1_CORR = exp(xv), winAO = rep(g5$coefficients[3], 64), cumul_prec = rep(g5$coefficients[4], 64), MEAN_temp = rep(g5$coefficients[5], 64)), type = "response", se.fit = TRUE)
+utils::View(yv)
+p <- mC1$breed_dens/(mC1$monit_dens)
+
+plot(p ~ log(mC1$lmg_C1_CORR), ylab = "Proportion breeding dens")
+lines(yv$fit ~ xv, col = "red")
+lines((yv$fit - 1.96 * yv$se.fit) ~ xv, type = "l", col = "dodgerblue4", lty = "dashed")
+lines((yv$fit + 1.96 * yv$se.fit) ~ xv, type = "l", col = "dodgerblue4", lty = "dashed")
+
 #### FOX VS. LEMMING PLOT WITHOUT 2000 ####
 png("fox_vs_lem_WITHOUT_2000.tiff",
     res=300,
