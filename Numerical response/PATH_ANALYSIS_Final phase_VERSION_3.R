@@ -325,7 +325,7 @@ Eqb <- resid(jqb, type = "pearson")
 sum(Eqb^2) / (jqb$df.residual) # Huge overdispersion !!!
 
 # Try glm with Poisson family
-jp <- glm(breed_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = poisson(link = "log"), data = mC1)
+jp <- glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = poisson(link = "log"), data = mC1)
 summary(jp)
 
 x11()
@@ -335,6 +335,16 @@ plot(jp)
 # Check overdispersion
 Ep <- resid(jp, type = "pearson")
 sum(Ep^2) / (jp$df.residual) # Huge overdispersion !!!
+
+# Try by transforming data
+# Log of lemming abundance *** without 2000 ***
+mC1bis <- mC1[!(mC1$AN == 2000),]
+g5 <- glm(cbind(breed_dens, monit_dens - breed_dens) ~ log(lmg_C1_CORR) + winAO + cumul_prec + MEAN_temp, data = mC1bis, family = binomial)
+
+summary(g5)
+
+Eg5 <- resid(g5, type = "pearson")
+sum(Eg5^2) / (g5$df.residual) # *** Overdisp. = 1.13 for the complete modele *** 
 
 #### Same but with no repetition of values 
 lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
