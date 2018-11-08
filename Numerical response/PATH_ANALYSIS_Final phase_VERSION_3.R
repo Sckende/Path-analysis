@@ -312,6 +312,30 @@ summary(jo)
 E1 <- resid(jo, type = "pearson")
 sum(E1^2) / (jo$df.residual) # Still huge overdispersion !!!
 
+# Try glm with quasibinomial family
+jqb <- glm(cbind(breed_dens, monit_dens-breed_dens) ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = quasibinomial, data = mC1)
+summary(jqb)
+
+x11()
+par(mfrow = c(2,2))
+plot(jqb)
+
+# Check overdispersion
+Eqb <- resid(jqb, type = "pearson")
+sum(Eqb^2) / (jqb$df.residual) # Huge overdispersion !!!
+
+# Try glm with Poisson family
+jp <- glm(breed_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = poisson(link = "log"), data = mC1)
+summary(jp)
+
+x11()
+par(mfrow = c(2,2))
+plot(jp)
+
+# Check overdispersion
+Ep <- resid(jp, type = "pearson")
+sum(Ep^2) / (jp$df.residual) # Huge overdispersion !!!
+
 #### Same but with no repetition of values 
 lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
 lmg <- lmg[lmg$YEAR >= 1996 & !lmg$YEAR == 2017,]; head(lmg); summary(lmg)
