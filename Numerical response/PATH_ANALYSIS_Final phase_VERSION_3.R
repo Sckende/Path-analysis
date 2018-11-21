@@ -133,7 +133,7 @@ ro2b <- list(
   glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 
-# log(lmg)
+
 ro2b <- list(
   glm(cbind(breed_dens, monit_dens-breed_dens) ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, family = binomial, data = mC1),
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
