@@ -6,10 +6,12 @@ setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.
 list.files()
 rm(list = ls()) #clean R memory
 
+# Complete data
 mC1 <- read.table("mC1_path_data.txt", h = T)
 summary(mC1)
 head(mC1)
 
+# Data without 2000 year
 mC1_2000 <- mC1[!(mC1$AN == "2000"),]
 summary(mC1_2000)
 
@@ -25,7 +27,7 @@ jo_1 <- glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weight
 summary(jo_1)
 
 # Test 2.1
-jo_tr <- glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link = "logit"))
+jo_tr <- glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link = "logit")) # I() allows automatic back-transformation by the package
 summary(jo_tr)
 
 # Test 2.2
@@ -41,11 +43,15 @@ jo_2000_tr <- glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp +
 summary(jo_2000_tr)
 
 #### Checking for overdispersion ####
+  # glm model choice
+jo <- jo_2000_tr
+  
+  # Plot model
 x11()
 par(mfrow = c(2, 2))
 plot(jo)
 
-jo <- jo_2000_tr # glm modele choice
+  # Estimation of overdispersion
 E1 <- resid(jo, type = "pearson") # Pearson residuals
 F1 <- fitted(jo) # Fitted values
 
@@ -54,107 +60,29 @@ p <- length(coef(jo)) # Number of parameters
 
 Dispersion <- sum(E1^2) / (N-p)
 Dispersion
+
 # Disp. jo_1 = 3.71
 # Disp. jo_tr = 1.57
 # Disp. jo_2000 = 2.54
 # Disp. jo_2000_tr = 1.05
 
-#### Checking for residuals ####
-Y <- mC1$prop_fox_dens
-summary(jo)
+#### Checking for the good fit of predictions - Fran script ####
 
-x11()
-par(mfrow = c(2,2))
-plot(jo)
+require(visreg)
 
-dev.off()
+# Model choice
+m <- glm(prop_fox_dens ~ I(lmg_C1_CORR) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link="logit"))
 
-par(mfrow = c(1, 1))
-plot(predict(jo),residuals(jo),col=c("blue","red")[1+Y])
-abline(h=0,lty=2,col="grey")
-
-lines(lowess(predict(jo),residuals(jo)),col="black",lwd=2)
-
-require(splines)
-rl <- lm(residuals(jo) ~ bs(predict(jo),8)) 
-
-y <- predict(rl, se=TRUE)
-segments(predict(jo), y$fit + 2*y$se.fit, predict(jo), y$fit - 2*y$se.fit, col="green") 
-
-
-# Relationship with the first explicative variable
-X1 <- mC1$lmg_C1_CORR
-
-plot(X1, residuals(jo), col=c("blue","red")[1+Y])
-lines(lowess(X1, residuals(jo)), col="black", lwd=2)
-lines(lowess(X1[Y==0], residuals(jo)[Y==0]), col="blue")
-lines(lowess(X1[Y==1], residuals(jo)[Y==1]), col="red")
-abline(h=0, lty=2, col="grey")
-
-#### Predicted vakues of GLM ####
-# plot predicted values on raw data
-range(mC1$lmg_C1_CORR)
-# For creation new dataframe for lmg values simulation
-v <- seq(0, 10, by = 0.1)
-p <- predict(jo, newdata = data.frame(lmg_C1_CORR = v), type = "response", se.fit = TRUE)
-
-plot(mC1$lmg_C1_CORR, mC1$prop_fox_dens)
-lines(p$fit, type = "l", col = "green")
-
-
-#### Path analysis ####
-# BEST MODELE
-ro2b <- list(
-  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1_2000, family = binomial(link = "logit")),
-  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
-# Get goodness-of-fit and AIC
-sem.fit(ro2b, mC1_2000, conditional = T)
-#NO significant missing paths
-sem.coefs(ro2b, mC1_2000)
-
-
-
-# BEST MODELE - SCALED DATA
-ro2bSC <- list(
-  glm(prop_fox_dens ~ scale(lmg_C1_CORR) + scale(cumul_prec) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1, family = quasibinomial),
-  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec) + scale(MEAN_temp) + (1|AN), data = mC1, family = binomial(link = "logit")))
-# Get goodness-of-fit and AIC
-sem.fit(ro2bSC, mC1, conditional = T)
-
-#NO significant missing paths
-sem.coefs(ro2bSC, mC1)
-sem.model.fits(ro2bSC) #calcul des R2
-
-#### Fran version ####
-
-library(visreg)
-
-
-
-m <- glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link="logit"))
+m <- glm(prop_fox_dens ~ log(lmg_C1_CORR) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link="logit"))
 summary(m)
 
 x11()
 par(mfrow=c(2,2))
 
-visreg(m)
+# Plot Y vs. each explicative variables
 visreg(m,scale="response")
-visreg(m,"lmg_C1_CORR",scale="response",xtrans=function(x){x+0})
 
-
-mC1$loglmg_C1_CORR<-log(mC1$lmg_C1_CORR)
-
-m <- glm(prop_fox_dens ~ loglmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link="logit"))
-
-par(mfrow=c(2,2))
-visreg(m)
-visreg(m,scale="response")
-visreg(m,"loglmg_C1_CORR",scale="response",xtrans=function(x){exp(x)})
-
-
-m <- glm(prop_fox_dens ~ I(lmg_C1_CORR) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link="logit"))
-
-
+# Predictions plot
 
 plot(mC1$lmg_C1_CORR,mC1$prop_fox_dens,xlim=c(-20,50),ylim=0:1)
 
@@ -166,33 +94,189 @@ p<-predict(m,newdata=newdat,type="response")
 
 lines(v,p)
 
-#### Plot for paper ####
+#### Plots paper style ####
 x11()
 par(mfrow = c(1, 2))
 # With 200 data
 m <- glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link="logit"))
-plot(mC1$lmg_C1_CORR,mC1$prop_fox_dens,xlim=c(0,10),ylim = c(0, 0.5), bty = "n", las = 1, main = "With 2000")
+plot(mC1$lmg_C1_CORR, mC1$prop_fox_dens, xlim = c(0, 10), ylim = c(0, 0.5), bty = "n", las = 1, main = "With 2000")
 
-v<-seq(0,10,by=0.01)
+v <- seq(0, 10, by = 0.01)
 
-newdat<-data.frame(lmg_C1_CORR=v,cumul_prec=mean(mC1$cumul_prec),MEAN_temp=mean(mC1$MEAN_temp),winAO=mean(mC1$winAO))
+newdat <- data.frame(lmg_C1_CORR = v, cumul_prec = mean(mC1$cumul_prec), MEAN_temp = mean(mC1$MEAN_temp), winAO = mean(mC1$winAO))
 
-p<-predict(m,newdata=newdat,type="response")
-lines(v,p)
+p <- predict(m, newdata = newdat, type = "response")
+lines(v, p)
 abline(h = max(p), lty = "dotted", col = "orange")
 
 # Without 2000 data
 
 m <- glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1_2000, family = binomial(link="logit"))
-plot(mC1_2000$lmg_C1_CORR,mC1_2000$prop_fox_dens,xlim=c(0,10),ylim = c(0, 0.5), bty = "n", las = 1, main = "Without 2000")
+plot(mC1_2000$lmg_C1_CORR, mC1_2000$prop_fox_dens, xlim = c(0, 10), ylim = c(0, 0.5), bty = "n", las = 1, main = "Without 2000")
 
-v<-seq(0,10,by=0.01)
+v <- seq(0, 10, by = 0.01)
 
-newdat<-data.frame(lmg_C1_CORR=v,cumul_prec=mean(mC1_2000$cumul_prec),MEAN_temp=mean(mC1_2000$MEAN_temp),winAO=mean(mC1_2000$winAO))
+newdat <- data.frame(lmg_C1_CORR = v, cumul_prec = mean(mC1_2000$cumul_prec), MEAN_temp = mean(mC1_2000$MEAN_temp), winAO = mean(mC1_2000$winAO))
 
-p<-predict(m,newdata=newdat,type="response")
-lines(v,p)
+p <- predict(m, newdata = newdat, type = "response")
+lines(v, p)
 abline(h = max(p), lty = "dotted", col = "orange")
 
 #
 dev.off()
+
+#### Path analysis - Model Ro2b ####
+
+# ORIGINAL MODEL
+ro2b <- list(
+  glm(prop_fox_dens ~ lmg_C1_CORR + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2b, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2b, mC1)
+
+
+
+# ORIGINAL MODELE - SCALED DATA
+ro2bSC <- list(
+  glm(prop_fox_dens ~ scale(lmg_C1_CORR) + scale(cumul_prec) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1, family = binomial(link = "logit")),
+  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec) + scale(MEAN_temp) + (1|AN), data = mC1, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2bSC, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2bSC, mC1)
+sem.model.fits(ro2bSC) #calcul des R2
+
+# LOG(LMG) MODEL
+ro2b <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2b, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2b, mC1)
+
+
+
+# LOG(LMG) - SCALED DATA
+ro2bSC <- list(
+  glm(prop_fox_dens ~ scale(I(log(lmg_C1_CORR))) + scale(cumul_prec) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1, family = binomial(link = "logit")),
+  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec) + scale(MEAN_temp) + (1|AN), data = mC1, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2bSC, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2bSC, mC1)
+sem.model.fits(ro2bSC) #calcul des R2
+
+
+# LOG(LMG) - 2000 MODEL
+ro2b <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1_2000, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2b, mC1_2000, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2b, mC1_2000)
+
+# Loss of the causal link between fox and cumulative precipitation
+# Delete cumul_prec variable in the model
+
+ro2b <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + MEAN_temp + winAO, weights = monit_dens, data = mC1_2000, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2b, mC1_2000, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2b, mC1_2000)
+
+# LOG(LMG) - 2000 & withpout causal link between fox and cumul_prec - SCALED DATA
+ro2bSC <- list(
+  glm(prop_fox_dens ~ scale(I(log(lmg_C1_CORR))) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1_2000, family = binomial(link = "logit")),
+  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec) + scale(MEAN_temp) + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2bSC, mC1_2000, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2bSC, mC1_2000)
+sem.model.fits(ro2bSC) #calcul des R2
+
+#### PATH ANALYSIS - with LOG(LMG) - 2000 year ####
+#### ro2 #####
+#Modele de piste
+ro2 <- list(
+  glm(prop_fox_dens ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1, family =binomial),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
+  lm(lmg_C1_CORR ~ winAO + MEAN_temp + cumul_prec, data = mC1))
+# Get goodness-of-fit and AIC
+sem.fit(ro2, mC1, conditional = T)
+
+#NO significant missing paths
+sem.coefs(ro2, mC1)
+#sem.plot(ro2, mC1, show.nonsig = T)
+
+#### ro2a ####
+#Modele de piste
+ro2a <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1_2000, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2a, mC1_2000, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2a, mC1_2000)
+
+#### ro2b ####
+#Modele de piste
+ro2b <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1_2000, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2b, mC1_2000, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2b, mC1_2000)
+
+#### ro2c ####
+#Modele de piste
+ro2c <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO + sprAO, weights = monit_dens, data = mC1_2000, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2c, mC1_2000, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2c, mC1_2000)
+
+#### ro2d ####
+#Modele de piste
+ro2d <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, weights = monit_dens, data = mC1_2000, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2d, mC1_2000, conditional = T)
+#Significant missing paths
+sem.coefs(ro2d, mC1_2000)
+
+#### ro2e ####
+#Modele de piste
+ro2e <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, weights = monit_dens, data = mC1_2000, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + sumAO + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2e, mC1_2000, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2e, mC1_2000)
+
+#### ro2f ####
+#Modele de piste
+ro2f <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + MEAN_temp + winAO, weights = monit_dens, data = mC1_2000, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2f, mC1_2000, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2f, mC1_2000)
