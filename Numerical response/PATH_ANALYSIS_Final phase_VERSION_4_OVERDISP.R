@@ -137,8 +137,6 @@ sem.fit(ro2b, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2b, mC1)
 
-
-
 # ORIGINAL MODELE - SCALED DATA
 ro2bSC <- list(
   glm(prop_fox_dens ~ scale(lmg_C1_CORR) + scale(cumul_prec) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1, family = binomial(link = "logit")),
@@ -208,18 +206,6 @@ sem.coefs(ro2bSC, mC1_2000)
 sem.model.fits(ro2bSC) #calcul des R2
 
 #### PATH ANALYSIS - with LOG(LMG) - 2000 year ####
-#### ro2 #####
-#Modele de piste
-ro2 <- list(
-  glm(prop_fox_dens ~ lmg_C1_CORR + winAO + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1, family =binomial),
-  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
-  lm(lmg_C1_CORR ~ winAO + MEAN_temp + cumul_prec, data = mC1))
-# Get goodness-of-fit and AIC
-sem.fit(ro2, mC1, conditional = T)
-
-#NO significant missing paths
-sem.coefs(ro2, mC1)
-#sem.plot(ro2, mC1, show.nonsig = T)
 
 #### ro2a ####
 #Modele de piste
@@ -280,3 +266,74 @@ ro2f <- list(
 sem.fit(ro2f, mC1_2000, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2f, mC1_2000)
+
+
+#### PATH ANALYSIS - with LOG(LMG) ####
+
+#### ro2a ####
+#Modele de piste
+ro2a <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2a, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2a, mC1)
+
+#### ro2b ####
+#Modele de piste
+ro2b <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2b, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2b, mC1)
+
+#Modele de piste SCALED
+ro2bSC <- list(
+  glm(prop_fox_dens ~ scale(I(log(lmg_C1_CORR))) + scale(cumul_prec) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1, family = binomial(link = "logit")),
+  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec) + scale(MEAN_temp) + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2bSC, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2bSC, mC1)
+#### ro2c ####
+#Modele de piste
+ro2c <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO + sprAO, weights = monit_dens, data = mC1, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2c, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2c, mC1)
+
+#### ro2d ####
+#Modele de piste
+ro2d <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, weights = monit_dens, data = mC1, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2d, mC1, conditional = T)
+#Significant missing paths
+sem.coefs(ro2d, mC1)
+
+#### ro2e ####
+#Modele de piste
+ro2e <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO + sumAO + sprAO, weights = monit_dens, data = mC1, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + sumAO + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2e, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2e, mC1)
+
+#### ro2f ####
+#Modele de piste
+ro2f <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2f, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2f, mC1)
