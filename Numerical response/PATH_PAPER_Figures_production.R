@@ -590,6 +590,31 @@ lines(smooth.spline(lmg$LMG_C1_CORR[!lmg$YEAR == 2000],
       lwd = 3)
 dev.off()
 
+#### FOX vs. LEMMING PLOT - LAST PLOT ####
+m <- glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link="logit"))
+plot(mC1$lmg_C1_CORR,
+     mC1$prop_fox_dens,
+     xlim = c(0, 10),
+     ylim = c(0, 0.5),
+     bty = "n",
+     las = 1,
+     col = "dodgerblue4",
+     pch = 16,
+     #type = "p",
+     lwd = 3,
+     xlab = "Lemming abundance",
+     ylab = "Proportion of fox breeding dens")
+
+v <- seq(0, 10, by = 0.01)
+
+newdat <- data.frame(lmg_C1_CORR = v, cumul_prec = mean(mC1$cumul_prec), MEAN_temp = mean(mC1$MEAN_temp), winAO = mean(mC1$winAO))
+
+p <- predict(m, newdata = newdat, type = "response")
+lines(v,
+      p,
+      col = "dodgerblue4",
+      lwd = 3)
+# HAVE TO ADD CONFIDENT INTERVALS
 #### Plot SN vs. prec ####
 
 setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
