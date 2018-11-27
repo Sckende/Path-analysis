@@ -304,6 +304,16 @@ sem.fit(ro2a, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2a, mC1)
 
+#### ro2a-SC ####
+#Modele de piste
+ro2aSC <- list(
+  glm(prop_fox_dens ~ scale(I(log(lmg_C1_CORR))) + scale(cumul_prec) + scale(MEAN_temp), weights = monit_dens, data = mC1, family =binomial(link = "logit")),
+  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec) + scale(MEAN_temp) + (1|AN), data = mC1, family = binomial(link = "logit")))
+# Get goodness-of-fit and AIC
+sem.fit(ro2aSC, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2aSC, mC1)
+
 #### ro2b ####
 #Modele de piste
 ro2b <- list(
