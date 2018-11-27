@@ -609,12 +609,74 @@ v <- seq(0, 10, by = 0.01)
 
 newdat <- data.frame(lmg_C1_CORR = v, cumul_prec = mean(mC1$cumul_prec), MEAN_temp = mean(mC1$MEAN_temp), winAO = mean(mC1$winAO))
 
-p <- predict(m, newdata = newdat, type = "response")
+p <- predict(m, newdata = newdat, type = "response", se.fit = TRUE)
 lines(v,
-      p,
+      p$fit,
       col = "dodgerblue4",
-      lwd = 3)
-# HAVE TO ADD CONFIDENT INTERVALS
+      lwd = 2)
+lines(v,
+      p$fit + 1.96*p$se.fit,
+      col = "dodgerblue4",
+      lwd = 1.5,
+      lty = "dashed")
+lines(v,
+      p$fit - 1.96*p$se.fit,
+      col = "dodgerblue4",
+      lwd = 1.5,
+      lty = "dashed")
+#### SAME PLOT BUT WITH SIMPLIER MODEL ####
+prop_fox_dens <- as.numeric(tapply(mC1$prop_fox_dens, mC1$AN, unique))
+monit_dens <- as.numeric(tapply(mC1$monit_dens, mC1$AN, unique))
+lmg_C1_CORR <- as.numeric(tapply(mC1$lmg_C1_CORR, mC1$AN, unique))
+winAO <- as.numeric(tapply(mC1$winAO, mC1$AN, mean))
+cumul_prec <- as.numeric(tapply(mC1$cumul_prec, mC1$AN, mean))
+MEAN_temp <- as.numeric(tapply(mC1$MEAN_temp, mC1$AN, mean))
+
+oth <- as.data.frame(cbind(YEAR = 1996:2016, prop_fox_dens, monit_dens, lmg_C1_CORR, winAO, cumul_prec, MEAN_temp))
+summary(oth)
+
+m <- glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = oth, family = binomial(link="logit"))
+
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_vs_lem_LAST_PLOT_simplier model.tiff",
+    res=300,
+    width=20,
+    height=15,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
+plot(oth$lmg_C1_CORR,
+     oth$prop_fox_dens,
+     xlim = c(0, 10),
+     ylim = c(0, 0.5),
+     bty = "n",
+     las = 1,
+     col = "dodgerblue4",
+     pch = 16,
+     #type = "p",
+     lwd = 3,
+     xlab = "Lemming abundance",
+     ylab = "Proportion of fox breeding dens")
+
+v <- seq(0, 10, by = 0.01)
+
+newdat <- data.frame(lmg_C1_CORR = v, cumul_prec = mean(oth$cumul_prec), MEAN_temp = mean(oth$MEAN_temp), winAO = mean(oth$winAO))
+
+p <- predict(m, newdata = newdat, type = "response", se.fit = TRUE)
+lines(v,
+      p$fit,
+      col = "dodgerblue4",
+      lwd = 2)
+lines(v,
+      p$fit + 1.96*p$se.fit,
+      col = "dodgerblue4",
+      lwd = 1.5,
+      lty = "dashed")
+lines(v,
+      p$fit - 1.96*p$se.fit,
+      col = "dodgerblue4",
+      lwd = 1.5,
+      lty = "dashed")
+dev.off()
 #### Plot SN vs. prec ####
 
 setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
