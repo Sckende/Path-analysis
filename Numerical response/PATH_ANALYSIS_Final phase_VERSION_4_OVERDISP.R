@@ -270,6 +270,30 @@ sem.coefs(ro2f, mC1_2000)
 
 #### PATH ANALYSIS - with LOG(LMG) ####
 
+#### ro2 ####
+#Modele de piste
+ro2 <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
+  lm(log(lmg_C1_CORR) ~  winAO + MEAN_temp + cumul_prec, data = mC1)
+)
+# Get goodness-of-fit and AIC
+sem.fit(ro2, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2, mC1)
+
+#### ro2.1 ####
+#Modele de piste
+ro2.1 <- list(
+  glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family =binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")),
+  lm(log(lmg_C1_CORR) ~  MEAN_temp + cumul_prec, data = mC1)
+)
+# Get goodness-of-fit and AIC
+sem.fit(ro2.1, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2.1, mC1)
+
 #### ro2a ####
 #Modele de piste
 ro2a <- list(
