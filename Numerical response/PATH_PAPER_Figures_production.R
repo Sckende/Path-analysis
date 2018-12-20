@@ -314,7 +314,7 @@ lmg <- lmg[lmg$YEAR >= 1996 & !lmg$YEAR == 2017,]; head(lmg); summary(lmg)
 fox <- read.table("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",", h = T)
 fox <- fox[fox$year >= 1996 & !fox$year == 2017,]; head(fox); summary(fox)
 
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_lmg_gee.tiff",
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/fox_lmg_gee.tiff",
     res=300,
    width=20,
   height=15,
@@ -355,10 +355,10 @@ axis(side = 1,
 par(new = T)
 
 plot(g$YEAR,
-     g$NEST_SUCC*100,
+     g$NEST_SUCC,
      xlab = "",
      ylab = "",
-     ylim = c(0, 100),
+     ylim = c(0, 1),
      bty = "n",
      yaxt = "n",
      xaxt = "n",
@@ -369,7 +369,7 @@ plot(g$YEAR,
      type = 'b',
      lwd = 2)
 lines(fox$year,
-      fox$prop_natal_dens,
+      fox$prop_natal_dens/100,
       col = "dodgerblue4",
       pch = 19,
       type = 'b',
