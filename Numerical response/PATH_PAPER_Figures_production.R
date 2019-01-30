@@ -685,13 +685,13 @@ rm(list = ls()) #clean R memory
 f <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
 
 
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/goose vs prec_temp.tiff",
-    res=300,
-    width=25,
-    height=15,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
+# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/goose vs prec_temp.tiff",
+#     res=300,
+#     width=25,
+#     height=15,
+#     pointsize=12,
+#     unit="cm",
+#     bg="transparent")
 
 par(mfrow = c(1, 2))
 # SN vs. prec
@@ -728,5 +728,117 @@ axis(side = 1, lwd = 1, xaxp = c(-1, 9, 10))
 
 #legend(8.5, 1.3, "(b)", bty = "n")
 
-dev.off()
+# dev.off()
 
+#### Plot prop of success vs. cumul prec - LAST VERSION ####
+# Same method used with lmg vs. fox plot and based on Gilles comments
+require(lme4)
+m <- glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = f, family = binomial(link = "logit"))
+summary(m)
+
+plot(f$cumul_prec, f$SN, pch = 16, xlab = '', ylab = '', ylim = c(0, 1), bty = 'n', col = alpha('olivedrab', 0.4), yaxt = 'n', xaxt = 'n')
+
+v1 <- seq(0, 70, by = 0.01)
+
+newdat <- data.frame(cumul_prec = v1, prop_fox_dens = mean(f$prop_fox_dens), MEAN_temp = mean(f$MEAN_temp))
+p1 <- predict(m, newdata = newdat, type = "response", re.form = NA) # se.fit doesn't work with glmer
+
+#plot(f$cumul_prec, jitter(f$SN)) # jitter() allows to see the variability of points
+plot(v1, p1, ylim = c(0, 1), type = "l", bty = "n")
+
+# Delimitation of categories to plot transformed raw data
+f$rain_CAT <- cut(f$cumul_prec, breaks = seq(-5, 70, 5))# Creation of temperature categorical variable to plot raw data
+
+rain.DF <- split(f, f$rain_CAT) # Split dataframe into a list, based on the rainfall categorical variable rain.DF levels
+
+PROP1 <- NULL
+for (i in 1:15){
+  
+  succ <- sum(rain.DF[[i]]$SN)
+  tot <- dim(rain.DF[[i]])[1]
+  
+  prop <- succ/tot
+  # print(succ)
+  # print(tot)
+  print(prop)
+  c <- c(succ, tot, prop)
+  PROP1 <- as.data.frame(rbind(PROP1, c))
+}
+PROP1
+
+
+#### Plot prop of success vs. mean temp - LAST VERSION ####
+# Same method used with lmg vs. fox plot and based on Gilles comments
+
+require(lme4)
+m <- glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = f, family = binomial(link = "logit"))
+summary(m)
+
+summary(f$MEAN_temp)
+v <- seq(-0.5, 9, by = 0.01)
+
+newdat <- data.frame(MEAN_temp = v, prop_fox_dens = mean(f$prop_fox_dens), cumul_prec = mean(f$cumul_prec))
+p <- predict(m, newdata = newdat, type = "response", re.form = NA) # se.fit doesn't work with glmer
+
+#plot(f$cumul_prec, jitter(f$SN)) # jitter() allows to see the variability of points
+plot(v, p, ylim = c(0, 1), type = "l", bty = "n")
+
+# Delimitation of categories to plot transformed raw data
+f$temp_CAT <- cut(f$MEAN_temp, breaks = seq(-1, 9, 0.1)) 
+
+temp.DF <- split(f, f$temp_CAT) # Split dataframe into a list, based on the rainfall categorical variable rain.DF levels
+
+PROP <- NULL
+for (i in 1:100){
+  
+  succ <- sum(temp.DF[[i]]$SN)
+  tot <- dim(temp.DF[[i]])[1]
+  
+  prop <- succ/tot
+  # print(succ)
+  # print(tot)
+  print(prop)
+  c <- c(succ, tot, prop)
+  PROP <- as.data.frame(rbind(PROP, c))
+}
+PROP <- cbind(PROP, levels(f$temp_CAT))
+PROP
+
+
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/goose vs temp&prec.tiff",
+    res=300,
+    width=25,
+    height=15,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
+
+par(mfrow = c(1, 2))
+par(mar = c(5.1, 4.1, 5, 0.1))
+plot(seq(0, 70, 5), PROP1$V3,
+     ylim = c(0, 1),
+     pch = 16,
+     xlab = '',
+     ylab = '',
+     bty = 'n',
+     col = "olivedrab",
+     yaxt = 'n',
+     xaxt = 'n')
+lines(v1, p1, col = 'olivedrab', lwd = 2)
+axis(side = 1, lwd = 1)
+axis(side = 2, lwd = 1, las = 1)
+
+par(mar = c(5.1, 0, 5, 2.1))
+plot(seq(-0.9, 9, 0.1), PROP$V3,
+     ylim = c(0, 1),
+     xlim = c(-1, 9),
+     pch = 16,
+     xlab = '',
+     ylab = '',
+     bty = 'n',
+     col = "olivedrab",
+     yaxt = 'n',
+     xaxt = 'n')
+lines(v, p, col = 'olivedrab', lwd = 2, xlim = c(-0.5, 9))
+axis(side = 1, at = -1:9, lwd = 1)
+dev.off()
