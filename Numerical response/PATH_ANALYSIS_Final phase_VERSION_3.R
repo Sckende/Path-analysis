@@ -13,6 +13,7 @@ require(nlme)
 require(lme4)
 require(piecewiseSEM)
 require(ggm)
+require(VGAM) # For ZERO-TRUNCATED model
 
 # nom des fichiers contenus dans le répertoire
 list.files()
@@ -78,7 +79,7 @@ d <- diff(r$fox_prop, lag = 1); d
 summary(d)
 
 # goose
-g<- read.table("GOOSE_breeding_informations.txt", sep = "\t", dec = ",", h = T)
+g<- read.table("GOOSE_breeding_informations_1995_2017.txt", sep = "\t", dec = ",", h = T)
 g <- g[g$YEAR >= 1996 & !g$YEAR == 2017,]; head(g); summary(g)
 
 d <- diff(g$NEST_SUCC, lag = 1); d
