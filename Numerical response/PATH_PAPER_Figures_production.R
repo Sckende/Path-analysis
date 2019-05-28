@@ -116,7 +116,7 @@ legend(1995,
 dev.off()
 #### TEMPERATURES AND RAINFALL PLOTS ####
 
-g <- read.table("GOOSE_breeding_informations.txt", sep = "\t", dec = ",", h = T)
+g <- read.table("GOOSE_breeding_informations_1995_2017.txt", sep = "\t", dec = ",", h = T)
 g <- g[g$YEAR >= 1996 & !g$YEAR == 2017,]; head(g); summary(g)
 
 t <- read.table("TEMP_Tair moy 1989-2017 BYLCAMP.txt", sep = "\t", dec = ",", h = T)
@@ -214,8 +214,9 @@ for(i in g$YEAR){
   cumRAIN <- sum(rain$RAIN[rain$YEAR == i & rain$JJ <= HATCH & rain$JJ >= LAY])
   meanTEMP <- mean(t$TEMP[t$YEAR == i & t$jj <= HATCH & t$jj >= LAY])
   sdTEMP <- sd(t$TEMP[t$YEAR == i & t$jj <= HATCH & t$jj >= LAY])
+  varTEMP <- var(t$TEMP[t$YEAR == i & t$jj <= HATCH & t$jj >= LAY])
   
-  c <- data.frame(YEAR, LAY, HATCH, summerRAIN, cumRAIN, meanTEMP, sdTEMP)
+  c <- data.frame(YEAR, LAY, HATCH, summerRAIN, cumRAIN, meanTEMP, sdTEMP, varTEMP)
   
   WEA <- rbind(WEA, c)
 }
