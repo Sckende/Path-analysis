@@ -734,6 +734,7 @@ axis(side = 1, lwd = 1, xaxp = c(-1, 9, 10))
 #### Plot prop of success vs. cumul prec - LAST VERSION ####
 # Same method used with lmg vs. fox plot and based on Gilles comments
 require(lme4)
+require(scales)
 m <- glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = f, family = binomial(link = "logit"))
 summary(m)
 
@@ -748,7 +749,7 @@ p1 <- predict(m, newdata = newdat, type = "response", re.form = NA) # se.fit doe
 plot(v1, p1, ylim = c(0, 1), type = "l", bty = "n")
 
 # Delimitation of categories to plot transformed raw data
-f$rain_CAT <- cut(f$cumul_prec, breaks = seq(-5, 70, 5))# Creation of temperature categorical variable to plot raw data
+f$rain_CAT <- cut(f$cumul_prec, breaks = seq(-5, 70, 5))# Creation of precipitation categorical variable to plot raw data
 
 rain.DF <- split(f, f$rain_CAT) # Split dataframe into a list, based on the rainfall categorical variable rain.DF levels
 
