@@ -371,3 +371,17 @@ ro2f <- list(
 sem.fit(ro2f, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2f, mC1)
+
+#### Trash part ####
+plot(mC1$cumul_prec, mC1$sumAO)
+summary(lm(mC1$cumul_prec~mC1$sumAO))
+cor.test(mC1$cumul_prec, mC1$sumAO)
+
+plot(mC1$MEAN_temp, mC1$sumAO)
+summary(lm(mC1$MEAN_temp~mC1$sumAO))
+cor.test(mC1$MEAN_temp, mC1$sumAO)
+
+m <- split(mC1, paste(mC1$AN))
+m <- lapply(m, function(x){
+  
+})
