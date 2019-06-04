@@ -171,6 +171,17 @@ sem.fit(ro2bSC, mC1, conditional = T)
 sem.coefs(ro2bSC, mC1)
 sem.model.fits(ro2bSC) #calcul des R2
 
+# LOG(LMG) - SCALED DATA - PREC & TEMP INTERACTIONS
+ro2bSCinter <- list(
+  glm(prop_fox_dens ~ scale(I(log(lmg_C1_CORR))) + scale(cumul_prec) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1, family = binomial(link = "logit")),
+  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec)*scale(MEAN_temp)  + (1|AN), data = mC1, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2bSCinter, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2bSCinter, mC1)
+sem.model.fits(ro2bSCinter) #calcul des R2
+
 
 # LOG(LMG) - 2000 MODEL
 ro2b <- list(
