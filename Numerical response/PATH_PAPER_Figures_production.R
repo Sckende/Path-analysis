@@ -116,17 +116,17 @@ legend(1995,
 dev.off()
 #### TEMPERATURES AND RAINFALL PLOTS ####
 
-g <- read.table("GOOSE_breeding_informations_1995_2017.txt", sep = "\t", dec = ",", h = T)
-g <- g[g$YEAR >= 1996 & !g$YEAR == 2017,]; head(g); summary(g)
+gg <- read.table("GOOSE_breeding_informations_1989_2017.txt", sep = "\t", dec = ".", h = T)
+head(gg); summary(gg)
 
-t <- read.table("TEMP_Tair moy 1989-2017 BYLCAMP.txt", sep = "\t", dec = ",", h = T)
-t <- t[t$YEAR >= 1996 & !t$YEAR == 2017,]; head(t); summary(t)
+tt <- read.table("TEMP_Tair moy 1989-2017 BYLCAMP.txt", sep = "\t", dec = ",", h = T)
+head(tt); summary(tt)
 
 AO <- read.table("AO_daily.txt", h = T, sep = "\t", dec = ".")
 AO <- AO[AO$YEAR >= 1996 & !AO$YEAR == 2017,]; head(AO); summary(AO)
 
-rain <- read.table("PREC_precipitation_Bylot_1995-2016.txt", h = T, sep = "\t", dec = ",")
-rain <- rain[rain$YEAR >= 1996 & !rain$YEAR == 2017,]; head(rain); summary(rain)
+rain <- read.table("PREC_precipitation_Bylot_1995-2017.txt", h = T, sep = "\t", dec = ",")
+rain <- rain[!rain$YEAR == 2017,]; head(rain); summary(rain)
 rain <- na.omit(rain)
 
 
@@ -135,18 +135,18 @@ rain <- na.omit(rain)
 #### Obtention des jours juliens pour les dates GOOSE
 Sys.setlocale(category = "LC_TIME", locale = "English") #en_US.utf8 pour linux, en_US pour macOS, English pour Windows 
 #setting in english to read month
-g$lay_date_jj <- paste(g$LAY_DATE, g$YEAR, sep = " ")
-g$lay_date_jj <- strptime(g$lay_date_jj, format = "%d %B %Y")
-g$lay_date_jj <- g$lay_date_jj$yday +1
+gg$lay_date_jj <- paste(gg$LAY_DATE, gg$YEAR, sep = " ")
+gg$lay_date_jj <- strptime(gg$lay_date_jj, format = "%d %B %Y")
+gg$lay_date_jj <- gg$lay_date_jj$yday +1
 
-g$hatch_date_jj <- paste(g$HATCH_DATE, g$YEAR, sep = " ")
-g$hatch_date_jj <- strptime(g$hatch_date_jj, format = "%d %B %Y")
-g$hatch_date_jj <- g$hatch_date_jj$yday +1
+gg$hatch_date_jj <- paste(gg$HATCH_DATE, gg$YEAR, sep = " ")
+gg$hatch_date_jj <- strptime(gg$hatch_date_jj, format = "%d %B %Y")
+gg$hatch_date_jj <- gg$hatch_date_jj$yday +1
 
 #### Obtention des jours juliens pour les dates TEMP
-head(t)
-t$jj <- strptime(paste(t$DAY, t$MONTH, t$YEAR, sep = "-"), format = "%d-%m-%Y")
-t$jj <- t$jj$yday + 1
+head(tt)
+tt$jj <- strptime(paste(tt$DAY, tt$MONTH, tt$YEAR, sep = "-"), format = "%d-%m-%Y")
+tt$jj <- tt$jj$yday + 1
 
 # Exemple de Vérification de la valeur des JJ pour les années bissextiles (366 jours - 1996, 2000, 2004, 2008, 2012, 2016) et non bissextiles
 #NONbiss <- g[!(g$YEAR == 1996 | g$YEAR == 2000 | g$YEAR == 2004 | g$YEAR == 2008 | g$YEAR == 2012 | g$YEAR == 2016),]
@@ -156,11 +156,15 @@ t$jj <- t$jj$yday + 1
 
 #### Temperatures trends ####
 #### Relations entre les temperatures et la periode de nidification de oies ####
-x11(title = "Nidification temperature trends between 1996 & 2016 ")
+x11(title = "Nidification temperature trends between 1989 & 2016 ")
 
 #dev.off()
-par(mfrow = c(3, 7))
-for (i in 1996:2016) {
+g <- gg[!gg$YEAR == 2017,]
+t <- tt[!tt$YEAR == 2017,]
+x11()
+par(mfrow = c(5, 6))
+#for (i in 1996:2016) {
+for (i in g$YEAR){
   plot(t$jj[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i],
        t$TEMP[t$jj >= g$lay_date_jj[g$YEAR == i] & t$jj <= g$hatch_date_jj[g$YEAR == i] & t$YEAR == i],
        main = i,
@@ -179,11 +183,12 @@ dev.off()
 
 #### Rainfall trends ####
 #### Relations entre les précipitations et la periode de nidification de oies ####
-x11(title = "Nidification rainfall trends between 1996 & 2016 ")
+x11(title = "Nidification rainfall trends between 1995 & 2016 ")
 
 #dev.off()
-par(mfrow = c(3, 7))
-for (i in 1996:2016) {
+x11()
+par(mfrow = c(4, 6))
+for (i in unique(rain$YEAR)) {
   plot(rain$JJ[rain$JJ >= g$lay_date_jj[g$YEAR == i] & rain$JJ <= g$hatch_date_jj[g$YEAR == i] & rain$YEAR == i],
        rain$RAIN[rain$JJ >= g$lay_date_jj[g$YEAR == i] & rain$JJ <= g$hatch_date_jj[g$YEAR == i] & rain$YEAR == i],
        main = i,
@@ -210,18 +215,32 @@ for(i in g$YEAR){
   YEAR <- i
   LAY <- g$lay_date_jj[g$YEAR == i]
   HATCH <- g$hatch_date_jj[g$YEAR == i]
-  summerRAIN <- sum(rain$RAIN[rain$YEAR == i])
-  cumRAIN <- sum(rain$RAIN[rain$YEAR == i & rain$JJ <= HATCH & rain$JJ >= LAY])
   meanTEMP <- mean(t$TEMP[t$YEAR == i & t$jj <= HATCH & t$jj >= LAY])
   sdTEMP <- sd(t$TEMP[t$YEAR == i & t$jj <= HATCH & t$jj >= LAY])
   varTEMP <- var(t$TEMP[t$YEAR == i & t$jj <= HATCH & t$jj >= LAY])
   
-  c <- data.frame(YEAR, LAY, HATCH, summerRAIN, cumRAIN, meanTEMP, sdTEMP, varTEMP)
+  c <- data.frame(YEAR, LAY, HATCH, meanTEMP, sdTEMP, varTEMP)
   
   WEA <- rbind(WEA, c)
 }
 
 summary(WEA)
+
+
+WEA.1 <- NULL
+for(i in unique(rain$YEAR)){
+  YEAR <- i
+  LAY <- g$lay_date_jj[g$YEAR == i]
+  HATCH <- g$hatch_date_jj[g$YEAR == i]
+  summerRAIN <- sum(rain$RAIN[rain$YEAR == i])
+  cumRAIN <- sum(rain$RAIN[rain$YEAR == i & rain$JJ <= HATCH & rain$JJ >= LAY])
+  c <- data.frame(YEAR, LAY, HATCH, summerRAIN,cumRAIN)
+  
+  WEA.1 <- rbind(WEA.1, c)
+}
+
+WEA <- merge(WEA, WEA.1, all.x = TRUE)
+
 #### Superposition of temperature and precipitation in time ####
 # 
 # png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/prec_temp.tiff",
@@ -454,7 +473,7 @@ dev.off()
 
 # OR ELSE
 
-rm(list = ls()) #clean R memory
+#rm(list = ls()) #clean R memory
 setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 mC1 <- read.table("mC1_path_data.txt", h = T)
 
@@ -684,7 +703,7 @@ dev.off()
 
 setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
 
-rm(list = ls()) #clean R memory
+#rm(list = ls()) #clean R memory
 f <- read.table("Path analysis_data 3bis.txt", sep = ",", dec = ".", h = T)
 
 
@@ -850,23 +869,55 @@ dev.off()
 #### Autocorrelation tests ####
   # For AO
 AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
-AO.ts <- ts(AO[-length(AO$YEAR),c(3, 5, 11)])
+AO.ts <- ts(AO[-length(AO$YEAR),c(3, 5, 11)], start = 1950, frequency = 1)
 summary(AO.ts)
-plot(AO.ts)
 
 x11()
-par(mfrow = c(3,1))
-apply(AO.ts, MARGIN = 2, acf) # No temporal autocorrelation
+layout(matrix(c(1,2,3,4, 5, 6), 3, 2, byrow = FALSE))
+par(mar=c(1, 4.1, 4.1, 2.1))
+plot(AO.ts[,1], bty = "n", main = "", xaxt = "n", ylab = "winAO", xlab = "", type = "b")
+par(mar=c(1, 4.1, 1.5, 2.1))
+plot(AO.ts[,2], bty = "n", main = "", xaxt = "n", ylab = "sprAO", xlab = "", type = "b")
+par(mar=c(5.1, 4.1, 1.5, 2.1))
+plot(AO.ts[,3], bty = "n", main = "", xaxt = "n", ylab = "sumAO", xlab = "Time", type = "b")
+axis(1, 1950:2016)
+
+#apply(AO.ts, MARGIN = 2, acf, main = "", bty = "n") # No temporal autocorrelation
+
+par(mar=c(1, 4.1, 4.1, 2.1))
+acf(AO.ts[,1], lag.max = 67, bty = "n", main = "", xaxt = "n", ylab = "winAO ACF", xlab = "")
+par(mar=c(1, 4.1, 1.5, 2.1))
+acf(AO.ts[,2], lag.max = 67, bty = "n", main = "", xaxt = "n", ylab = "sprAO ACF", xlab = "")
+par(mar=c(5.1, 4.1, 1.5, 2.1))
+acf(AO.ts[,3], lag.max = 67, bty = "n", main = "", xaxt = "n", ylab = "sumAO ACF", xlab = "Lag")
+axis(1, 1:68)
+
 
   # Rain & temperature between annual initiation and hatching date - WEA dataframe
-
 head(WEA)
-WEA.ts <- ts(WEA[, 4:8], start = 1996, frequency = 1)
-head(WEA.ts)
-ts.plot(WEA.ts)
-plot(WEA.ts)
 
-apply(WEA.ts, MARGIN = 2, acf)
+WEA.ts <- ts(WEA[, c(4,8)], start = 1989, frequency = 1)
+head(WEA.ts)
+x11()
+#ts.plot(WEA.ts)
+plot(WEA.ts, bty = "n", type = "b")
+
+#apply(WEA.ts, MARGIN = 2, acf)
+x11()
+layout(matrix(c(1,2,3,4), 2, 2, byrow = FALSE))
+par(mar=c(1, 4.1, 4.1, 2.1))
+plot(WEA.ts[,1], xaxt = "n", xlab = "", bty = "n", type = "b", ylab = "mean temperature (C)")
+par(mar=c(5.1, 4.1, 1.5, 2.1))
+plot(WEA.ts[,2], xaxt = "n", xlab = "Time", bty = "n", type = "b", ylab = "Cumulative precipitation (mm)")
+axis(1, 1989:2016)
+# --- #
+par(mar=c(1, 4.1, 4.1, 2.1))
+acf(WEA.ts[,1], xlab = "", bty = "n",lag.max = 27, ylab = "Mean temp. ACF", main = "", xaxt = "n")
+axis(1, 1:27)
+par(mar=c(5.1, 4.1, 1.5, 2.1))
+rain.ts <- na.omit(WEA.ts[,2])
+acf(rain.ts, xlab = "Lag", bty = "n", lag.max = 21, ylab = "Cum. prec. ACF", xaxt = "n")
+axis(1, 1:21)
 
   # Lemming abundance
 lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
@@ -876,11 +927,36 @@ plot(lmg.ts, type = "b")
 acf(lmg.ts, na.action = na.pass)
 
   # Goose nesting success
-g <- read.table("GOOSE_breeding_informations_1995_2017.txt", sep = "\t", dec = ",", h = T); head(g)
-
+head(g)
 acf(g$NEST_SUCC)
 
   # Fox breeding proportion
 fox <- read.table("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",", h = T)
 head(fox); summary(fox)
+names(fox)[1] <- "YEAR"
 acf(fox$prop_natal_dens)
+
+zoo <- merge(g[,c(1, 6)], fox[,c(1, 4)], all.x = TRUE )
+zoo <- merge(zoo, lmg[, c(1, 6)], all.x = TRUE)
+zoo.ts <- ts(zoo[,-1], start = 1989, frequency = 1)
+head(zoo.ts)
+
+x11()
+layout(matrix(c(1,2,3,4, 5, 6), 3, 2, byrow = FALSE))
+par(mar=c(1, 4.1, 4.1, 2.1))
+plot(zoo.ts[,1], bty = "n", main = "", xaxt = "n", ylab = "Goose nesting success prop.", xlab = "", type = "b")
+par(mar=c(1, 4.1, 1.5, 2.1))
+plot(zoo.ts[,2], bty = "n", main = "", xaxt = "n", ylab = "Fox breed. dens prop.", xlab = "", type = "b")
+par(mar=c(5.1, 4.1, 1.5, 2.1))
+plot(zoo.ts[,3], bty = "n", main = "", xaxt = "n", ylab = "Lemming abun.", xlab = "Time", type = "b")
+axis(1, 1989:2016)
+# --- #
+par(mar=c(1, 4.1, 4.1, 2.1))
+acf(zoo.ts[,1], lag.max = 27, bty = "n", main = "", ylab = "Goose ACF", xlab = "", xaxt = "n")
+axis(1, 1:27)
+par(mar=c(1, 4.1, 1.5, 2.1))
+acf(zoo.ts[,2], lag.max = 22, bty = "n", main = "", ylab = "Fox ACF", xlab = "", na.action = na.pass, xaxt = "n")
+axis(1, 1:22)
+par(mar=c(5.1, 4.1, 1.5, 2.1))
+acf(zoo.ts[,3], lag.max = 20, bty = "n", main = "", ylab = "Lemming ACF", xlab = "Lag", na.action = na.pass, xaxt = "n")
+axis(1, 1:20)
