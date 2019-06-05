@@ -11,13 +11,13 @@ list.files()
 AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
 head(AO)
 
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/AO_seasons.tiff",
-    res=300,
-    width=15,
-    height= 25,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
+# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/AO_seasons.tiff",
+#     res=300,
+#     width=15,
+#     height= 25,
+#     pointsize=12,
+#     unit="cm",
+#     bg="transparent")
 #x11()
 par(mfrow = c(3, 1), mar = c(1, 5, 1, 1))
 
@@ -223,14 +223,14 @@ for(i in g$YEAR){
 
 summary(WEA)
 #### Superposition of temperature and precipitation in time ####
-
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/prec_temp.tiff",
-    res=300,
-    width=20,
-    height=15,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
+# 
+# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/prec_temp.tiff",
+#     res=300,
+#     width=20,
+#     height=15,
+#     pointsize=12,
+#     unit="cm",
+#     bg="transparent")
 
 #x11()
 #par(oma=c(0,0,0,3)) # outer margin
@@ -315,13 +315,13 @@ lmg <- lmg[lmg$YEAR >= 1996 & !lmg$YEAR == 2017,]; head(lmg); summary(lmg)
 fox <- read.table("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",", h = T)
 fox <- fox[fox$year >= 1996 & !fox$year == 2017,]; head(fox); summary(fox)
 
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/fox_lmg_gee.tiff",
-    res=300,
-   width=20,
-  height=15,
- pointsize=12,
- unit="cm",
-bg="transparent")
+# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/fox_lmg_gee.tiff",
+#     res=300,
+#    width=20,
+#   height=15,
+#  pointsize=12,
+#  unit="cm",
+# bg="transparent")
 
 #x11()
 
@@ -388,13 +388,13 @@ dev.off()
 
 
 #### FOX VS. LEMMING PLOT ####
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_vs_lmg.tiff",
-    res=300,
-    width=20,
-    height=15,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
+# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_vs_lmg.tiff",
+#     res=300,
+#     width=20,
+#     height=15,
+#     pointsize=12,
+#     unit="cm",
+#     bg="transparent")
 
 #x11()
 par(mar=c(3,3,1,1)) # inner margin - default parameter is par("mar") <- 5.1 4.1 4.1 2.1
@@ -484,14 +484,15 @@ summary(g2)
 p2 <- predict(g2, newdata = data.frame(lmg_C1_CORR = v), type = "response", se.fit = TRUE)
 
 par(las = 1)
+# 
+# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_vs_lmg_v3.tiff",
+#     res=300,
+#     width=20,
+#     height=15,
+#     pointsize=12,
+#     unit="cm",
+#     bg="transparent")
 
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_vs_lmg_v3.tiff",
-    res=300,
-    width=20,
-    height=15,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
 plot(mC1$lmg_C1_CORR, mC1$prop_fox_dens,
      xlim = c(0, 10),
      ylim = c(0, 0.40),
@@ -562,13 +563,13 @@ lines((yv$fit - 1.96 * yv$se.fit) ~ xv, type = "l", col = "dodgerblue4", lty = "
 lines((yv$fit + 1.96 * yv$se.fit) ~ xv, type = "l", col = "dodgerblue4", lty = "dashed")
 
 #### FOX VS. LEMMING PLOT WITHOUT 2000 ####
-png("fox_vs_lem_WITHOUT_2000.tiff",
-    res=300,
-    width=20,
-    height=15,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
+# png("fox_vs_lem_WITHOUT_2000.tiff",
+#     res=300,
+#     width=20,
+#     height=15,
+#     pointsize=12,
+#     unit="cm",
+#     bg="transparent")
 
 #x11()
 
@@ -638,13 +639,14 @@ summary(oth)
 
 m <- glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = oth, family = binomial(link="logit"))
 
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_vs_lem_LAST_PLOT_simplier model.tiff",
-    res=300,
-    width=20,
-    height=15,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
+# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V1/Figures/fox_vs_lem_LAST_PLOT_simplier model.tiff",
+#     res=300,
+#     width=20,
+#     height=15,
+#     pointsize=12,
+#     unit="cm",
+#     bg="transparent")
+
 plot(oth$lmg_C1_CORR,
      oth$prop_fox_dens,
      xlim = c(0, 10),
@@ -807,13 +809,13 @@ PROP <- cbind(PROP, levels(f$temp_CAT))
 PROP
 
 
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/goose vs temp&prec.tiff",
-    res=300,
-    width=25,
-    height=15,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
+# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/goose vs temp&prec.tiff",
+#     res=300,
+#     width=25,
+#     height=15,
+#     pointsize=12,
+#     unit="cm",
+#     bg="transparent")
 
 par(mfrow = c(1, 2))
 par(mar = c(5.1, 4.1, 5, 0.1))
@@ -844,3 +846,41 @@ plot(seq(-0.9, 9, 0.1), PROP$V3,
 lines(v, p, col = 'olivedrab', lwd = 2, xlim = c(-0.5, 9))
 axis(side = 1, at = -1:9, lwd = 1)
 dev.off()
+
+#### Autocorrelation tests ####
+  # For AO
+AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
+AO.ts <- ts(AO[-length(AO$YEAR),c(3, 5, 11)])
+summary(AO.ts)
+plot(AO.ts)
+
+x11()
+par(mfrow = c(3,1))
+apply(AO.ts, MARGIN = 2, acf) # No temporal autocorrelation
+
+  # Rain & temperature between annual initiation and hatching date - WEA dataframe
+
+head(WEA)
+WEA.ts <- ts(WEA[, 4:8], start = 1996, frequency = 1)
+head(WEA.ts)
+ts.plot(WEA.ts)
+plot(WEA.ts)
+
+apply(WEA.ts, MARGIN = 2, acf)
+
+  # Lemming abundance
+lmg <- read.table("LEM_1993-2017.txt", sep = "\t", dec = ",", h = T)
+head(lmg); summary(lmg)
+lmg.ts <- ts(lmg$LMG_C1_CORR, start = 1993, frequency = 1)
+plot(lmg.ts, type = "b")
+acf(lmg.ts, na.action = na.pass)
+
+  # Goose nesting success
+g <- read.table("GOOSE_breeding_informations_1995_2017.txt", sep = "\t", dec = ",", h = T); head(g)
+
+acf(g$NEST_SUCC)
+
+  # Fox breeding proportion
+fox <- read.table("FOX_abundance_Chevallier.txt", sep = "\t", dec = ",", h = T)
+head(fox); summary(fox)
+acf(fox$prop_natal_dens)
