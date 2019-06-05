@@ -8,6 +8,7 @@ rm(list = ls()) #clean R memory
 
 # Complete data
 mC1 <- read.table("mC1_path_data.txt", h = T)
+mC1$AN <- as.factor(as.character(mC1$AN))
 summary(mC1)
 head(mC1)
 
@@ -20,6 +21,9 @@ require(nlme)
 require(lme4)
 require(piecewiseSEM)
 require(ggm)
+require(visreg)
+require(DHARMa)
+require(itsadug)
 
 #### Warnings message and overdispersion in glm model (proportion of breeding fox dens)
 # Test 1
@@ -171,18 +175,6 @@ sem.fit(ro2bSC, mC1, conditional = T)
 sem.coefs(ro2bSC, mC1)
 sem.model.fits(ro2bSC) #calcul des R2
 
-# LOG(LMG) - SCALED DATA - PREC & TEMP INTERACTIONS
-ro2bSCinter <- list(
-  glm(prop_fox_dens ~ scale(I(log(lmg_C1_CORR))) + scale(cumul_prec) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1, family = binomial(link = "logit")),
-  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec)*scale(MEAN_temp)  + (1|AN), data = mC1, family = binomial(link = "logit")))
-
-# Get goodness-of-fit and AIC
-sem.fit(ro2bSCinter, mC1, conditional = T)
-#NO significant missing paths
-sem.coefs(ro2bSCinter, mC1)
-sem.model.fits(ro2bSCinter) #calcul des R2
-
-
 # LOG(LMG) - 2000 MODEL
 ro2b <- list(
   glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1_2000, family = binomial(link = "logit")),
@@ -205,7 +197,7 @@ sem.fit(ro2b, mC1_2000, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2b, mC1_2000)
 
-# LOG(LMG) - 2000 & withpout causal link between fox and cumul_prec - SCALED DATA
+# LOG(LMG) - 2000 & without causal link between fox and cumul_prec - SCALED DATA
 ro2bSC <- list(
   glm(prop_fox_dens ~ scale(I(log(lmg_C1_CORR))) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1_2000, family = binomial(link = "logit")),
   glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec) + scale(MEAN_temp) + (1|AN), data = mC1_2000, family = binomial(link = "logit")))
@@ -396,3 +388,41 @@ m <- split(mC1, paste(mC1$AN))
 m <- lapply(m, function(x){
   
 })
+
+#### ------------------ ####
+#### REVIEWER COMMENTS ####
+#### ---------------- ####
+
+#### TEMPORAL AUTO-CORRELATION ####
+
+
+
+#### NON-STATIONARY VARIANCE ####
+j <-  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec) + scale(MEAN_temp)  + (1|AN), data = mC1, family = binomial(link = "logit")); summary(j)
+acf(residuals(j))
+
+h <-   glm(prop_fox_dens ~ I(log(lmg_C1_CORR)) + cumul_prec + MEAN_temp + winAO, weights = monit_dens, data = mC1, family = binomial(link = "logit")); summary(h)
+acf(residuals(h)) #here problem with repetition of variables; need to have one value per year
+
+
+
+#### Interaction between temperature and precipitation ####
+j <-  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec) + scale(MEAN_temp)  + (1|AN), data = mC1, family = binomial(link = "logit")); summary(j) # AIC = 2389
+visreg(j)
+plot(simulateResiduals(j))
+     
+jj <-  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec)*scale(MEAN_temp)  + (1|AN), data = mC1, family = binomial(link = "logit")); summary(jj) # AIC = 2385
+visreg(jj)
+plot(simulateResiduals(jj))
+
+# LOG(LMG) - SCALED DATA - PREC & TEMP INTERACTIONS
+ro2bSCinter <- list(
+  glm(prop_fox_dens ~ scale(I(log(lmg_C1_CORR))) + scale(cumul_prec) + scale(MEAN_temp) + scale(winAO), weights = monit_dens, data = mC1, family = binomial(link = "logit")),
+  glmer(SN ~ scale(prop_fox_dens) + scale(cumul_prec)*scale(MEAN_temp)  + (1|AN), data = mC1, family = binomial(link = "logit"))) # *** do not work with interaction **** 
+
+# Get goodness-of-fit and AIC
+sem.fit(ro2bSCinter, mC1, conditional = T)
+#NO significant missing paths
+sem.coefs(ro2bSCinter, mC1)
+sem.model.fits(ro2bSCinter) #calcul des R2
+
