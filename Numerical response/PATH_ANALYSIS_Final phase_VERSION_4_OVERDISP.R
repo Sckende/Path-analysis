@@ -150,6 +150,7 @@ ro2bSC <- list(
 sem.fit(ro2bSC, mC1, conditional = T)
 #NO significant missing paths
 sem.coefs(ro2bSC, mC1)
+sem.coefs(ro2b, mC1, standardize = "scale")
 sem.model.fits(ro2bSC) #calcul des R2
 
 # LOG(LMG) MODEL
