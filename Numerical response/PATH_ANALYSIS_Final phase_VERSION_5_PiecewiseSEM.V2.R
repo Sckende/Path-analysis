@@ -76,6 +76,10 @@ M2.list <- list(
   glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1, family = binomial(link = "logit")))
 
 # Get goodness-of-fit and AIC
+sem.fit(M2.list, mC1, conditional = TRUE)
+sem.coefs(M2.list, mC1, standardize = "none")
+sem.coefs(M2.list, mC1, standardize = "scale")
+
 M2 <- as.psem(M2.list)
 sum.M2 <- summary(M2)
 sum.M2$Cstat # Fisher C
@@ -150,6 +154,16 @@ sum.M6$Cstat # Fisher C
 sum.M6$IC$AIC #AIC
 sum.M6$dTable # D-separation tests
 sum.M6$coefficients # Path coefficients
+
+#### M7 ####
+
+M7.list <- list(
+  glm(prop_fox_dens ~ log.lmg + winAO + cumul_prec + MEAN_temp + prec.temp, weights = monit_dens, data = mC1.sc, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + prec.temp + (1|AN), data = mC1.sc, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(M7.list, mC1.sc, conditional = TRUE)
+sem.coefs(M7.list, mC1.sc)
 
 #### ------------------ ####
 #### REVIEWER COMMENTS ####
