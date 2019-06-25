@@ -1,4 +1,4 @@
-### PATH MODELES in order to correct the overdispersion ####
+### PATH MODELES with last version of package ####
 
 
 setwd(dir = "C:/Users/HP_9470m/OneDrive - Université de Moncton/Doc doc doc/Ph.D. - ANALYSES/R analysis/Data")
@@ -202,3 +202,12 @@ sem.fit(ro2bSCinter, mC1, conditional = T)
 sem.coefs(ro2bSCinter, mC1)
 sem.model.fits(ro2bSCinter) #calcul des R2
 
+#### TRASH SECTION ####
+
+M1.list <- list(
+  glm(prop_fox_dens ~ log.lmg + cumul_prec + MEAN_temp, weights = monit_dens, data = mC1.sc, family = binomial(link = "logit")),
+  glmer(SN ~ prop_fox_dens + cumul_prec + MEAN_temp + (1|AN), data = mC1.sc, family = binomial(link = "logit")))
+
+# Get goodness-of-fit and AIC
+sem.fit(M1.list, mC1.sc, conditional = TRUE)
+sem.coefs(M1.list, mC1.sc)
