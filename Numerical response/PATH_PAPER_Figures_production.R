@@ -868,29 +868,44 @@ dev.off()
 
 #### Autocorrelation tests ####
   # For AO
-AO<-read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
+AO <- read.csv("AO_saisonnier.txt", sep = ",", dec = ".")
 AO.ts <- ts(AO[-length(AO$YEAR),c(3, 5, 11)], start = 1950, frequency = 1)
 summary(AO.ts)
+
+AO.ts.2 <- ts(AO[AO$YEAR >= 1989 & AO$YEAR < 2017, c(3, 5, 11)], start = 1989, frequency = 1)
+summary(AO.ts.2)
+
+# From 1950 to 2016
+data <- AO.ts
+ax <- 1950:2016
+n <- 68
+lag <- 1:n
+
+# From 1989 to 2016
+data <- AO.ts.2
+ax <- 1989:2016
+n <- ((2016-1989)/2)
+lag <- 1:n
 
 x11()
 layout(matrix(c(1,2,3,4, 5, 6), 3, 2, byrow = FALSE))
 par(mar=c(1, 4.1, 4.1, 2.1))
-plot(AO.ts[,1], bty = "n", main = "", xaxt = "n", ylab = "winAO", xlab = "", type = "b")
+plot(data[,1], bty = "n", main = "", xaxt = "n", ylab = "winAO", xlab = "", type = "b")
 par(mar=c(1, 4.1, 1.5, 2.1))
-plot(AO.ts[,2], bty = "n", main = "", xaxt = "n", ylab = "sprAO", xlab = "", type = "b")
+plot(data[,2], bty = "n", main = "", xaxt = "n", ylab = "sprAO", xlab = "", type = "b")
 par(mar=c(5.1, 4.1, 1.5, 2.1))
-plot(AO.ts[,3], bty = "n", main = "", xaxt = "n", ylab = "sumAO", xlab = "Time", type = "b")
-axis(1, 1950:2016)
+plot(data[,3], bty = "n", main = "", xaxt = "n", ylab = "sumAO", xlab = "Time", type = "b")
+axis(1, ax)
 
-#apply(AO.ts, MARGIN = 2, acf, main = "", bty = "n") # No temporal autocorrelation
+#apply(data, MARGIN = 2, acf, main = "", bty = "n") # No temporal autocorrelation
 
 par(mar=c(1, 4.1, 4.1, 2.1))
-acf(AO.ts[,1], lag.max = 67, bty = "n", main = "", xaxt = "n", ylab = "winAO ACF", xlab = "")
+acf(data[,1], lag.max = n, bty = "n", main = "", xaxt = "n", ylab = "winAO ACF", xlab = "")
 par(mar=c(1, 4.1, 1.5, 2.1))
-acf(AO.ts[,2], lag.max = 67, bty = "n", main = "", xaxt = "n", ylab = "sprAO ACF", xlab = "")
+acf(data[,2], lag.max = n, bty = "n", main = "", xaxt = "n", ylab = "sprAO ACF", xlab = "")
 par(mar=c(5.1, 4.1, 1.5, 2.1))
-acf(AO.ts[,3], lag.max = 67, bty = "n", main = "", xaxt = "n", ylab = "sumAO ACF", xlab = "Lag")
-axis(1, 1:68)
+acf(data[,3], lag.max = n, bty = "n", main = "", xaxt = "n", ylab = "sumAO ACF", xlab = "Lag")
+axis(1, lag)
 
 
   # Rain & temperature between annual initiation and hatching date - WEA dataframe
@@ -898,6 +913,7 @@ head(WEA)
 
 WEA.ts <- ts(WEA[, c(4,8)], start = 1989, frequency = 1)
 head(WEA.ts)
+
 x11()
 #ts.plot(WEA.ts)
 plot(WEA.ts, bty = "n", type = "b")
