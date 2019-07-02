@@ -770,12 +770,14 @@ p1 <- predict(m, newdata = newdat, type = "response", re.form = NA) # se.fit doe
 plot(v1, p1, ylim = c(0, 1), type = "l", bty = "n")
 
 # Delimitation of categories to plot transformed raw data
-f$rain_CAT <- cut(f$cumul_prec, breaks = seq(-5, 70, 5))# Creation of precipitation categorical variable to plot raw data
+#f$rain_CAT <- cut(f$cumul_prec, breaks = seq(-5, 70, 5))# Creation of precipitation categorical variable to plot raw data
+f$rain_CAT <- cut(f$cumul_prec, breaks = seq(0, 70, 1))
+
 
 rain.DF <- split(f, f$rain_CAT) # Split dataframe into a list, based on the rainfall categorical variable rain.DF levels
 
 PROP1 <- NULL
-for (i in 1:15){
+for (i in 1:length(rain.DF)){
   
   succ <- sum(rain.DF[[i]]$SN)
   tot <- dim(rain.DF[[i]])[1]
@@ -828,17 +830,17 @@ PROP <- cbind(PROP, levels(f$temp_CAT))
 PROP
 
 
-# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 3 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/goose vs temp&prec.tiff",
-#     res=300,
-#     width=25,
-#     height=15,
-#     pointsize=12,
-#     unit="cm",
-#     bg="transparent")
+png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 1 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/goose vs temp&prec_Last_Version.tiff",
+    res=300,
+    width=25,
+    height=15,
+    pointsize=12,
+    unit="cm",
+    bg="transparent")
 
 par(mfrow = c(1, 2))
 par(mar = c(5.1, 4.1, 5, 0.1))
-plot(seq(0, 70, 5), PROP1$V3,
+plot(seq(1, 70, 1), PROP1$V3,
      ylim = c(0, 1),
      pch = 16,
      xlab = '',
