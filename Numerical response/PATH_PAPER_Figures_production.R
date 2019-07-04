@@ -771,13 +771,15 @@ plot(v1, p1, ylim = c(0, 1), type = "l", bty = "n")
 
 # Delimitation of categories to plot transformed raw data
 
-nn <- 15
+nn <- 50
 
 #f$rain_CAT <- cut(f$cumul_prec, breaks = seq(-5, 70, 5))# Creation of precipitation categorical variable to plot raw data
 f$rain_CAT <- cut(f$cumul_prec, breaks = seq(min(f$cumul_prec), max(f$cumul_prec), length.out = nn))
-f$rain_CAT <- lapply(strsplit(as.character(f$rain_CAT),"(|\\,|\\]"),function(i){
-  
-})
+
+xaxis <- seq(min(f$cumul_prec), max(f$cumul_prec), length.out = nn)
+# f$rain_CAT <- lapply(strsplit(as.character(f$rain_CAT),"(|\\,|\\]"),function(i){
+#   
+# })
 
 
 rain.DF <- split(f, f$rain_CAT) # Split dataframe into a list, based on the rainfall categorical variable rain.DF levels
@@ -817,6 +819,8 @@ p <- predict(m, newdata = newdat, type = "response", re.form = NA) # se.fit does
 # Delimitation of categories to plot transformed raw data
 f$temp_CAT <- cut(f$MEAN_temp, breaks = seq(min(f$MEAN_temp), max(f$MEAN_temp), length.out = nn)) 
 
+xaxis.2 <- seq(min(f$MEAN_temp), max(f$MEAN_temp), length.out = nn)
+
 temp.DF <- split(f, f$temp_CAT) # Split dataframe into a list, based on the rainfall categorical variable rain.DF levels
 
 PROP <- NULL
@@ -836,19 +840,18 @@ PROP <- cbind(PROP, levels(f$temp_CAT))
 PROP
 
 
-png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 1 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/goose vs temp&prec_Last_Version.tiff",
-    res=300,
-    width=25,
-    height=15,
-    pointsize=12,
-    unit="cm",
-    bg="transparent")
+# png("C:/Users/HP_9470m/Dropbox/PHD. Claire/Chapitres de thèse/CHAPTER 1 - Path analysis/FOX numerical response/ARTICLE Ph.D. 3/VERSION FINALE V2/Figures/goose vs temp&prec_Last_Version.tiff",
+#     res=300,
+#     width=25,
+#     height=15,
+#     pointsize=12,
+#     unit="cm",
+#     bg="transparent")
 
 par(mfrow = c(1, 2))
 par(mar = c(5.1, 4.1, 5, 0.1))
-plot(
-  #seq(1, 70, 1), 
-  PROP1$V3,
+plot(xaxis[-1],
+     PROP1$V3,
      ylim = c(0, 1),
      pch = 16,
      xlab = '',
@@ -862,9 +865,8 @@ axis(side = 1, lwd = 1)
 axis(side = 2, lwd = 1, las = 1)
 
 par(mar = c(5.1, 0, 5, 2.1))
-plot(
-  #seq(-0.9, 9, 0.1),
-  PROP$V3,
+plot(xaxis.2[-1],
+     PROP$V3,
      ylim = c(0, 1),
      xlim = c(-1, 9),
      pch = 16,
